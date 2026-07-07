@@ -1,0 +1,16 @@
+[
+	{
+		"id": "anc-1",
+		"title": "Pemeliharaan sistem terjadwal",
+		"body": "Sistem DOA dan SIEDM akan menjalani pemeliharaan pada Sabtu, 8 Februari 2026 pukul 22.00\u201302.00 WIB. Mohon simpan pekerjaan Anda sebelum waktu tersebut.",
+		"date": "2026-02-01",
+		"active": true
+	},
+	{
+		"id": "anc-2",
+		"title": "Pembaruan direktori telepon internal",
+		"body": "Direktori telepon penting telah diperbarui. Silakan periksa menu Telepon Penting untuk nomor terbaru.",
+		"date": "2026-01-25",
+		"active": true
+	}
+]

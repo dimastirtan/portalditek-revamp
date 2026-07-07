@@ -1,0 +1,30 @@
+[
+	{
+		"id": "dl-1",
+		"title": "Formulir permohonan cuti karyawan",
+		"url": "#",
+		"size": "180 KB",
+		"kind": "PDF"
+	},
+	{
+		"id": "dl-2",
+		"title": "Panduan penggunaan sistem DOA",
+		"url": "#",
+		"size": "2.4 MB",
+		"kind": "PDF"
+	},
+	{
+		"id": "dl-3",
+		"title": "Template laporan kegiatan bulanan",
+		"url": "#",
+		"size": "320 KB",
+		"kind": "DOCX"
+	},
+	{
+		"id": "dl-4",
+		"title": "Kalender kerja tahun 2026",
+		"url": "#",
+		"size": "1.1 MB",
+		"kind": "PDF"
+	}
+]

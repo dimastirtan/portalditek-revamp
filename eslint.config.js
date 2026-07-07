@@ -1,0 +1,46 @@
+import prettier from 'eslint-config-prettier';
+import js from '@eslint/js';
+import { includeIgnoreFile } from '@eslint/compat';
+import svelte from 'eslint-plugin-svelte';
+import globals from 'globals';
+import { fileURLToPath } from 'node:url';
+import ts from 'typescript-eslint';
+import svelteConfig from './svelte.config.js';
+ 
+const gitignorePath = fileURLToPath(new URL('./.gitignore', import.meta.url));
+ 
+export default ts.config(
+	includeIgnoreFile(gitignorePath),
+	js.configs.recommended,
+	...ts.configs.recommended,
+	...svelte.configs['flat/recommended'],
+	prettier,
+	...svelte.configs['flat/prettier'],
+	{
+		languageOptions: {
+			globals: {
+				...globals.browser,
+				...globals.node
+			}
+		}
+	},
+	{
+		files: ['**/*.svelte', '**/*.svelte.ts', '**/*.svelte.js'],
+		languageOptions: {
+			parserOptions: {
+				projectService: true,
+				extraFileExtensions: ['.svelte'],
+				parser: ts.parser,
+				svelteConfig
+			}
+		}
+	},
+	{
+		rules: {
+			// Aturan ini meminta setiap internal link dibungkus resolve(). Untuk
+			// static site dengan anchor links (#section) dan href dari data JSON,
+			// ini bukan masalah nyata. Dimatikan agar tidak jadi noise.
+			'svelte/no-navigation-without-resolve': 'off'
+		}
+	}
+);

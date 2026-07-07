@@ -1,0 +1,20 @@
+[
+	{
+		"id": "evt-1",
+		"title": "Rapat koordinasi teknis triwulan I",
+		"date": "2026-02-03",
+		"location": "Gedung DTP, Ruang Rapat Utama"
+	},
+	{
+		"id": "evt-2",
+		"title": "Sosialisasi standar desain revisi terbaru",
+		"date": "2026-02-10",
+		"location": "Auditorium PT DI"
+	},
+	{
+		"id": "evt-3",
+		"title": "Workshop keselamatan kerja area produksi",
+		"date": "2026-02-17",
+		"location": "Hangar Fixed Wing"
+	}
+]

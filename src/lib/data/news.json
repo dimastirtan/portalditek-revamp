@@ -1,0 +1,38 @@
+[
+	{
+		"id": "news-1",
+		"title": "PT Dirgantara Indonesia perkuat kapasitas produksi pesawat nasional",
+		"excerpt": "Peningkatan kapasitas lini produksi ditargetkan mendukung pemenuhan pesanan dalam dan luar negeri sepanjang 2026.",
+		"publishedAt": "2026-01-22",
+		"url": "#",
+		"featured": true
+	},
+	{
+		"id": "news-2",
+		"title": "Direktorat Teknologi dan Pengembangan raih penghargaan inovasi",
+		"excerpt": "Inovasi di bidang rekayasa struktur komposit mendapat pengakuan tingkat nasional.",
+		"publishedAt": "2026-01-18",
+		"url": "#"
+	},
+	{
+		"id": "news-3",
+		"title": "Kolaborasi riset dengan perguruan tinggi diperluas",
+		"excerpt": "Program riset bersama menyasar pengembangan material ringan dan efisiensi bahan bakar.",
+		"publishedAt": "2026-01-14",
+		"url": "#"
+	},
+	{
+		"id": "news-4",
+		"title": "Digitalisasi proses engineering memasuki fase implementasi",
+		"excerpt": "Sistem manajemen data engineering terintegrasi mulai diterapkan lintas divisi.",
+		"publishedAt": "2026-01-09",
+		"url": "#"
+	},
+	{
+		"id": "news-5",
+		"title": "Pelatihan kompetensi SDM teknik digelar berkala",
+		"excerpt": "Program pengembangan kompetensi menyasar penguasaan teknologi manufaktur terkini.",
+		"publishedAt": "2026-01-04",
+		"url": "#"
+	}
+]
