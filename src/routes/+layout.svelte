@@ -35,7 +35,7 @@
 		// bookmark lama seperti #hero / #about tetap mendarat di tempat yang benar.
 		const hashMap: Record<string, string> = {
 			'#hero': '#beranda',
-			'#about': '#perusahaan',
+			'#about': '#beranda',
 			'#portfolio': '#sistem',
 			'#services': '#informasi',
 			'#contact': '#kontak'

@@ -1,11 +1,17 @@
-/** Item navigasi utama. `href` bisa anchor (#id) di landing atau route penuh. */
+/** Item navigasi utama. Bisa bertingkat lewat `children`. */
 export type NavItem = {
 	label: string;
-	href: string;
-	/** true = link ke section di landing (pakai smooth scroll), false = route/eksternal. */
+	/** Anchor (#id / /#id) di landing atau route penuh. Kosong = parent/menu atau item "segera". */
+	href?: string;
+	/** true = link ke section di landing. */
 	anchor?: boolean;
 	/** true = buka di tab baru (link eksternal). */
 	external?: boolean;
+	/** true = halaman belum dibangun → tampil redup & tidak bisa diklik. */
+	soon?: boolean;
+	/** Sub-menu (boleh bertingkat). */
+	onClick?: () => void;
+	children?: NavItem[];
 };
 
 /** Sub-sistem yang diakses lewat Portal (integrasi via DNS). */

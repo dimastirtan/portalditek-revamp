@@ -6,7 +6,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.system.label} – Portal DTP</title>
+	<title>{data.system.label} – Direktorat Teknologi</title>
 </svelte:head>
 
 <SystemPlaceholder system={data.system} />

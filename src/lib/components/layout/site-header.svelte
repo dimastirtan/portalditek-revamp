@@ -9,6 +9,7 @@
 <header
 	class="bg-background/95 supports-[backdrop-filter]:bg-background/80 sticky top-0 z-40 border-b backdrop-blur"
 >
+	<!-- Baris 1: logo (+ tombol menu di mobile) -->
 	<div class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
 		<a href="/" class="flex items-center gap-3">
 			<img src="/logo.png" alt="Logo PT Dirgantara Indonesia" class="h-9 w-auto" />
@@ -20,9 +21,13 @@
 			</span>
 		</a>
 
-		<div class="flex items-center gap-2">
+		<MobileNav />
+	</div>
+
+	<!-- Baris 2: navbar utama (desktop) — baris penuh, dipisah garis dari logo -->
+	<div class="hidden border-t lg:block">
+		<div class="mx-auto! max-w-7xl px-4 sm:px-6 lg:px-8 relative min-h-[3.5rem] flex items-center justify-around">
 			<MainNav {activeHash} />
-			<MobileNav />
 		</div>
 	</div>
 </header>

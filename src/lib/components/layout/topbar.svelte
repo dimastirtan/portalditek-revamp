@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { CalendarDays, Bell } from '@lucide/svelte';
 	import ThemeToggle from '$lib/components/shared/theme-toggle.svelte';
+	export { onOpenCalendar, onOpenAnnouncement } from '$lib/components/layout/topbar.svelte';
 
 	type Props = {
 		/** Callback saat tombol Kalender diklik (modal diisi di M3). */

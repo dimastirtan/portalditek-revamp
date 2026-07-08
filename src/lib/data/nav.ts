@@ -1,67 +1,144 @@
 import type { NavItem, SystemLink } from '$lib/types/nav';
+import onOpenCalendar from '$lib/components/layout/topbar.svelte';
 
 /**
- * Navigasi utama Portal.
+ * Navigasi utama Portal — mengikuti struktur informasi Portal DITTEK lama.
  *
- * Portal lama punya DUA navbar: top nav (6 item) + bottom pill nav penuh
- * dropdown dengan puluhan anchor mati (#organisasi, #capability, dst yang
- * tidak eksis). Untuk revamp, disederhanakan jadi SATU nav yang mengarah ke
- * section yang benar-benar ada di landing.
+ * Aturan href:
+ *  - `/#xxx`  → scroll ke section di landing (berita, informasi, kontak, dst).
+ *  - `/xxx`   → route yang sudah ada (mis. /telepon, /certificate).
+ *  - `soon:true` (tanpa href) → halaman belum dibangun, tampil redup & non-klik.
  *
- * Kalau nanti section-nya bertambah, tinggal tambah item di sini.
+ * Begitu sebuah halaman dibuat, ganti `soon:true` jadi `href:'/route'`.
+ * Catatan: section "Perusahaan/About" dihapus — portal internal satu direktorat
+ * tidak perlu profil perusahaan.
  */
 export const MAIN_NAV: NavItem[] = [
-	{ label: 'Beranda', href: '#beranda', anchor: true },
-	{ label: 'Perusahaan', href: '#perusahaan', anchor: true },
-	{ label: 'Sistem', href: '#sistem', anchor: true },
-	{ label: 'Informasi', href: '#informasi', anchor: true },
-	{ label: 'Berita', href: '#berita', anchor: true },
-	{ label: 'Kontak', href: '#kontak', anchor: true }
+	{ label: 'Home', href: '/' },
+	{
+		label: 'Pojok Media',
+		children: [
+			{ label: 'Berita Utama', href: '/#berita' },
+			{ label: 'Berita', href: '/#berita' },
+			{ label: 'Artikel', href: '/#informasi' },
+			{ label: 'Download', href: '/#informasi' }
+		]
+	},
+	{
+		label: 'Profil',
+		children: [
+			{ label: 'Organisasi', soon: true },
+			{
+				label: 'Capability',
+				children: [
+					{ label: 'Brainware', soon: true },
+					{ label: 'CAD/CAM', soon: true },
+					{ label: 'Software Development', soon: true }
+				]
+			},
+			{
+				label: 'Project',
+				children: [{ label: 'N219', soon: true }]
+			},
+			{
+				label: 'SDM',
+				children: [
+					{ label: 'Personil', soon: true },
+					{ label: 'JDQ', soon: true }
+				]
+			},
+			{
+				label: 'Kerjasama Teknologi',
+				children: [
+					{ label: 'Experience', soon: true },
+					{ label: 'Kerjasama Teknologi', soon: true },
+					{ label: 'PT DI - Hankam', soon: true }
+				]
+			},
+			{
+				label: 'Fasilitas',
+				children: [
+					{ label: 'Ground Test', soon: true },
+					{ label: 'Flight Test', soon: true }
+				]
+			}
+		]
+	},
+	{
+		label: 'Command Media',
+		children: [
+			{ label: 'Sistem Command Media', soon: true },
+			{ label: 'Sekilas Info Command Media', soon: true }
+		]
+	},
+	{
+		label: 'OC',
+		children: [
+			{ label: 'Certificate', href: '/certificate' },
+			{ label: 'OC', soon: true }
+		]
+	},
+	{
+		label: 'Regulation',
+		children: [
+			{ label: 'Pemerintah RI', soon: true },
+			{ label: 'Kementrian Perhubungan RI', soon: true },
+			{ label: 'Kementrian Pertahanan RI', soon: true }
+		]
+	},
+	{
+		label: 'Information',
+		children: [
+			{ label: 'Kalender Kerja', onClick: () => { onOpenCalendar(); } },
+			{ label: 'Telepon Penting', href: '/telepon' },
+			{ label: 'Jadwal Kereta Api Jur. Bandung', soon: true },
+			{ label: 'Jadwal Penerbangan', soon: true }
+		]
+	},
+	{ label: 'Contact Us', href: '/#kontak' },
+	{ label: 'Link', soon: true },
+	{ label: 'HKI', soon: true },
+	{ label: 'Online Publication', soon: true }
 ];
 
 /**
- * Sub-sistem internal DTP.
- *
- * Di Portal lama ini adalah kartu "portfolio" yang link ke halaman .html dummy
- * (dashboard.html, doa.html, dst — semuanya masih template BootstrapMade).
- *
- * Keputusan (M1): halaman placeholder tipis dulu; integrasi sistem asli via DNS.
- * Ganti `href` ke URL DNS begitu sistem asli siap, dan set external: true.
+ * Sub-sistem internal DTP (kartu di section Sistem + daftar di menu mobile).
+ * Ganti `href` ke URL DNS sistem asli begitu siap, dan set external: true.
  */
 export const SYSTEMS: SystemLink[] = [
 	{
 		id: 'doa',
 		label: 'DOA',
 		description: 'Design Organization Approval — manajemen dokumen standar desain.',
-		href: '/doa',
+		href: 'http://portalditek.indonesian-aerospace.com/webdoa/',
 		icon: 'document.svg'
 	},
 	{
 		id: 'dotproject',
-		label: 'dotProject',
+		label: 'DotProject',
 		description: 'Manajemen proyek dan penjadwalan tim.',
-		href: '/dotproject',
+		href: 'http://portalditek.indonesian-aerospace.com/dotproject/',
 		icon: 'case.svg'
 	},
 	{
 		id: 'dashboard',
-		label: 'Dashboard DTP',
+		label: 'Dashboard',
 		description: 'Ringkasan indikator dan aktivitas direktorat.',
-		href: '/dashboard',
+		href: '/',
 		icon: 'note.svg'
 	},
 	{
 		id: 'siedm',
 		label: 'SIEDM',
 		description: 'Sistem Informasi Engineering Data Management.',
-		href: '/siedm',
+		href: 'http://siedm.indonesian-aerospace.com/',
 		icon: 'engineering standard.svg'
 	},
 	{
 		id: 'certificate',
-		label: 'Certification',
+		label: 'Certificate',
 		description: 'Manajemen sertifikasi produk dan proses.',
-		href: '/certificate',
+		href: 'http://portalditek.indonesian-aerospace.com/certificate/',
 		icon: 'certificate.svg'
 	},
 	{

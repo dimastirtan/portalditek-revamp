@@ -1,7 +1,6 @@
 <script lang="ts">
 	import {
 		Hero,
-		AboutSection,
 		FeatureGrid,
 		InfoPanel,
 		NewsSection,
@@ -14,7 +13,6 @@
 </script>
 
 <Hero />
-<AboutSection />
 <FeatureGrid />
 <InfoPanel articles={data.articles} events={data.events} downloads={data.downloads} />
 <NewsSection news={data.news} />

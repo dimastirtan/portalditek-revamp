@@ -12,7 +12,7 @@
  */
 export const SITE = {
 	name: 'Direktorat Teknologi dan Pengembangan',
-	shortName: 'Portal DTP',
+	shortName: 'Direktorat Teknologi & Pengembangan',
 	tagline: 'Portal internal Direktorat Teknologi dan Pengembangan PT Dirgantara Indonesia',
 	company: 'PT Dirgantara Indonesia (Persero)',
 	companyUrl: 'https://www.indonesian-aerospace.com/',
