@@ -49,3 +49,20 @@ export type Announcement = {
 	/** false = tidak ditampilkan (bell tidak bergetar). */
 	active: boolean;
 };
+
+export type Person = {
+	nik: string;
+	name: string;
+	/** Kode unit organisasi, mis. 'DT0000'. */
+	org: string;
+};
+
+export type BirthdayGroup = {
+	/** Label hari, mis. 'Hari Ini, Selasa, 07-07-2026'. */
+	label: string;
+	/** ISO date string hari tersebut. */
+	date: string;
+	/** true bila ini hari ini. */
+	today: boolean;
+	people: Person[];
+};

@@ -2,12 +2,13 @@
 	import SectionHeading from '$lib/components/shared/section-heading.svelte';
 	import { formatDate } from '$lib/utils';
 	import { ChevronLeft, ChevronRight, ArrowRight } from '@lucide/svelte';
-	import news from '$lib/data/news.json';
 	import type { NewsItem } from '$lib/types/content';
 
-	const items = news as NewsItem[];
-	const featured = items.find((n) => n.featured) ?? items[0];
-	const rest = items.filter((n) => n.id !== featured.id);
+	let { news = [] }: { news?: NewsItem[] } = $props();
+
+	const items = $derived(news);
+	const featured = $derived(items.find((n) => n.featured) ?? items[0]);
+	const rest = $derived(featured ? items.filter((n) => n.id !== featured.id) : []);
 
 	let track = $state<HTMLDivElement | null>(null);
 
@@ -24,8 +25,9 @@
 
 		<div class="mt-8 grid gap-6 lg:grid-cols-2">
 			<!-- Berita utama -->
-			<a href={featured.url} class="group bg-card flex flex-col overflow-hidden rounded-xl border">
-				{#if featured.image}
+			{#if featured}
+				<a href={featured.url} class="group bg-card flex flex-col overflow-hidden rounded-xl border">
+					{#if featured.image}
 					<img
 						src={featured.image}
 						alt=""
@@ -55,7 +57,8 @@
 						<ArrowRight class="size-4" />
 					</span>
 				</div>
-			</a>
+				</a>
+			{/if}
 
 			<!-- Sekilas berita (carousel) -->
 			<div class="flex flex-col">

@@ -5,14 +5,15 @@
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
 	import CalendarPanel from '$lib/components/shared/calendar-panel.svelte';
 	import AnnouncementPanel from '$lib/components/shared/announcement-panel.svelte';
-	import announcementsData from '$lib/data/announcements.json';
 	import type { Announcement } from '$lib/types/content';
+	import type { LayoutData } from './$types';
+	import type { Snippet } from 'svelte';
 	import { onMount } from 'svelte';
 
-	let { children } = $props();
+	let { children, data }: { children: Snippet; data: LayoutData } = $props();
 
-	const announcements = announcementsData as Announcement[];
-	const activeAnnouncements = announcements.filter((a) => a.active);
+	const announcements = $derived((data.announcements ?? []) as Announcement[]);
+	const activeAnnouncements = $derived(announcements.filter((a) => a.active));
 
 	let calendarOpen = $state(false);
 	let announcementOpen = $state(false);

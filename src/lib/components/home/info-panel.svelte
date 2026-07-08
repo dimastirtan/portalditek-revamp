@@ -3,14 +3,17 @@
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { formatDate } from '$lib/utils';
 	import { FileText, CalendarClock, Download, MapPin } from '@lucide/svelte';
-	import articles from '$lib/data/articles.json';
-	import events from '$lib/data/events.json';
-	import downloads from '$lib/data/downloads.json';
 	import type { Article, AgendaEvent, Download as DownloadType } from '$lib/types/content';
 
-	const articleList = articles as Article[];
-	const eventList = events as AgendaEvent[];
-	const downloadList = downloads as DownloadType[];
+	let {
+		articles = [],
+		events = [],
+		downloads = []
+	}: { articles?: Article[]; events?: AgendaEvent[]; downloads?: DownloadType[] } = $props();
+
+	const articleList = $derived(articles);
+	const eventList = $derived(events);
+	const downloadList = $derived(downloads);
 </script>
 
 <section id="informasi" class="border-b">

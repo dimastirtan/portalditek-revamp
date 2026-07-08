@@ -1,17 +1,13 @@
-import adapter from '@sveltejs/adapter-static';
+import adapter from '@sveltejs/adapter-node';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	preprocess: vitePreprocess(),
 	kit: {
-		adapter: adapter({
-			pages: 'build',
-			assets: 'build',
-			fallback: undefined,
-			precompress: false,
-			strict: true
-		}),
+		// SSR via Node. Homepage dibaca live dari MySQL; halaman statis/redirect
+		// tetap di-prerender (opt-in per route). Jalankan: `node build` setelah build.
+		adapter: adapter(),
 		prerender: {
 			handleHttpError: 'warn',
 			handleMissingId: 'warn',
