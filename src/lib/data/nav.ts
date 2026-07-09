@@ -1,5 +1,4 @@
 import type { NavItem, SystemLink } from '$lib/types/nav';
-import onOpenCalendar from '$lib/components/layout/topbar.svelte';
 
 /**
  * Navigasi utama Portal — mengikuti struktur informasi Portal DITTEK lama.
@@ -18,8 +17,8 @@ export const MAIN_NAV: NavItem[] = [
 	{
 		label: 'Pojok Media',
 		children: [
-			{ label: 'Berita Utama', href: '/#berita' },
-			{ label: 'Berita', href: '/#berita' },
+			{ label: 'Berita Utama', href: '/berita-utama' },
+			{ label: 'Berita', href: '/berita' },
 			{ label: 'Artikel', href: '/#informasi' },
 			{ label: 'Download', href: '/#informasi' }
 		]
@@ -27,13 +26,13 @@ export const MAIN_NAV: NavItem[] = [
 	{
 		label: 'Profil',
 		children: [
-			{ label: 'Organisasi', soon: true },
+			{ label: 'Organisasi', href: '/organisasi' },
 			{
 				label: 'Capability',
 				children: [
-					{ label: 'Brainware', soon: true },
-					{ label: 'CAD/CAM', soon: true },
-					{ label: 'Software Development', soon: true }
+					{ label: 'Brainware', href: '/capability' },
+					{ label: 'CAD/CAM', href: '/capability' },
+					{ label: 'Software Development', href: '/capability' }
 				]
 			},
 			{
@@ -43,23 +42,23 @@ export const MAIN_NAV: NavItem[] = [
 			{
 				label: 'SDM',
 				children: [
-					{ label: 'Personil', soon: true },
-					{ label: 'JDQ', soon: true }
+					{ label: 'Personil', href: '/personil' },
+					{ label: 'JDQ', href: '/jdq' }
 				]
 			},
 			{
 				label: 'Kerjasama Teknologi',
 				children: [
-					{ label: 'Experience', soon: true },
-					{ label: 'Kerjasama Teknologi', soon: true },
-					{ label: 'PT DI - Hankam', soon: true }
+					{ label: 'Experience', href: '/kerjasama' },
+					{ label: 'Kerjasama Teknologi', href: '/kerjasama' },
+					{ label: 'PT DI - Hankam', href: '/kerjasama' }
 				]
 			},
 			{
 				label: 'Fasilitas',
 				children: [
-					{ label: 'Ground Test', soon: true },
-					{ label: 'Flight Test', soon: true }
+					{ label: 'Ground Test', href: '/fasilitas#ground-test' },
+					{ label: 'Flight Test', href: '/fasilitas#flight-test' }
 				]
 			}
 		]
@@ -89,7 +88,7 @@ export const MAIN_NAV: NavItem[] = [
 	{
 		label: 'Information',
 		children: [
-			{ label: 'Kalender Kerja', onClick: () => { onOpenCalendar(); } },
+			{ label: 'Kalender Kerja', href: '/kalender-kerja' },
 			{ label: 'Telepon Penting', href: '/telepon' },
 			{ label: 'Jadwal Kereta Api Jur. Bandung', soon: true },
 			{ label: 'Jadwal Penerbangan', soon: true }
@@ -110,35 +109,28 @@ export const SYSTEMS: SystemLink[] = [
 		id: 'doa',
 		label: 'DOA',
 		description: 'Design Organization Approval — manajemen dokumen standar desain.',
-		href: 'http://portalditek.indonesian-aerospace.com/webdoa/',
+		href: '/doa',
 		icon: 'document.svg'
 	},
 	{
 		id: 'dotproject',
-		label: 'DotProject',
+		label: 'dotProject',
 		description: 'Manajemen proyek dan penjadwalan tim.',
-		href: 'http://portalditek.indonesian-aerospace.com/dotproject/',
+		href: '/dotproject',
 		icon: 'case.svg'
-	},
-	{
-		id: 'dashboard',
-		label: 'Dashboard',
-		description: 'Ringkasan indikator dan aktivitas direktorat.',
-		href: '/',
-		icon: 'note.svg'
 	},
 	{
 		id: 'siedm',
 		label: 'SIEDM',
 		description: 'Sistem Informasi Engineering Data Management.',
-		href: 'http://siedm.indonesian-aerospace.com/',
+		href: '/siedm',
 		icon: 'engineering standard.svg'
 	},
 	{
 		id: 'certificate',
-		label: 'Certificate',
+		label: 'Certification',
 		description: 'Manajemen sertifikasi produk dan proses.',
-		href: 'http://portalditek.indonesian-aerospace.com/certificate/',
+		href: '/certificate',
 		icon: 'certificate.svg'
 	},
 	{

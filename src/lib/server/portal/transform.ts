@@ -88,3 +88,22 @@ export function fileKind(file: string | null | undefined): string | undefined {
 	};
 	return map[ext] ?? ext.toUpperCase();
 }
+
+/**
+ * Bersihkan HTML lama agar aman dirender via {@html}.
+ * Membuang <script>/<style>/<iframe>, atribut event handler, link javascript:,
+ * dan <img> yang menunjuk ke server lama (IP/portaldittek) karena sudah mati.
+ * Untuk konten internal tepercaya; bila kelak menerima input tak tepercaya,
+ * ganti dengan DOMPurify.
+ */
+export function cleanRichHtml(input: string | null | undefined): string {
+	let s = input ?? '';
+	s = s.replace(/<(script|style|iframe|object|embed|link|meta)\b[\s\S]*?<\/\1>/gi, '');
+	s = s.replace(/<(script|style|iframe|object|embed|link|meta)\b[^>]*\/?>/gi, '');
+	s = s.replace(/\son\w+\s*=\s*"[^"]*"/gi, '');
+	s = s.replace(/\son\w+\s*=\s*'[^']*'/gi, '');
+	s = s.replace(/\son\w+\s*=\s*[^\s>]+/gi, '');
+	s = s.replace(/<img\b[^>]*?(?:\d{1,3}(?:\.\d{1,3}){3}|portaldittek)[^>]*>/gi, '');
+	s = s.replace(/href\s*=\s*(["'])\s*javascript:[^"']*\1/gi, 'href="#"');
+	return fixText(s).trim();
+}

@@ -40,10 +40,6 @@
 					Jelajahi sistem
 					<ArrowRight class="size-4" />
 				</Button>
-				<Button href={SITE.companyUrl} target="_blank" rel="noopener" variant="outline">
-					Website perusahaan
-					<ExternalLink class="size-4" />
-				</Button>
 			</div>
 		</div>
 	</div>
