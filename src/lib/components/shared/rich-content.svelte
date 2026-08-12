@@ -8,6 +8,25 @@
 </div>
 
 <style>
+	.portal-rich {
+		color: var(--foreground);
+	}
+	/* Amankan sisa warna/latar lama supaya konten selalu terbaca di light & dark. */
+	.portal-rich :global(font),
+	.portal-rich :global(span),
+	.portal-rich :global(td),
+	.portal-rich :global(th),
+	.portal-rich :global(div),
+	.portal-rich :global(h1),
+	.portal-rich :global(h2),
+	.portal-rich :global(h3),
+	.portal-rich :global(h4),
+	.portal-rich :global(h5) {
+		color: inherit;
+	}
+	.portal-rich :global(*) {
+		background-color: transparent !important;
+	}
 	.portal-rich :global(p) {
 		margin: 0 0 0.75rem;
 	}

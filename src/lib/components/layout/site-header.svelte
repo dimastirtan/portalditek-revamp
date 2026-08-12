@@ -3,12 +3,16 @@
 	import MobileNav from './mobile-nav.svelte';
 	import { SITE } from '$lib/config/site';
 	import { Library } from '@lucide/svelte';
+	import { browser } from '$app/environment';
+	import { theme } from '$lib/stores/theme.svelte';
 
 	let { activeHash = '' }: { activeHash?: string } = $props();
 
-	// href '#' masih placeholder → jangan lompat ke atas halaman.
-	function onLibraryClick(e: MouseEvent) {
-		if (SITE.library.href === '#') e.preventDefault();
+	function reloadPage() {
+		if (browser) {
+			window.location.reload();
+			window.location.href = '/';
+		}
 	}
 </script>
 
@@ -17,8 +21,12 @@
 >
 	<!-- Baris 1: logo (kiri) + Our Library & tombol menu (kanan) -->
 	<div class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-		<a href="/" class="flex items-center gap-3">
-			<img src="/logo.png" alt="Logo PT Dirgantara Indonesia" class="h-9 w-auto" />
+		<a href="/" class="flex items-center gap-3" onclick={reloadPage} title="Kembali ke beranda">
+		{#if theme.current === 'dark'}
+				<img src="/logo-white.png" alt="Logo PT Dirgantara Indonesia" class="h-9 w-auto" />
+			{:else}
+				<img src="/logo.png" alt="Logo PT Dirgantara Indonesia" class="h-9 w-auto" />
+			{/if}
 			<span class="flex flex-col leading-tight">
 				<span class="font-display text-sm font-semibold tracking-tight sm:text-base">
 					{SITE.name}
@@ -30,7 +38,6 @@
 		<div class="flex items-center gap-2">
 			<a
 				href={SITE.library.href}
-				onclick={onLibraryClick}
 				target={SITE.library.external ? '_blank' : undefined}
 				rel={SITE.library.external ? 'noopener' : undefined}
 				title="Our Library"
@@ -45,7 +52,7 @@
 
 	<!-- Baris 2: navbar utama (desktop) — baris penuh, dipisah garis dari logo -->
 	<div class="hidden border-t lg:block">
-		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 ">
+		<div class="px-4 mx-auto max-w-6xl lg:px-8">
 			<MainNav {activeHash} />
 		</div>
 	</div>

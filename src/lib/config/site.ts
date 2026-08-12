@@ -12,16 +12,17 @@
  */
 export const SITE = {
 	name: 'Direktorat Teknologi dan Pengembangan',
-	shortName: 'Direktorat Teknologi',
+	shortName: 'Direktorat Teknologi dan Pengembangan',
 	tagline: 'Portal internal Direktorat Teknologi dan Pengembangan PT Dirgantara Indonesia',
 	company: 'PT Dirgantara Indonesia (Persero)',
+	companyUrl: 'https://www.indonesian-aerospace.com/',
 
 	// Tombol "Our Library" di kanan header (seperti Portal lama).
 	// TODO: ganti href ke URL sistem perpustakaan/e-library kalau sudah ada;
 	// set external: true kalau membuka domain lain.
 	library: {
 		label: 'Our Library',
-		href: '#',
+		href: '/library',
 		external: false
 	},
 	description:

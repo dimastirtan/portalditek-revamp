@@ -28,3 +28,28 @@ export type WithoutChild<T> = T extends { child?: any } ? Omit<T, 'child'> : T;
 export type WithoutChildren<T> = T extends { children?: any } ? Omit<T, 'children'> : T;
 export type WithoutChildrenOrChild<T> = WithoutChildren<WithoutChild<T>>;
 export type WithElementRef<T, U extends HTMLElement = HTMLElement> = T & { ref?: U | null };
+
+/**
+ * URL berkas dokumen. Letakkan file asli di `static/dokumen/` (disajikan
+ * otomatis oleh SvelteKit tanpa route tambahan). Nama file berasal dari kolom
+ * N_FILE_* di database.
+ */
+export function docUrl(file: string): string {
+	return `/dokumen/${encodeURIComponent((file ?? '').trim())}`;
+}
+
+/**
+ * URL gambar. Berkas disalin dari server lama ke `static/gambar/<folder>/`
+ * (lihat copy-gambar.bat) dan disajikan otomatis oleh SvelteKit.
+ *
+ *   sekilas  ← images_sekilas_ditt   (foto Sekilas Dittek)
+ *   org      ← images_org            (foto pejabat)
+ *   artikel  ← images_article        (gambar Berita Utama)
+ *   umum     ← images                (gambar umum)
+ *   uploads  ← dt-admin/.../uploads  (gambar di dalam konten artikel)
+ */
+export type GambarFolder = 'sekilas' | 'org' | 'artikel' | 'umum' | 'uploads' | 'gallery' | 'sistem';
+
+export function imgUrl(file: string, folder: GambarFolder = 'umum'): string {
+	return `/gambar/${folder}/${encodeURIComponent((file ?? '').trim())}`;
+}

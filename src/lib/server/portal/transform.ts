@@ -42,9 +42,9 @@ const ENTITIES: [RegExp, string][] = [
 	[/&nbsp;/g, ' ']
 ];
 
-/** Perbaiki mojibake Windows-1252 pada teks. */
-export function fixText(input: string | null | undefined): string {
-	let s = (input ?? '').trim();
+/** Perbaiki mojibake Windows-1252 pada teks. Aman untuk angka/tahun/tanggal (di-coerce ke string). */
+export function fixText(input: unknown): string {
+	let s = String(input ?? '').trim();
 	for (const [re, to] of MOJIBAKE) s = s.replace(re, to);
 	return s;
 }
@@ -90,6 +90,36 @@ export function fileKind(file: string | null | undefined): string | undefined {
 }
 
 /**
+ * Petakan src gambar lama → berkas lokal di static/gambar/<folder>/.
+ * Mengembalikan null bila sumbernya tidak dikenali (tag <img> lalu dibuang).
+ * Folder tujuan mengikuti hasil salin copy-gambar.bat.
+ */
+function mapImgSrc(src: string): string | null {
+	const s = (src ?? '').trim();
+	if (!s) return null;
+	const base = s.split('?')[0].split('/').pop() ?? '';
+	if (!base) return null;
+	const enc = encodeURIComponent(base);
+
+	if (/imagelibrary\/uploads\//i.test(s)) return `/gambar/uploads/${enc}`;
+	if (/images_sekilas_ditt\//i.test(s)) return `/gambar/sekilas/${enc}`;
+	if (/images_org\//i.test(s)) return `/gambar/org/${enc}`;
+	if (/images_article\//i.test(s)) return `/gambar/artikel/${enc}`;
+	if (/(^|\/)gallery\//i.test(s)) return `/gambar/gallery/${enc}`;
+	if (/(^|\/)images\//i.test(s)) return `/gambar/umum/${enc}`;
+
+	// Sudah menunjuk ke portal baru → biarkan.
+	if (s.startsWith('/gambar/')) return s;
+
+	// URL absolut ke server lama yang polanya tak dikenali → buang.
+	if (/^https?:\/\//i.test(s)) {
+		if (/(\d{1,3}(?:\.\d{1,3}){3}|dittek|portaldittek)/i.test(s)) return null;
+		return s; // gambar eksternal lain (mis. situs publik) — biarkan.
+	}
+	return null;
+}
+
+/**
  * Bersihkan HTML lama agar aman dirender via {@html}.
  * Membuang <script>/<style>/<iframe>, atribut event handler, link javascript:,
  * dan <img> yang menunjuk ke server lama (IP/portaldittek) karena sudah mati.
@@ -103,7 +133,21 @@ export function cleanRichHtml(input: string | null | undefined): string {
 	s = s.replace(/\son\w+\s*=\s*"[^"]*"/gi, '');
 	s = s.replace(/\son\w+\s*=\s*'[^']*'/gi, '');
 	s = s.replace(/\son\w+\s*=\s*[^\s>]+/gi, '');
-	s = s.replace(/<img\b[^>]*?(?:\d{1,3}(?:\.\d{1,3}){3}|portaldittek)[^>]*>/gi, '');
+	// Alihkan <img> lama (server mati: http://dittek/..., http://10.1.x/...) ke
+	// berkas lokal di static/gambar/. Kalau sumbernya tak dikenali → tag dibuang
+	// supaya tidak muncul ikon gambar rusak.
+	s = s.replace(/<img\b[^>]*>/gi, (tag) => {
+		const m = /\ssrc\s*=\s*("([^"]*)"|'([^']*)'|([^\s>]+))/i.exec(tag);
+		const raw = m ? (m[2] ?? m[3] ?? m[4] ?? '') : '';
+		const mapped = mapImgSrc(raw);
+		if (!mapped) return '';
+		return tag.replace(/\ssrc\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/i, ` src="${mapped}"`);
+	});
 	s = s.replace(/href\s*=\s*(["'])\s*javascript:[^"']*\1/gi, 'href="#"');
+	// Buang warna & style inline lama (hardcoded 2009) agar teks mengikuti warna
+	// tema — kalau tidak, di dark mode teks jadi tak terbaca.
+	s = s.replace(/\s(?:color|bgcolor|background|text|link|vlink|alink)\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '');
+	s = s.replace(/\sstyle\s*=\s*("[^"]*"|'[^']*')/gi, '');
+	s = s.replace(/<font\b[^>]*>/gi, '<span>').replace(/<\/font>/gi, '</span>');
 	return fixText(s).trim();
 }

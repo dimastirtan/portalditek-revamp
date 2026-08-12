@@ -16,16 +16,21 @@
 			description="Kompetensi Direktorat Teknologi dalam metode, sistem kerja, dan pengembangan produk."
 		/>
 
-		<div class="mt-8 space-y-10">
-			{#each data.pages as page (page.id)}
-				<div id={page.slug} class="scroll-mt-28">
-					<h2 class="font-display text-primary border-b pb-2 text-xl font-semibold">
-						{page.title}
-					</h2>
-					<div class="mt-4">
+		<div class="mt-8 space-y-3">
+			{#each data.pages as page, i (page.id)}
+				<details id={page.slug} class="group scroll-mt-28 rounded-xl border" open={i === 0}>
+					<summary
+						class="hover:bg-accent/50 flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4"
+					>
+						<span class="font-display text-base font-semibold">{page.title}</span>
+						<span class="text-muted-foreground text-sm transition-transform group-open:rotate-90"
+							>›</span
+						>
+					</summary>
+					<div class="border-t px-5 py-5">
 						<RichContent html={page.html} />
 					</div>
-				</div>
+				</details>
 			{:else}
 				<p class="text-muted-foreground text-sm">Data capability belum tersedia.</p>
 			{/each}

@@ -41,26 +41,6 @@
 				Kalender
 			</button>
 
-			<button
-				type="button"
-				onclick={onOpenAnnouncement}
-				class="hover:bg-primary-foreground/10 relative inline-flex items-center gap-1.5 rounded px-2 py-1 font-medium transition-colors"
-			>
-				<span class="relative inline-flex">
-					<Bell class="size-3.5" />
-					{#if unreadCount > 0}
-						<span
-							class="bg-destructive ring-primary absolute -top-0.5 -right-0.5 flex size-2 rounded-full ring-2"
-							aria-hidden="true"
-						></span>
-					{/if}
-				</span>
-				Pengumuman
-				{#if unreadCount > 0}
-					<span class="sr-only">({unreadCount} belum dibaca)</span>
-				{/if}
-			</button>
-
 			<span class="bg-primary-foreground/20 mx-1 h-4 w-px" aria-hidden="true"></span>
 			<ThemeToggle />
 		</div>

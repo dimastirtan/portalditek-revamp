@@ -93,6 +93,8 @@ export type MainArticleGroup = {
 	id: string;
 	title: string;
 	date: string;
+	/** Nama berkas gambar headline (di static/gambar/artikel/). */
+	image: string;
 	items: BeritaEntry[];
 };
 
@@ -101,7 +103,9 @@ export type OrgUnit = {
 	id: string;
 	title: string;
 	head: string;
-	departments: { id: string; title: string; head: string }[];
+	/** Nama berkas foto pejabat (di static/gambar/org/). */
+	foto: string;
+	departments: { id: string; title: string; head: string; foto: string }[];
 };
 
 /** Halaman konten kaya (Capability, Kerja Sama). Punya anchor slug. */
@@ -126,3 +130,54 @@ export type FacilityItem = {
 	title: string;
 	html: string;
 };
+
+// ── Command Media / OC / Online Publication / Our Library ─────────────────────
+
+/** Dokumen dengan berkas PDF (OC, sertifikat). */
+export type DocLink = {
+	id: string;
+	title: string;
+	desc: string;
+	file: string;
+};
+
+/** Satu publikasi (Online Publication). */
+export type PubItem = { id: string; title: string; file: string };
+
+/** Kategori Online Publication + isinya. */
+export type PubCategory = { slug: string; title: string; count: number; items: PubItem[] };
+
+/** Kartu katalog di indeks Our Library. */
+export type LibraryCatalog = {
+	slug: string;
+	title: string;
+	description: string;
+	count: number;
+	/** kalau external, langsung link (mis. DOA Library → /doa). */
+	href?: string;
+};
+
+/** Tampilan tabel katalog generik (Our Library › katalog). */
+export type CatalogView = {
+	title: string;
+	description: string;
+	columns: string[];
+	rows: string[][];
+};
+
+// ── Link & Regulation ─────────────────────────────────────────────────────────
+
+export type LinkItem = { id: string; desc: string; url: string; external: boolean };
+export type LinkGroup = { title: string; items: LinkItem[] };
+
+/** Katalog bernama (untuk seksi Regulation). */
+export type NamedCatalog = CatalogView & { slug: string };
+
+/** Seksi accordion untuk halaman OC (Certificate / Operating Certificate). */
+export type OcSection = { title: string; docs: DocLink[] };
+
+// ── Telepon Penting & Sekilas Dittek ──────────────────────────────────────────
+
+export type TeleponItem = { id: string; title: string; no: string };
+export type TeleponGroup = { title: string; items: TeleponItem[] };
+export type SekilasItem = { id: string; caption: string; file: string; date: string };

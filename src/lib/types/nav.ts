@@ -10,7 +10,6 @@ export type NavItem = {
 	/** true = halaman belum dibangun → tampil redup & tidak bisa diklik. */
 	soon?: boolean;
 	/** Sub-menu (boleh bertingkat). */
-	onClick?: () => void;
 	children?: NavItem[];
 };
 
@@ -18,10 +17,11 @@ export type NavItem = {
 export type SystemLink = {
 	id: string;
 	label: string;
-	description: string;
 	/** Route internal (halaman placeholder) ATAU URL DNS sistem asli. */
 	href: string;
 	/** Nama file icon SVG di /static, atau nama lucide (dipakai di M3). */
 	icon?: string;
+	/** Logo aplikasi (di static/gambar/sistem/). Fallback ke monogram bila tidak ada. */
+	logo?: string;
 	external?: boolean;
 };

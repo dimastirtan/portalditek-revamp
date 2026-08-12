@@ -1,7 +1,7 @@
 <script lang="ts">
 	import SectionHeading from '$lib/components/shared/section-heading.svelte';
 	import RichContent from '$lib/components/shared/rich-content.svelte';
-	import { formatDate } from '$lib/utils';
+	import { formatDate, imgUrl } from '$lib/utils';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -10,16 +10,25 @@
 <svelte:head><title>Berita Utama · Direktorat Teknologi</title></svelte:head>
 
 <section class="border-b">
-	<div class="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+	<div class="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 		<SectionHeading
 			eyebrow="Pojok Media"
 			title="Indeks berita utama"
 			description="Sorotan utama Direktorat Teknologi beserta artikel-artikel terkaitnya."
 		/>
 
-		<div class="mt-8 space-y-6">
+		<div class="mt-8 space-y-6 grid gap-6 lg:grid-cols-2">
 			{#each data.groups as group (group.id)}
-				<article class="rounded-xl border p-5">
+				<article class="overflow-hidden rounded-xl border">
+					{#if group.image}
+						<img
+							src={imgUrl(group.image, 'artikel')}
+							alt={group.title}
+							loading="lazy"
+							class="bg-muted max-h-auto w-full object-cover"
+						/>
+					{/if}
+					<div class="p-5">
 					<p class="text-muted-foreground text-xs tabular-nums">{formatDate(group.date)}</p>
 					<h2 class="font-display mt-1 text-lg font-semibold">{group.title}</h2>
 
@@ -40,6 +49,7 @@
 							{/each}
 						</div>
 					{/if}
+					</div>
 				</article>
 			{:else}
 				<p class="text-muted-foreground text-center text-sm">Belum ada berita utama.</p>

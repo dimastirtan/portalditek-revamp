@@ -26,7 +26,7 @@
 		<div class="mt-8 grid gap-6 lg:grid-cols-2">
 			<!-- Berita utama -->
 			{#if featured}
-				<a href={featured.url} class="group bg-card flex flex-col overflow-hidden rounded-xl border">
+				<a href={featured.url} class="group bg-card flex flex-col overflow-hidden rounded-xl border max-w-xxl">
 					{#if featured.image}
 					<img
 						src={featured.image}
@@ -61,8 +61,8 @@
 			{/if}
 
 			<!-- Sekilas berita (carousel) -->
-			<div class="flex flex-col">
-				<div class="mb-3 flex items-center justify-between">
+			<div class="flex flex-col max-w-4xl">
+				<div class="mb-3 flex items-center justify-between max-w-full">
 					<h3 class="font-display text-sm font-semibold tracking-wider uppercase">
 						Sekilas berita
 					</h3>

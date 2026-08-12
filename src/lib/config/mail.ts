@@ -15,11 +15,8 @@
  * adapter-node.
  */
 
-export const MAIL_LOGIN_URL = 'https://10.1.0.6/';
+export const MAIL_LOGIN_URL = 'https://mail.indonesian-aerospace.com/?view=compose&to=das@indonesian-aerospace.com';
 
 /** Target window untuk form submit. */
 export const MAIL_LOGIN_TARGET: '_blank' | '_self' = '_blank';
 
-/** Nama field di form (sesuai server mail internal). Jangan diubah kecuali server berubah. */
-export const MAIL_FIELD_USERNAME = 'loginname';
-export const MAIL_FIELD_PASSWORD = 'password';

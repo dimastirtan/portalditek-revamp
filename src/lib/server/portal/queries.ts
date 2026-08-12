@@ -23,8 +23,39 @@ import {
 	jdqDet,
 	kerTek,
 	ground,
-	flight
+	flight,
+	cmdMedia,
+	project,
+	oc,
+	certificate,
+	certificateOc,
+	hki,
+	orgHki,
+	pengertianHki,
+	aeronautics,
+	astronautics,
+	chemats,
+	engineerings,
+	busmgmnts,
+	mathcomps,
+	physics,
+	spacescns,
+	generals,
+	regulationsPub,
+	koltextbook,
+	dokavionik,
+	docReqStdInd,
+	jurnalTelDt,
+	link,
+	rsiPmrtH,
+	rsiDepHub,
+	rsiDepHan,
+	jadwalKa,
+	jadwalPn,
+	telp,
+	sekilas
 } from '$lib/server/db/schema';
+import { STASIUN_KA, KOTA_PN, namaTempat } from '$lib/data/stasiun';
 import { fixText, stripHtml, isoDate, truncate, fileKind, cleanRichHtml } from './transform';
 import type {
 	Article,
@@ -40,7 +71,18 @@ import type {
 	OrgUnit,
 	RichPage,
 	JdqVolume,
-	FacilityItem
+	FacilityItem,
+	DocLink,
+	PubItem,
+	PubCategory,
+	LibraryCatalog,
+	CatalogView,
+	LinkItem,
+	LinkGroup,
+	NamedCatalog,
+	OcSection,
+	TeleponGroup,
+	SekilasItem
 } from '$lib/types/content';
 
 const slugify = (s: string) =>
@@ -185,6 +227,7 @@ export async function getMainArticleIndex(): Promise<MainArticleGroup[]> {
 		id: `ma-${h.id}`,
 		title: fixText(h.judul),
 		date: isoDate(h.date),
+		image: (h.image ?? '').trim(),
 		items: dets
 			.filter((d) => d.parentId === h.id)
 			.map((d) => ({
@@ -208,12 +251,14 @@ export async function getOrgStructure(): Promise<OrgUnit[]> {
 		id: `org-${u.id}`,
 		title: fixText(u.title),
 		head: nameOf.get((u.nik ?? '').trim()) ?? '',
+		foto: (u.foto ?? '').trim(),
 		departments: dets
 			.filter((d) => d.orgId === u.id)
 			.map((d) => ({
 				id: `orgdet-${d.id}`,
 				title: fixText(d.title),
-				head: nameOf.get(String(d.nik ?? '')) ?? ''
+				head: nameOf.get(String(d.nik ?? '')) ?? '',
+				foto: (d.foto ?? '').trim()
 			}))
 	}));
 }
@@ -293,4 +338,305 @@ export async function getGround(): Promise<FacilityItem[]> {
 export async function getFlight(): Promise<FacilityItem[]> {
 	const rows = await db.select().from(flight).orderBy(asc(flight.id));
 	return rows.map((r) => ({ id: `fl-${r.id}`, title: fixText(r.judul), html: cleanRichHtml(r.teks) }));
+}
+
+// ── Command Media / Project / OC / HKI ────────────────────────────────────────
+
+export async function getCommandMedia(): Promise<RichPage[]> {
+	const rows = await db.select().from(cmdMedia).orderBy(asc(cmdMedia.id));
+	return rows.map((r) => ({
+		id: `cm-${r.id}`,
+		slug: slugify(r.judul || `cm-${r.id}`),
+		title: fixText(r.judul),
+		html: cleanRichHtml(r.deskripsi)
+	}));
+}
+
+export async function getProject(): Promise<RichPage[]> {
+	const rows = await db.select().from(project).orderBy(asc(project.id));
+	return rows.map((r) => ({
+		id: `prj-${r.id}`,
+		slug: slugify(r.judul || `prj-${r.id}`),
+		title: fixText(r.judul),
+		html: cleanRichHtml(r.deskripsi)
+	}));
+}
+
+export async function getOc(): Promise<OcSection[]> {
+	const [ocRows, certRows, certOcRows] = await Promise.all([
+		db.select().from(oc),
+		db.select().from(certificate),
+		db.select().from(certificateOc)
+	]);
+	const map = (prefix: string) => (r: { id: number; title: string | null; desc: string | null; file: string | null }): DocLink => ({
+		id: `${prefix}-${r.id}`,
+		title: fixText(r.title),
+		desc: fixText(r.desc),
+		file: (r.file ?? '').trim()
+	});
+	return [
+		{
+			title: 'Certificate',
+			docs: [...certRows.map(map('cert')), ...certOcRows.map(map('certoc'))].filter((d) => d.title)
+		},
+		{
+			title: 'Operating Certificate',
+			docs: ocRows.map(map('oc')).filter((d) => d.title)
+		}
+	];
+}
+
+// ── Jadwal ────────────────────────────────────────────────────────────────────
+
+export async function getJadwalKa(): Promise<CatalogView> {
+	const rows = await db.select().from(jadwalKa).orderBy(asc(jadwalKa.ka));
+	return {
+		title: 'Jadwal Kereta Api',
+		description: 'Jadwal keberangkatan kereta api. Ketik nama stasiun atau kereta untuk menyaring.',
+		columns: ['Dari', 'Tujuan', 'Nama Kereta', 'Berangkat', 'Tiba', 'Keterangan'],
+		rows: rows.map((r) => [
+			namaTempat(r.dari, STASIUN_KA),
+			namaTempat(r.tujuan, STASIUN_KA),
+			fixText(r.ka),
+			(r.berangkat ?? '').trim(),
+			(r.tiba ?? '').trim(),
+			fixText(r.ket)
+		])
+	};
+}
+
+export async function getJadwalPn(): Promise<CatalogView> {
+	const rows = await db.select().from(jadwalPn).orderBy(asc(jadwalPn.pn));
+	return {
+		title: 'Jadwal Penerbangan Dari Bandara Husein Sastranegara',
+		description: 'Jadwal penerbangan dari Bandara Husein Sastranegara, Bandung. Ketik maskapai atau kota untuk menyaring.',
+		columns: ['Nama Maskapai', 'Dari', 'Tujuan', 'Berangkat', 'Keterangan'],
+		rows: rows.map((r) => [
+			fixText(r.pn),
+			namaTempat(r.dari, KOTA_PN),
+			namaTempat(r.tujuan, KOTA_PN),
+			(r.berangkat ?? '').trim(),
+			fixText(r.ket)
+		])
+	};
+}
+
+export async function getHki(): Promise<RichPage[]> {
+	const [peng, orgh, patents] = await Promise.all([
+		db.select().from(pengertianHki).orderBy(asc(pengertianHki.id)),
+		db.select().from(orgHki).orderBy(asc(orgHki.id)),
+		db.select().from(hki).orderBy(asc(hki.id))
+	]);
+	const toPage = (prefix: string) => (r: { id: number; judul: string | null; teks: string | null }) => ({
+		id: `${prefix}-${r.id}`,
+		slug: slugify(r.judul || `${prefix}-${r.id}`),
+		title: fixText(r.judul),
+		html: cleanRichHtml(r.teks)
+	});
+	return [
+		...peng.map(toPage('hki-peng')),
+		...orgh.map(toPage('hki-org')),
+		...patents.map(toPage('hki'))
+	];
+}
+
+// ── Online Publication ────────────────────────────────────────────────────────
+
+export async function getOnlinePublication(): Promise<PubCategory[]> {
+	const [aero, astro, chem, eng, bus, math, phy, reg, space, gen] = await Promise.all([
+		db.select().from(aeronautics).orderBy(asc(aeronautics.title)),
+		db.select().from(astronautics).orderBy(asc(astronautics.title)),
+		db.select().from(chemats).orderBy(asc(chemats.title)),
+		db.select().from(engineerings).orderBy(asc(engineerings.title)),
+		db.select().from(busmgmnts).orderBy(asc(busmgmnts.title)),
+		db.select().from(mathcomps).orderBy(asc(mathcomps.title)),
+		db.select().from(physics).orderBy(asc(physics.title)),
+		db.select().from(regulationsPub).orderBy(asc(regulationsPub.title)),
+		db.select().from(spacescns).orderBy(asc(spacescns.title)),
+		db.select().from(generals).orderBy(asc(generals.title))
+	]);
+	const cat = (
+		slug: string,
+		title: string,
+		rows: { id: number; title: string | null; file: string | null }[]
+	): PubCategory => ({
+		slug,
+		title,
+		count: rows.length,
+		items: rows.map((r) => ({
+			id: `pub-${slug}-${r.id}`,
+			title: fixText(r.title),
+			file: (r.file ?? '').trim()
+		}))
+	});
+	return [
+		cat('aeronautics', 'Aeronautics', aero),
+		cat('astronautics', 'Astronautics', astro),
+		cat('chemistry', 'Chemistry and Materials', chem),
+		cat('engineering', 'Engineering', eng),
+		cat('business', 'Business and Management', bus),
+		cat('math-cs', 'Mathematical and Computer Sciences', math),
+		cat('physics', 'Physics', phy),
+		cat('regulations', 'Regulations', reg),
+		cat('space', 'Space Sciences', space),
+		cat('general', 'General', gen)
+	];
+}
+
+// ── Our Library ───────────────────────────────────────────────────────────────
+
+export async function getLibraryIndex(): Promise<LibraryCatalog[]> {
+	const cnt = sql<number>`count(*)`;
+	const [avionic, jurnal, docreq, textbook] = await Promise.all([
+		db.select({ n: cnt }).from(dokavionik),
+		db.select({ n: cnt }).from(jurnalTelDt),
+		db.select({ n: cnt }).from(docReqStdInd),
+		db.select({ n: cnt }).from(koltextbook)
+	]);
+	return [
+		{ slug: 'document-avionic', title: 'Document Avionic', description: 'Katalog dokumen avionik.', count: avionic[0]?.n ?? 0 },
+		{ slug: 'jurnal-tel-dt', title: 'Katalog Jurnal TEL - DT', description: 'Katalog jurnal Direktorat Teknologi.', count: jurnal[0]?.n ?? 0 },
+		{ slug: 'doc-req', title: 'Report of Doc. Req. (Stand. Industry)', description: 'Dokumen requirement standar industri.', count: docreq[0]?.n ?? 0 },
+		{ slug: 'textbook', title: 'Koleksi Textbook - Library DT', description: 'Koleksi buku/textbook perpustakaan DT.', count: textbook[0]?.n ?? 0 },
+		{ slug: 'doa-library', title: 'DOA Library', description: 'Perpustakaan sistem DOA.', count: 0, href: '/doa' }
+	];
+}
+
+export async function getLibraryCatalog(slug: string): Promise<CatalogView | null> {
+	switch (slug) {
+		case 'document-avionic': {
+			const rows = await db.select().from(dokavionik).orderBy(asc(dokavionik.judul));
+			return {
+				title: 'Document Avionic',
+				description: 'Katalog dokumen avionik Direktorat Teknologi.',
+				columns: ['Judul', 'RAC No.', 'Lokasi', 'Th. Terbit', 'Program'],
+				rows: rows.map((r) => [
+					fixText(r.judul),
+					(r.racno ?? '').trim(),
+					(r.lokasi ?? '').trim(),
+					(r.thterbit ?? '').trim(),
+					(r.program ?? '').trim()
+				])
+			};
+		}
+		case 'jurnal-tel-dt': {
+			const rows = await db.select().from(jurnalTelDt).orderBy(asc(jurnalTelDt.judul));
+			return {
+				title: 'Katalog Jurnal TEL - DT',
+				description: 'Katalog jurnal Direktorat Teknologi.',
+				columns: ['Judul', 'Lokasi', 'Penerbit'],
+				rows: rows.map((r) => [fixText(r.judul), (r.lokasi ?? '').trim(), fixText(r.penerbit)])
+			};
+		}
+		case 'doc-req': {
+			const rows = await db.select().from(docReqStdInd).orderBy(asc(docReqStdInd.id));
+			return {
+				title: 'Report of Doc. Req. (Stand. Industry)',
+				description: 'Dokumen requirement standar industri.',
+				columns: ['Tahun', 'Nota', 'No. Dokumen', 'Program', 'Hal.'],
+				rows: rows.map((r) => [
+					fixText(r.tahun),
+					fixText(r.nota),
+					fixText(r.nodoc),
+					fixText(r.program),
+					fixText(r.pages)
+				])
+			};
+		}
+		case 'textbook': {
+			const rows = await db.select().from(koltextbook).orderBy(asc(koltextbook.title));
+			return {
+				title: 'Koleksi Textbook - Library DT',
+				description: 'Koleksi buku/textbook perpustakaan Direktorat Teknologi.',
+				columns: ['Judul', 'Penulis', 'Kategori', 'Lokasi'],
+				rows: rows.map((r) => [
+					fixText(r.title),
+					fixText(r.author),
+					(r.cat ?? '').trim(),
+					(r.lokasi ?? '').trim()
+				])
+			};
+		}
+		default:
+			return null;
+	}
+}
+
+// ── Link & Regulation ─────────────────────────────────────────────────────────
+
+export async function getLinks(): Promise<LinkGroup[]> {
+	const rows = await db.select().from(link).orderBy(asc(link.desc));
+	const toItem = (r: { id: number; desc: string | null; url: string | null }, external: boolean): LinkItem => ({
+		id: `link-${r.id}`,
+		desc: fixText(r.desc),
+		url: (r.url ?? '').trim(),
+		external
+	});
+	const eksternal = rows.filter((r) => r.category === 1).map((r) => toItem(r, true));
+	const internal = rows.filter((r) => r.category !== 1).map((r) => toItem(r, false));
+	return [
+		{ title: 'Eksternal PT DI', items: eksternal },
+		{ title: 'Internal PT DI', items: internal }
+	];
+}
+
+export async function getRegulations(): Promise<NamedCatalog[]> {
+	const columns = ['Document No.', 'Document Title', 'Revision / Date', 'Remarks'];
+	const [pmrt, hub, han] = await Promise.all([
+		db.select().from(rsiPmrtH).orderBy(asc(rsiPmrtH.id)),
+		db.select().from(rsiDepHub).orderBy(asc(rsiDepHub.id)),
+		db.select().from(rsiDepHan).orderBy(asc(rsiDepHan.id))
+	]);
+	const map = (r: { docno: string | null; judul: string | null; revdate: string | null; remarks: string | null }) => [
+		fixText(r.docno),
+		fixText(r.judul),
+		fixText(r.revdate),
+		fixText(r.remarks)
+	];
+	return [
+		{
+			slug: 'pemerintah-ri',
+			title: 'Pemerintah RI',
+			description: 'Regulasi sertifikasi Indonesia — Pemerintah RI.',
+			columns,
+			rows: pmrt.map(map)
+		},
+		{
+			slug: 'perhubungan-ri',
+			title: 'Kementerian Perhubungan RI',
+			description: 'Regulasi sertifikasi Indonesia — Kementerian Perhubungan RI.',
+			columns,
+			rows: hub.map(map)
+		},
+		{
+			slug: 'pertahanan-ri',
+			title: 'Kementerian Pertahanan RI',
+			description: 'Regulasi sertifikasi Indonesia — Kementerian Pertahanan RI.',
+			columns,
+			rows: han.map(map)
+		}
+	];
+}
+
+// ── Telepon Penting & Sekilas Dittek ──────────────────────────────────────────
+
+export async function getTelepon(): Promise<TeleponGroup[]> {
+	const rows = await db.select().from(telp).orderBy(asc(telp.title));
+	const pick = (cat: number, title: string): TeleponGroup => ({
+		title,
+		items: rows
+			.filter((r) => r.category === cat)
+			.map((r) => ({ id: `telp-${r.id}`, title: fixText(r.title), no: (r.no ?? '').trim() }))
+	});
+	return [pick(0, 'PT DI'), pick(1, 'Bandung'), pick(2, 'Nasional')];
+}
+
+export async function getSekilas(): Promise<SekilasItem[]> {
+	const rows = await db.select().from(sekilas).orderBy(desc(sekilas.date));
+	return rows.map((r) => ({
+		id: `sk-${r.id}`,
+		caption: stripHtml(r.caption),
+		file: (r.file ?? '').trim(),
+		date: isoDate(r.date)
+	}));
 }

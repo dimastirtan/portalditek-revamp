@@ -1,6 +1,7 @@
 <script lang="ts">
 	import SectionHeading from '$lib/components/shared/section-heading.svelte';
 	import { FileText } from '@lucide/svelte';
+	import { docUrl } from '$lib/utils';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -27,13 +28,22 @@
 						<ul class="mt-3 space-y-1.5 border-t pt-3">
 							{#each vol.files as f (f.id)}
 								<li>
-									<span
-										class="text-muted-foreground flex items-center gap-2 text-sm"
-										title={f.file}
-									>
-										<FileText class="text-primary size-4 shrink-0" />
-										{f.title || f.file}
-									</span>
+									{#if f.file}
+										<a
+											href={docUrl(f.file)}
+											download
+											class="hover:text-primary flex items-center gap-2 text-sm hover:underline"
+											title={f.file}
+										>
+											<FileText class="text-primary size-4 shrink-0" />
+											{f.title || f.file}
+										</a>
+									{:else}
+										<span class="text-muted-foreground flex items-center gap-2 text-sm">
+											<FileText class="text-primary size-4 shrink-0" />
+											{f.title || f.file}
+										</span>
+									{/if}
 								</li>
 							{/each}
 						</ul>
@@ -45,8 +55,8 @@
 		</div>
 
 		<p class="text-muted-foreground mt-6 text-xs">
-			Berkas PDF belum di-host di portal baru — daftar di atas menampilkan nama file dari basis data.
-			Arahkan ke lokasi berkas begitu folder dokumen dipulihkan.
+			Tautan unduh mengarah ke <code>/dokumen/&lt;nama-file&gt;</code>. Letakkan berkas PDF asli di
+			<code>static/dokumen/</code> agar bisa diunduh.
 		</p>
 	</div>
 </section>

@@ -28,11 +28,10 @@
 			</div>
 		</div>
 
-		<p class="text-muted-foreground mt-4 text-sm">
+		<!-- <p class="text-muted-foreground mt-4 text-sm">
 			Kalender ini menampilkan hari libur nasional Indonesia. Bila kalender resmi direktorat sudah
 			tersedia, ganti <code>calendarIframeSrc</code> di
 			<code>src/lib/config/site.ts</code> dengan Calendar ID direktorat.
-		</p>
+		</p> -->
 	</div>
 </section>
-EOF

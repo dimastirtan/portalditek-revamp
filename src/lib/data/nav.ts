@@ -20,7 +20,8 @@ export const MAIN_NAV: NavItem[] = [
 			{ label: 'Berita Utama', href: '/berita-utama' },
 			{ label: 'Berita', href: '/berita' },
 			{ label: 'Artikel', href: '/#informasi' },
-			{ label: 'Download', href: '/#informasi' }
+			{ label: 'Download', href: '/#informasi' },
+			{ label: 'Sekilas Dittek', href: '/sekilas-dittek' }
 		]
 	},
 	{
@@ -37,7 +38,7 @@ export const MAIN_NAV: NavItem[] = [
 			},
 			{
 				label: 'Project',
-				children: [{ label: 'N219', soon: true }]
+				children: [{ label: 'N219', href: '/project' }]
 			},
 			{
 				label: 'SDM',
@@ -66,38 +67,38 @@ export const MAIN_NAV: NavItem[] = [
 	{
 		label: 'Command Media',
 		children: [
-			{ label: 'Sistem Command Media', soon: true },
-			{ label: 'Sekilas Info Command Media', soon: true }
+			{ label: 'Sistem Command Media', href: '/command-media' },
+			{ label: 'Sekilas Info Command Media', href: '/command-media' }
 		]
 	},
 	{
 		label: 'OC',
 		children: [
-			{ label: 'Certificate', href: '/certificate' },
-			{ label: 'OC', soon: true }
+			{ label: 'Certificate', href: '/oc' },
+			{ label: 'OC', href: '/oc' }
 		]
 	},
 	{
 		label: 'Regulation',
 		children: [
-			{ label: 'Pemerintah RI', soon: true },
-			{ label: 'Kementrian Perhubungan RI', soon: true },
-			{ label: 'Kementrian Pertahanan RI', soon: true }
+			{ label: 'Pemerintah RI', href: '/regulation' },
+			{ label: 'Kementrian Perhubungan RI', href: '/regulation' },
+			{ label: 'Kementrian Pertahanan RI', href: '/regulation' }
 		]
 	},
 	{
 		label: 'Information',
 		children: [
 			{ label: 'Kalender Kerja', href: '/kalender-kerja' },
-			{ label: 'Telepon Penting', href: '/telepon' },
-			{ label: 'Jadwal Kereta Api Jur. Bandung', soon: true },
-			{ label: 'Jadwal Penerbangan', soon: true }
+			{ label: 'Telepon Penting', href: '/telepon-penting' },
+			{ label: 'Jadwal Kereta Api Jur. Bandung', href: '/jadwal-kereta-api' },
+			{ label: 'Jadwal Penerbangan', href: '/jadwal-penerbangan' }
 		]
 	},
 	{ label: 'Contact Us', href: '/#kontak' },
-	{ label: 'Link', soon: true },
-	{ label: 'HKI', soon: true },
-	{ label: 'Online Publication', soon: true }
+	{ label: 'Link', href: '/link' },
+	{ label: 'HKI', href: '/hki' },
+	{ label: 'Online Publication', href: '/online-publication' }
 ];
 
 /**
@@ -108,36 +109,36 @@ export const SYSTEMS: SystemLink[] = [
 	{
 		id: 'doa',
 		label: 'DOA',
-		description: 'Design Organization Approval — manajemen dokumen standar desain.',
-		href: '/doa',
-		icon: 'document.svg'
+		href: 'http://portalditek.indonesian-aerospace.com/webdoa/',
+		icon: 'document.svg',
+		logo: '/gambar/sistem/doa.png'
 	},
 	{
 		id: 'dotproject',
 		label: 'dotProject',
-		description: 'Manajemen proyek dan penjadwalan tim.',
-		href: '/dotproject',
-		icon: 'case.svg'
+		href: 'http://portalditek.indonesian-aerospace.com/dotproject/',
+		icon: 'case.svg',
+		logo: '/gambar/sistem/dotproject.png'
 	},
 	{
 		id: 'siedm',
 		label: 'SIEDM',
-		description: 'Sistem Informasi Engineering Data Management.',
-		href: '/siedm',
-		icon: 'engineering standard.svg'
+		href: 'http://siedm.indonesian-aerospace.com/',
+		icon: 'engineering standard.svg',
+		logo: '/gambar/sistem/siedm.png'
 	},
 	{
 		id: 'certificate',
 		label: 'Certification',
-		description: 'Manajemen sertifikasi produk dan proses.',
-		href: '/certificate',
-		icon: 'certificate.svg'
+		href: 'http://portalditek.indonesian-aerospace.com/certification/',
+		icon: 'certificate.svg',
+		logo: '/gambar/sistem/certificate.png'
 	},
 	{
 		id: 'telepon',
 		label: 'Telepon Penting',
-		description: 'Direktori nomor telepon internal penting.',
-		href: '/telepon',
-		icon: 'number.svg'
+		href: '/telepon-penting',
+		icon: 'number.svg',
+		logo: '/gambar/sistem/telepon.png'
 	}
 ];

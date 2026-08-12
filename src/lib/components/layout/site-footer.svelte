@@ -1,17 +1,9 @@
 <script lang="ts">
 	import { SITE } from '$lib/config/site';
 	import { SYSTEMS } from '$lib/data/nav';
-	import { Twitter, Facebook, Instagram, Youtube, Linkedin } from '@lucide/svelte';
+	import { theme } from '$lib/stores/theme.svelte';
 
 	const year = new Date().getFullYear();
-
-	const socials = [
-		{ label: 'X (Twitter)', href: SITE.social.twitter, icon: Twitter },
-		{ label: 'Facebook', href: SITE.social.facebook, icon: Facebook },
-		{ label: 'Instagram', href: SITE.social.instagram, icon: Instagram },
-		{ label: 'YouTube', href: SITE.social.youtube, icon: Youtube },
-		{ label: 'LinkedIn', href: SITE.social.linkedin, icon: Linkedin }
-	];
 </script>
 
 <footer class="bg-secondary/40 border-t">
@@ -20,7 +12,11 @@
 			<!-- Identitas -->
 			<div class="space-y-3">
 				<div class="flex items-center gap-3">
+				{#if theme.current === 'dark'}
+					<img src="/logo-white.png" alt="Logo PT Dirgantara Indonesia" class="h-9 w-auto" />
+					{:else}
 					<img src="/logo.png" alt="Logo PT Dirgantara Indonesia" class="h-9 w-auto" />
+				{/if}
 					<span class="font-display text-sm font-semibold">{SITE.shortName}</span>
 				</div>
 				<p class="text-muted-foreground max-w-xs text-sm leading-relaxed">
@@ -67,19 +63,7 @@
 				© {year}
 				{SITE.company}. All rights reserved.
 			</p>
-			<div class="flex items-center gap-1">
-				{#each socials as s (s.label)}
-					<a
-						href={s.href}
-						target="_blank"
-						rel="noopener"
-						aria-label={s.label}
-						class="text-muted-foreground hover:text-foreground hover:bg-accent inline-flex size-8 items-center justify-center rounded-md transition-colors"
-					>
-						<s.icon class="size-4" />
-					</a>
-				{/each}
-			</div>
 		</div>
+		<div class="from-primary mt-3 h-1 min-w-2xl rounded-full bg-primary" aria-hidden="true"></div>
 	</div>
 </footer>
