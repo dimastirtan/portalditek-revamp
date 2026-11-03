@@ -68,13 +68,6 @@
 	<meta name="description" content={SITE.description} />
 </svelte:head>
 
-<a
-	href="#konten"
-	class="bg-primary text-primary-foreground focus:ring-ring sr-only rounded-md px-4 py-2 text-sm font-medium focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:ring-2"
->
-	Lompat ke konten
-</a>
-
 <div class="flex min-h-svh flex-col">
 	<Topbar
 		{unreadCount}

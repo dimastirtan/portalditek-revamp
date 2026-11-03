@@ -1,7 +1,6 @@
 <script lang="ts">
 	import SectionHeading from '$lib/components/shared/section-heading.svelte';
 	import { FileText, Download } from '@lucide/svelte';
-	import { docUrl } from '$lib/utils';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -37,11 +36,10 @@
 									{#if doc.desc}
 										<p class="text-muted-foreground mt-0.5 whitespace-pre-line text-sm">{doc.desc}</p>
 									{/if}
-									{#if doc.file}
+									{#if doc.url}
 										<a
-											href={docUrl(doc.file)}
+											href={doc.url}
 											class="text-primary mt-2 inline-flex items-center gap-1.5 text-sm hover:underline"
-											download
 										>
 											<Download class="size-3.5" /> Unduh PDF
 										</a>
@@ -57,10 +55,5 @@
 				<p class="text-muted-foreground text-sm">Dokumen OC belum tersedia.</p>
 			{/each}
 		</div>
-
-		<p class="text-muted-foreground mt-6 text-xs">
-			Tautan unduh mengarah ke <code>/dokumen/&lt;nama-file&gt;</code>. Letakkan berkas PDF asli di
-			<code>static/dokumen/</code> agar bisa diunduh.
-		</p>
 	</div>
 </section>

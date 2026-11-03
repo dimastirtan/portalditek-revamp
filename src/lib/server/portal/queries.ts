@@ -2,8 +2,8 @@
  * Query portal: baca tabel `dittek`, kembalikan objek yang sudah sesuai tipe di
  * $lib/types/content dan sudah dibersihkan (mojibake/HTML/tanggal).
  *
- * Catatan url: dokumen (PDF/DOC) belum di-host, jadi `url` diisi '#'. Saat folder
- * aset lama dipulihkan, arahkan ke path file yang sebenarnya (kolom N_FILE_*).
+ * Catatan url: `url` unduhan dokumen (PDF/DOC) mengarah ke endpoint /unduh portal
+ * ini (lihat downloadUrl). Kolom N_FILE_* kosong → tanpa `url`.
  */
 import { desc, asc, eq, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
@@ -57,6 +57,8 @@ import {
 } from '$lib/server/db/schema';
 import { STASIUN_KA, KOTA_PN, namaTempat } from '$lib/data/stasiun';
 import { fixText, stripHtml, isoDate, truncate, fileKind, cleanRichHtml } from './transform';
+import { downloadUrl, imgUrl, type DownloadCategory } from '$lib/utils';
+import { LEGACY } from '$lib/config/legacy';
 import type {
 	Article,
 	AgendaEvent,
@@ -91,18 +93,37 @@ const slugify = (s: string) =>
 		.replace(/[^a-z0-9]+/g, '-')
 		.replace(/^-+|-+$/g, '');
 
-export async function getNews(limit = 7): Promise<NewsItem[]> {
-	const rows = await db.select().from(berita).orderBy(desc(berita.date)).limit(limit);
-	return rows
-		.filter((r) => isoDate(r.date))
-		.map((r, i) => ({
-			id: `news-${r.id}`,
-			title: fixText(r.judul),
-			excerpt: truncate(stripHtml(r.intro || r.teks), 200),
-			publishedAt: isoDate(r.date),
-			url: '#',
-			...(i === 0 ? { featured: true } : {})
-		}));
+/** `{ url }` unduhan bila kolom file terisi, `{}` bila kosong. */
+const fileLink = (category: DownloadCategory, file: string | null) => {
+	const f = (file ?? '').trim();
+	return f ? { url: downloadUrl(category, f) } : {};
+};
+
+/**
+ * Teaser Berita Utama terbaru untuk section berita di homepage.
+ * Sumbernya tmmainarticle (bukan tmberita). Gambar dipetakan ke /gambar/artikel/,
+ * excerpt diambil dari sub-artikel pertama. Semua item mengarah ke /berita-utama.
+ */
+export async function getMainArticleTeasers(limit = 7): Promise<NewsItem[]> {
+	const [heads, dets] = await Promise.all([
+		db.select().from(mainArticle).orderBy(desc(mainArticle.date)).limit(limit),
+		db.select().from(mainArticleDet)
+	]);
+	return heads
+		.filter((h) => isoDate(h.date))
+		.map((h, i) => {
+			const first = dets.find((d) => d.parentId === h.id);
+			const img = (h.image ?? '').trim();
+			return {
+				id: `mu-${h.id}`,
+				title: fixText(h.judul),
+				excerpt: truncate(stripHtml(first?.teks), 200),
+				publishedAt: isoDate(h.date),
+				url: '/berita-utama',
+				...(img ? { image: imgUrl(img, 'artikel') } : {}),
+				...(i === 0 ? { featured: true } : {})
+			};
+		});
 }
 
 export async function getArticles(limit = 8): Promise<Article[]> {
@@ -113,7 +134,7 @@ export async function getArticles(limit = 8): Promise<Article[]> {
 			id: `art-${r.id}`,
 			title: fixText(r.judul),
 			publishedAt: isoDate(r.date),
-			url: '#'
+			...fileLink('article', r.file)
 		}));
 }
 
@@ -123,7 +144,8 @@ export async function getEvents(limit = 6): Promise<AgendaEvent[]> {
 		id: `evt-${r.id}`,
 		title: fixText(r.judul),
 		date: isoDate(r.date),
-		url: '#'
+		// Berkas materi (bila ada) → unduh lewat handler portal lama.
+		...fileLink('agenda', r.file)
 	}));
 }
 
@@ -134,7 +156,7 @@ export async function getDownloads(limit = 8): Promise<Download[]> {
 		return {
 			id: `dl-${r.id}`,
 			title: fixText(r.judul),
-			url: '#',
+			...fileLink('download', r.file),
 			...(kind ? { kind } : {})
 		};
 	});
@@ -174,7 +196,9 @@ export async function getBirthdays(): Promise<BirthdayGroup[]> {
 		}).formatToParts(base);
 		const get = (t: string) => parts.find((p) => p.type === t)!.value;
 		const iso = `${get('year')}-${get('month')}-${get('day')}`;
-		const d = new Date(`${iso}T00:00:00+07:00`);
+		// Baca hari dari tanggal kalender itu sendiri (UTC midnight → getUTCDay cocok).
+		// Jangan pakai offset +07:00 lalu getUTCDay(): UTC 7 jam di belakang → nama hari meleset 1.
+		const d = new Date(`${iso}T00:00:00Z`);
 		return { iso, mmdd: `${get('month')}-${get('day')}`, dow: d.getUTCDay() };
 	};
 
@@ -323,7 +347,8 @@ export async function getJdq(): Promise<JdqVolume[]> {
 			.map((f) => ({
 				id: `jdqf-${f.id}`,
 				title: fixText(f.judul),
-				file: (f.file ?? '').trim()
+				file: (f.file ?? '').trim(),
+				...fileLink('jdq', f.file)
 			}))
 	}));
 }
@@ -368,20 +393,21 @@ export async function getOc(): Promise<OcSection[]> {
 		db.select().from(certificate),
 		db.select().from(certificateOc)
 	]);
-	const map = (prefix: string) => (r: { id: number; title: string | null; desc: string | null; file: string | null }): DocLink => ({
+	const map = (prefix: string, category: DownloadCategory) => (r: { id: number; title: string | null; desc: string | null; file: string | null }): DocLink => ({
 		id: `${prefix}-${r.id}`,
 		title: fixText(r.title),
 		desc: fixText(r.desc),
-		file: (r.file ?? '').trim()
+		file: (r.file ?? '').trim(),
+		...fileLink(category, r.file)
 	});
 	return [
 		{
 			title: 'Certificate',
-			docs: [...certRows.map(map('cert')), ...certOcRows.map(map('certoc'))].filter((d) => d.title)
+			docs: [...certRows.map(map('cert', 'certificate')), ...certOcRows.map(map('certoc', 'certificateoc'))].filter((d) => d.title)
 		},
 		{
 			title: 'Operating Certificate',
-			docs: ocRows.map(map('oc')).filter((d) => d.title)
+			docs: ocRows.map(map('oc', 'oc')).filter((d) => d.title)
 		}
 	];
 }
@@ -458,7 +484,8 @@ export async function getOnlinePublication(): Promise<PubCategory[]> {
 	const cat = (
 		slug: string,
 		title: string,
-		rows: { id: number; title: string | null; file: string | null }[]
+		rows: { id: number; title: string | null; file: string | null }[],
+		category: DownloadCategory
 	): PubCategory => ({
 		slug,
 		title,
@@ -466,20 +493,21 @@ export async function getOnlinePublication(): Promise<PubCategory[]> {
 		items: rows.map((r) => ({
 			id: `pub-${slug}-${r.id}`,
 			title: fixText(r.title),
-			file: (r.file ?? '').trim()
+			file: (r.file ?? '').trim(),
+			...fileLink(category, r.file)
 		}))
 	});
 	return [
-		cat('aeronautics', 'Aeronautics', aero),
-		cat('astronautics', 'Astronautics', astro),
-		cat('chemistry', 'Chemistry and Materials', chem),
-		cat('engineering', 'Engineering', eng),
-		cat('business', 'Business and Management', bus),
-		cat('math-cs', 'Mathematical and Computer Sciences', math),
-		cat('physics', 'Physics', phy),
-		cat('regulations', 'Regulations', reg),
-		cat('space', 'Space Sciences', space),
-		cat('general', 'General', gen)
+		cat('aeronautics', 'Aeronautics', aero, 'aeronautics'),
+		cat('astronautics', 'Astronautics', astro, 'astronautics'),
+		cat('chemistry', 'Chemistry and Materials', chem, 'chemats'),
+		cat('engineering', 'Engineering', eng, 'engineerings'),
+		cat('business', 'Business and Management', bus, 'busmgmnts'),
+		cat('math-cs', 'Mathematical and Computer Sciences', math, 'mathcomps'),
+		cat('physics', 'Physics', phy, 'physics'),
+		cat('regulations', 'Regulations', reg, 'regulations'),
+		cat('space', 'Space Sciences', space, 'spacescns'),
+		cat('general', 'General', gen, 'generals')
 	];
 }
 
@@ -498,7 +526,7 @@ export async function getLibraryIndex(): Promise<LibraryCatalog[]> {
 		{ slug: 'jurnal-tel-dt', title: 'Katalog Jurnal TEL - DT', description: 'Katalog jurnal Direktorat Teknologi.', count: jurnal[0]?.n ?? 0 },
 		{ slug: 'doc-req', title: 'Report of Doc. Req. (Stand. Industry)', description: 'Dokumen requirement standar industri.', count: docreq[0]?.n ?? 0 },
 		{ slug: 'textbook', title: 'Koleksi Textbook - Library DT', description: 'Koleksi buku/textbook perpustakaan DT.', count: textbook[0]?.n ?? 0 },
-		{ slug: 'doa-library', title: 'DOA Library', description: 'Perpustakaan sistem DOA.', count: 0, href: '/doa' }
+		{ slug: 'doa-library', title: 'DOA Library', description: 'Perpustakaan sistem DOA.', count: 0, href: LEGACY.doaLibrary }
 	];
 }
 

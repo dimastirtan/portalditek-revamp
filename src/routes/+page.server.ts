@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types';
 import {
-	getNews,
+	getMainArticleTeasers,
 	getArticles,
 	getEvents,
 	getDownloads,
@@ -13,7 +13,7 @@ export const prerender = false;
 export const load: PageServerLoad = async () => {
 	try {
 		const [news, articles, events, downloads, birthdays] = await Promise.all([
-			getNews(),
+			getMainArticleTeasers(),
 			getArticles(),
 			getEvents(),
 			getDownloads(),

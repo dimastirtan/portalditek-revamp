@@ -2,8 +2,8 @@ import { error } from '@sveltejs/kit';
 import { SYSTEMS } from '$lib/data/nav';
 import type { PageLoad } from './$types';
 
-// Slug halaman sistem didaftarkan di svelte.config.js (prerender.entries).
-export const prerender = true;
+// Tidak di-prerender: alamat sistem dibaca dari env saat runtime ($lib/config/legacy).
+export const prerender = false;
 
 export const load: PageLoad = ({ params }) => {
 	const system = SYSTEMS.find((s) => s.id === params.system);

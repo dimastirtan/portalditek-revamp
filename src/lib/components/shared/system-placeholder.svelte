@@ -18,9 +18,11 @@
 		<h1 class="font-display mt-5 text-2xl font-semibold tracking-tight sm:text-3xl">
 			{system.label}
 		</h1>
-		<p class="text-muted-foreground mt-2 text-sm leading-relaxed sm:text-base">
-			{system.description}
-		</p>
+		{#if system.description}
+			<p class="text-muted-foreground mt-2 text-sm leading-relaxed sm:text-base">
+				{system.description}
+			</p>
+		{/if}
 
 		<div class="bg-secondary/50 mt-6 rounded-lg border p-4">
 			<p class="text-sm leading-relaxed">

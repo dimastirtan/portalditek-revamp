@@ -47,7 +47,10 @@
 		{:else}
 			<a
 				href={item.href}
-				onclick={close}
+				onclick={() => {
+					item.onClick?.();
+					close();
+				}}
 				target={item.external ? '_blank' : undefined}
 				rel={item.external ? 'noopener' : undefined}
 				style={indent(depth)}

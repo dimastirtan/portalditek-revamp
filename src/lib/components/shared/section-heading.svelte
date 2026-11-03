@@ -24,7 +24,7 @@
 		{/if}
 		<h2 class="font-display mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">{title}</h2>
 		<div
-			class="from-primary mt-3 h-1 min-w-2xl rounded-full bg-gradient-to-r to-transparent"
+			class="from-primary mt-3 h-1 w-full max-w-xs rounded-full bg-gradient-to-r to-transparent"
 			aria-hidden="true"
 		></div>
 		{#if description}

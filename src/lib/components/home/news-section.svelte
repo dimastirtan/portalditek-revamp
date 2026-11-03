@@ -19,14 +19,24 @@
 	}
 </script>
 
-<section id="berita" class="bg-secondary/30 border-b">
+<section id="berita" class="border-b">
 	<div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
-		<SectionHeading eyebrow="Berita" title="Berita terkini" />
+		<SectionHeading eyebrow="Berita" title="Berita utama">
+			{#snippet action()}
+				<a
+					href="/berita-utama"
+					class="text-primary inline-flex items-center gap-1 text-sm font-medium hover:underline"
+				>
+					Lihat semua
+					<ArrowRight class="size-4" />
+				</a>
+			{/snippet}
+		</SectionHeading>
 
 		<div class="mt-8 grid gap-6 lg:grid-cols-2">
 			<!-- Berita utama -->
 			{#if featured}
-				<a href={featured.url} class="group bg-card flex flex-col overflow-hidden rounded-xl border max-w-xxl">
+				<a href={featured.url} class="group bg-card flex min-w-0 flex-col overflow-hidden rounded-xl border">
 					{#if featured.image}
 					<img
 						src={featured.image}
@@ -61,7 +71,7 @@
 			{/if}
 
 			<!-- Sekilas berita (carousel) -->
-			<div class="flex flex-col max-w-4xl">
+			<div class="flex min-w-0 flex-col">
 				<div class="mb-3 flex items-center justify-between max-w-full">
 					<h3 class="font-display text-sm font-semibold tracking-wider uppercase">
 						Sekilas berita

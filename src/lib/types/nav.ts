@@ -11,12 +11,16 @@ export type NavItem = {
 	soon?: boolean;
 	/** Sub-menu (boleh bertingkat). */
 	children?: NavItem[];
+
+	onClick?: () => void;
 };
 
 /** Sub-sistem yang diakses lewat Portal (integrasi via DNS). */
 export type SystemLink = {
 	id: string;
 	label: string;
+	/** Keterangan singkat (dipakai di halaman placeholder /[system]). */
+	description?: string;
 	/** Route internal (halaman placeholder) ATAU URL DNS sistem asli. */
 	href: string;
 	/** Nama file icon SVG di /static, atau nama lucide (dipakai di M3). */

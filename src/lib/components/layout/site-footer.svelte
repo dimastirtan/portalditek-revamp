@@ -64,6 +64,6 @@
 				{SITE.company}. All rights reserved.
 			</p>
 		</div>
-		<div class="from-primary mt-3 h-1 min-w-2xl rounded-full bg-primary" aria-hidden="true"></div>
+		<div class="from-primary mt-3 h-1 w-full rounded-full bg-primary" aria-hidden="true"></div>
 	</div>
 </footer>

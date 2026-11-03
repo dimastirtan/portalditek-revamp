@@ -1,6 +1,5 @@
 // Default: halaman di-render di server (SSR, adapter-node) agar konten DB selalu
-// terbaru. Halaman statis/redirect (mis. /[system], *.html) opt-in prerender
-// sendiri lewat `export const prerender = true` di masing-masing route-nya.
+// terbaru. Route yang benar-benar statis bisa opt-in `export const prerender = true`.
 export const prerender = false;
 
 // Trailing slash konsisten agar output berupa `route/index.html` yang aman

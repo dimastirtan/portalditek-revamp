@@ -62,7 +62,10 @@
 			href={item.href}
 			target={item.external ? '_blank' : undefined}
 			rel={item.external ? 'noopener' : undefined}
-			onclick={close}
+			onclick={() => {
+				item.onClick?.();
+				close();
+			}}
 			aria-current={isActive(item.href) ? 'page' : undefined}
 			data-active={isActive(item.href)}
 			class="hover:bg-accent data-[active=true]:text-primary block rounded px-2 py-1.5 transition-colors {sub
@@ -123,6 +126,7 @@
 				href={item.href}
 				target={item.external ? '_blank' : undefined}
 				rel={item.external ? 'noopener' : undefined}
+				onclick={item.onClick}
 				aria-current={isActive(item.href) ? 'page' : undefined}
 				data-active={isActive(item.href)}
 				class="hover:text-primary text-foreground/70 data-[active=true]:text-primary rounded-md px-3 py-2 text-sm font-medium transition-colors"

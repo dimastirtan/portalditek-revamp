@@ -12,13 +12,15 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
+<svelte:head><title>Beranda · Direktorat Teknologi</title></svelte:head>
+
 <Hero />
-	<div class="w-1/2 h-12 bg-primary/90 absolute [clip-path:polygon(0_0px,100%_0,95%_50px,0_20px)]" aria-hidden="true"></div>
-	<div class="w-1/2 h-12 bg-primary/50 mt-1 ms-1 absolute [clip-path:polygon(0_0px,100%_0,95%_50px,0_20px)]" aria-hidden="true"></div>
+	<div class="w-1/2 h-12 bg-primary/90 absolute hidden lg:block [clip-path:polygon(0_0px,100%_0,95%_50px,0_20px)]" aria-hidden="true"></div>
+	<div class="w-1/2 h-12 bg-primary/50 mt-1 ms-1 absolute hidden lg:block [clip-path:polygon(0_0px,100%_0,95%_50px,0_20px)]" aria-hidden="true"></div>
 <FeatureGrid />
-<InfoPanel articles={data.articles} events={data.events} downloads={data.downloads} />
-	<div class="w-1/2 h-12 bg-primary/90 absolute right-0 [clip-path:polygon(0_0px,100%_0,95%_50px,0_20px)] -scale-x-100" aria-hidden="true"></div>
-	<div class="w-1/2 h-12 bg-primary/50 mt-1 ms-1 right-0 absolute [clip-path:polygon(0_0px,100%_0,95%_50px,0_20px)] -scale-x-100" aria-hidden="true"></div>
 <NewsSection news={data.news} />
+	<div class="w-1/2 h-12 bg-primary/90 absolute right-0 hidden lg:block [clip-path:polygon(0_0px,100%_0,95%_50px,0_20px)] -scale-x-100" aria-hidden="true"></div>
+	<div class="w-1/2 h-12 bg-primary/50 mt-1 ms-1 right-0 absolute hidden lg:block [clip-path:polygon(0_0px,100%_0,95%_50px,0_20px)] -scale-x-100" aria-hidden="true"></div>
+<InfoPanel articles={data.articles} events={data.events} downloads={data.downloads} />
 <BirthdaySection groups={data.birthdays} />
 <ContactSection />

@@ -25,7 +25,7 @@
 							src={imgUrl(group.image, 'artikel')}
 							alt={group.title}
 							loading="lazy"
-							class="bg-muted max-h-auto w-full object-cover"
+							class="bg-muted w-full object-cover"
 						/>
 					{/if}
 					<div class="p-5">

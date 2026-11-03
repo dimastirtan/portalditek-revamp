@@ -19,17 +19,17 @@
 			description="Akses cepat ke aplikasi dan layanan yang digunakan sehari-hari di lingkungan Direktorat Teknologi dan Pengembangan."
 		/>
 
-		<div class="mt-8 grid gap-4 grid-cols-5 justify-items-center sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+		<div class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:justify-items-center sm:gap-4 lg:grid-cols-3 xl:grid-cols-5">
 			{#each SYSTEMS as sys (sys.id)}
 				<a
 					href={sys.href}
 					target={sys.external ? '_blank' : undefined}
 					rel={sys.external ? 'noopener' : undefined}
-					class="group bg-card hover:border-primary/40 relative items-start gap-4 rounded-xl border p-6 transition-all hover:shadow-sm"
+					class="group bg-card hover:border-primary/40 relative flex items-center gap-4 rounded-xl border p-4 transition-all hover:shadow-sm sm:flex-col sm:p-6 min-w-40"
 				>
 					<!-- Logo aplikasi (fallback ke monogram) -->
 					<div
-						class="border-primary/15 bg-primary/10 text-primary relative size-20 shrink-0 overflow-hidden rounded-lg border text-sm font-bold tracking-tight min-w-36 min-h-36 flex items-center justify-center"
+						class="border-primary/15 bg-primary/10 text-primary relative flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-lg border text-sm font-bold tracking-tight sm:size-30"
 					>
 						{monogram(sys.label)}
 						{#if sys.logo}
@@ -43,8 +43,8 @@
 						{/if}
 					</div>
 
-					<div class="mt-3">
-						<div class="flex items-start justify-center gap-2">
+					<div class="min-w-0 sm:mt-3">
+						<div class="flex items-start gap-2 sm:justify-center">
 							<h3
 								class="font-display group-hover:text-primary text-lg font-semibold leading-tight transition-colors"
 							>

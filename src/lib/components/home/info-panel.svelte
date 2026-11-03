@@ -16,7 +16,7 @@
 	const downloadList = $derived(downloads);
 </script>
 
-<section id="informasi" class="border-b">
+<section id="informasi" class="bg-secondary/30 border-b">
 	<div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 		<SectionHeading
 			eyebrow="Informasi"
@@ -37,7 +37,7 @@
 					<ul class="divide-y">
 						{#each articleList as item (item.id)}
 							<li class="py-3 first:pt-0 last:pb-0">
-								<a href={item.url} class="group block">
+								<a href={item.url} rel="noopener" class="group block">
 									<p
 										class="group-hover:text-primary text-sm leading-snug font-medium transition-colors"
 									>
@@ -62,26 +62,44 @@
 				<Card.Content>
 					<ul class="divide-y">
 						{#each eventList as item (item.id)}
-							<li class="flex gap-3 py-3 first:pt-0 last:pb-0">
-								<div
-									class="bg-secondary text-secondary-foreground flex size-11 shrink-0 flex-col items-center justify-center rounded-md text-center leading-none"
+							<li class="first:pt-0 last:pb-0">
+								<svelte:element
+									this={item.url ? 'a' : 'div'}
+									href={item.url}
+									target={item.url ? '_blank' : undefined}
+									rel={item.url ? 'noopener' : undefined}
+									class="flex gap-3 py-3 {item.url ? 'group' : ''}"
 								>
-									<span class="text-sm font-semibold">
-										{new Date(item.date).getDate()}
-									</span>
-									<span class="text-[10px] uppercase">
-										{formatDate(item.date, { month: 'short', day: undefined, year: undefined })}
-									</span>
-								</div>
-								<div class="min-w-0">
-									<p class="text-sm leading-snug font-medium">{item.title}</p>
-									{#if item.location}
-										<p class="text-muted-foreground mt-1 flex items-center gap-1 text-xs">
-											<MapPin class="size-3 shrink-0" />
-											<span class="truncate">{item.location}</span>
+									<div
+										class="bg-secondary text-secondary-foreground flex size-11 shrink-0 flex-col items-center justify-center rounded-md text-center leading-none"
+									>
+										<span class="text-sm font-semibold">
+											{new Date(item.date).getDate()}
+										</span>
+										<span class="text-[10px] uppercase">
+											{formatDate(item.date, { month: 'short', day: undefined, year: undefined })}
+										</span>
+									</div>
+									<div class="min-w-0">
+										<p
+											class="text-sm leading-snug font-medium {item.url
+												? 'group-hover:text-primary transition-colors'
+												: ''}"
+										>
+											{item.title}
 										</p>
-									{/if}
-								</div>
+										{#if item.url}
+											<span class="text-primary mt-1 inline-flex items-center gap-1 text-xs">
+												<Download class="size-3 shrink-0" /> Unduh materi
+											</span>
+										{:else if item.location}
+											<p class="text-muted-foreground mt-1 flex items-center gap-1 text-xs">
+												<MapPin class="size-3 shrink-0" />
+												<span class="truncate">{item.location}</span>
+											</p>
+										{/if}
+									</div>
+								</svelte:element>
 							</li>
 						{/each}
 					</ul>
@@ -100,7 +118,7 @@
 					<ul class="divide-y">
 						{#each downloadList as item (item.id)}
 							<li class="py-3 first:pt-0 last:pb-0">
-								<a href={item.url} class="group flex items-center justify-between gap-3" download>
+								<a href={item.url} rel="noopener" class="group flex items-center justify-between gap-3">
 									<div class="min-w-0">
 										<p
 											class="group-hover:text-primary text-sm leading-snug font-medium transition-colors"

@@ -7,6 +7,8 @@
 		"dev": "vite dev --host",
 		"build": "vite build",
 		"preview": "vite preview --host",
+		"start": "node --env-file=.env build",
+		"mirror-files": "node --env-file=.env scripts/mirror-files.mjs",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",

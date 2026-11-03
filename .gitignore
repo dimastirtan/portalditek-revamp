@@ -8,6 +8,9 @@ node_modules
 /.svelte-kit
 /build
 
+# Berkas dokumen hasil `npm run mirror-files` (± 1,8 GB) — jangan di-commit
+/files
+
 # OS
 .DS_Store
 Thumbs.db

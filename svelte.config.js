@@ -5,30 +5,12 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 const config = {
 	preprocess: vitePreprocess(),
 	kit: {
-		// SSR via Node. Homepage dibaca live dari MySQL; halaman statis/redirect
-		// tetap di-prerender (opt-in per route). Jalankan: `node build` setelah build.
+		// SSR via Node. Semua halaman dirender di server (konten live dari MySQL,
+		// alamat sistem dari env). Jalankan: `npm start` setelah build.
 		adapter: adapter(),
 		prerender: {
 			handleHttpError: 'warn',
-			handleMissingId: 'warn',
-			entries: [
-				'*',
-				'/doa/',
-				'/dotproject/',
-				'/siedm/',
-				'/certificate/',
-				'/telepon/',
-				'/-content/articles',
-				'/-content/events',
-				'/-content/downloads',
-				'/-content/news',
-				'/-content/announcements',
-				'/doa.html',
-				'/dotproject.html',
-				'/siedm.html',
-				'/certificate.html',
-				'/telepon.html'
-			]
+			handleMissingId: 'warn'
 		}
 	}
 };

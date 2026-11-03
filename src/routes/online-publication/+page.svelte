@@ -1,7 +1,6 @@
 <script lang="ts">
 	import SectionHeading from '$lib/components/shared/section-heading.svelte';
 	import { FileText } from '@lucide/svelte';
-	import { docUrl } from '$lib/utils';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -31,10 +30,9 @@
 							<ul class="space-y-2">
 								{#each cat.items as item (item.id)}
 									<li class="text-sm" title={item.file}>
-										{#if item.file}
+										{#if item.url}
 											<a
-												href={docUrl(item.file)}
-												download
+												href={item.url}
 												class="hover:text-primary flex items-start gap-2 hover:underline"
 											>
 												<FileText class="text-primary mt-0.5 size-4 shrink-0" />
@@ -58,10 +56,5 @@
 				<p class="text-muted-foreground text-sm">Data publikasi belum tersedia.</p>
 			{/each}
 		</div>
-
-		<p class="text-muted-foreground mt-6 text-xs">
-			Tautan unduh mengarah ke <code>/dokumen/&lt;nama-file&gt;</code>. Letakkan berkas publikasi (PDF)
-			di <code>static/dokumen/</code> agar bisa diunduh.
-		</p>
 	</div>
 </section>

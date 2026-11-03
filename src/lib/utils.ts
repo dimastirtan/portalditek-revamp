@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { LEGACY } from '$lib/config/legacy';
 
 /**
  * Merge Tailwind class names dengan aman. Menghilangkan duplikat/konflik.
@@ -30,12 +31,49 @@ export type WithoutChildrenOrChild<T> = WithoutChildren<WithoutChild<T>>;
 export type WithElementRef<T, U extends HTMLElement = HTMLElement> = T & { ref?: U | null };
 
 /**
- * URL berkas dokumen. Letakkan file asli di `static/dokumen/` (disajikan
- * otomatis oleh SvelteKit tanpa route tambahan). Nama file berasal dari kolom
- * N_FILE_* di database.
+ * Kategori berkas unduhan. Sama dengan parameter `d` di download.php portal lama
+ * (sudah dites di 10.1.95.116) dan nama subfolder di FILES_DIR. Umumnya nama
+ * tabel tanpa awalan `tm`, kecuali artikel. Daftar yang sama ada di
+ * scripts/mirror-files.mjs — ubah keduanya bila menambah kategori.
  */
-export function docUrl(file: string): string {
-	return `/dokumen/${encodeURIComponent((file ?? '').trim())}`;
+export const DOWNLOAD_CATEGORIES = [
+	'article',
+	'download',
+	'agenda',
+	'jdq',
+	'oc',
+	'certificate',
+	'certificateoc',
+	'aeronautics',
+	'astronautics',
+	'chemats',
+	'engineerings',
+	'busmgmnts',
+	'mathcomps',
+	'physics',
+	'spacescns',
+	'generals',
+	'regulations'
+] as const;
+
+export type DownloadCategory = (typeof DOWNLOAD_CATEGORIES)[number];
+
+/**
+ * URL unduh berkas lewat endpoint portal sendiri (src/routes/unduh). Berkas
+ * dibaca dari FILES_DIR/<category>/<file>; bila belum disalin, endpoint
+ * mengambilnya dari portal lama selama server itu masih hidup.
+ *   file → nama berkas dari kolom N_FILE_* di database
+ */
+export function downloadUrl(category: DownloadCategory, file: string): string {
+	return `/unduh/${category}/${encodeURIComponent(file.trim())}`;
+}
+
+/**
+ * URL berkas yang sama di handler `download.php` portal lama (dipakai endpoint
+ * /unduh sebagai cadangan). Alamat server diatur di $lib/config/legacy.
+ */
+export function legacyDownloadUrl(category: DownloadCategory, file: string): string {
+	return `${LEGACY.portal}/download.php?d=${category}&id=${encodeURIComponent(file.trim())}`;
 }
 
 /**

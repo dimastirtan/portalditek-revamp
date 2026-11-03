@@ -1,7 +1,6 @@
 <script lang="ts">
 	import SectionHeading from '$lib/components/shared/section-heading.svelte';
 	import { FileText } from '@lucide/svelte';
-	import { docUrl } from '$lib/utils';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -28,10 +27,9 @@
 						<ul class="mt-3 space-y-1.5 border-t pt-3">
 							{#each vol.files as f (f.id)}
 								<li>
-									{#if f.file}
+									{#if f.url}
 										<a
-											href={docUrl(f.file)}
-											download
+											href={f.url}
 											class="hover:text-primary flex items-center gap-2 text-sm hover:underline"
 											title={f.file}
 										>
@@ -53,10 +51,5 @@
 				<p class="text-muted-foreground text-sm">Data JDQ belum tersedia.</p>
 			{/each}
 		</div>
-
-		<p class="text-muted-foreground mt-6 text-xs">
-			Tautan unduh mengarah ke <code>/dokumen/&lt;nama-file&gt;</code>. Letakkan berkas PDF asli di
-			<code>static/dokumen/</code> agar bisa diunduh.
-		</p>
 	</div>
 </section>

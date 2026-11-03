@@ -5,7 +5,8 @@ export type Article = {
 	title: string;
 	/** ISO date string, mis. '2026-01-15'. */
 	publishedAt: string;
-	url: string;
+	/** Link unduh berkas; tidak ada bila kolom file kosong. */
+	url?: string;
 };
 
 export type AgendaEvent = {
@@ -20,7 +21,8 @@ export type AgendaEvent = {
 export type Download = {
 	id: string;
 	title: string;
-	url: string;
+	/** Link unduh berkas; tidak ada bila kolom file kosong. */
+	url?: string;
 	/** Ukuran file untuk ditampilkan, mis. '2.4 MB'. */
 	size?: string;
 	/** Jenis file, mis. 'PDF', 'DOCX'. */
@@ -121,7 +123,7 @@ export type JdqVolume = {
 	id: string;
 	title: string;
 	subtitle: string;
-	files: { id: string; title: string; file: string }[];
+	files: { id: string; title: string; file: string; url?: string }[];
 };
 
 /** Item fasilitas (Ground/Flight Test). */
@@ -139,10 +141,12 @@ export type DocLink = {
 	title: string;
 	desc: string;
 	file: string;
+	/** Link unduh berkas; tidak ada bila kolom file kosong. */
+	url?: string;
 };
 
 /** Satu publikasi (Online Publication). */
-export type PubItem = { id: string; title: string; file: string };
+export type PubItem = { id: string; title: string; file: string; url?: string };
 
 /** Kategori Online Publication + isinya. */
 export type PubCategory = { slug: string; title: string; count: number; items: PubItem[] };

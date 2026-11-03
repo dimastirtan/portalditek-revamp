@@ -1,4 +1,5 @@
 import type { NavItem, SystemLink } from '$lib/types/nav';
+import { LEGACY } from '$lib/config/legacy';
 
 /**
  * Navigasi utama Portal — mengikuti struktur informasi Portal DITTEK lama.
@@ -13,14 +14,14 @@ import type { NavItem, SystemLink } from '$lib/types/nav';
  * tidak perlu profil perusahaan.
  */
 export const MAIN_NAV: NavItem[] = [
-	{ label: 'Home', href: '/' },
+	{ label: 'Home', href: '/' }, 
 	{
 		label: 'Pojok Media',
 		children: [
 			{ label: 'Berita Utama', href: '/berita-utama' },
 			{ label: 'Berita', href: '/berita' },
 			{ label: 'Artikel', href: '/#informasi' },
-			{ label: 'Download', href: '/#informasi' },
+			{ label: 'Download', href: '/#informasi'},
 			{ label: 'Sekilas Dittek', href: '/sekilas-dittek' }
 		]
 	},
@@ -103,20 +104,20 @@ export const MAIN_NAV: NavItem[] = [
 
 /**
  * Sub-sistem internal DTP (kartu di section Sistem + daftar di menu mobile).
- * Ganti `href` ke URL DNS sistem asli begitu siap, dan set external: true.
+ * Alamat sistem yang di-host di server portal lama diatur di $lib/config/legacy.
  */
 export const SYSTEMS: SystemLink[] = [
 	{
 		id: 'doa',
 		label: 'DOA',
-		href: 'http://portalditek.indonesian-aerospace.com/webdoa/',
+		href: LEGACY.doa,
 		icon: 'document.svg',
 		logo: '/gambar/sistem/doa.png'
 	},
 	{
 		id: 'dotproject',
 		label: 'dotProject',
-		href: 'http://portalditek.indonesian-aerospace.com/dotproject/',
+		href: LEGACY.dotproject,
 		icon: 'case.svg',
 		logo: '/gambar/sistem/dotproject.png'
 	},
@@ -130,7 +131,7 @@ export const SYSTEMS: SystemLink[] = [
 	{
 		id: 'certificate',
 		label: 'Certification',
-		href: 'http://portalditek.indonesian-aerospace.com/certification/',
+		href: `${LEGACY.portal}/certification/`,
 		icon: 'certificate.svg',
 		logo: '/gambar/sistem/certificate.png'
 	},
