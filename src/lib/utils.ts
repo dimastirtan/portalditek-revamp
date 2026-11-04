@@ -22,6 +22,11 @@ export function formatDate(iso: string, opts?: Intl.DateTimeFormatOptions): stri
 	}).format(d);
 }
 
+/** Format persen gaya Indonesia tanpa tanda %: 23.32 → '23,32', 1.4583 → '1,46'. */
+export function formatPercent(value: number, digits = 2): string {
+	return new Intl.NumberFormat('id-ID', { maximumFractionDigits: digits }).format(value);
+}
+
 // Helper types untuk komponen shadcn-svelte (dipakai mulai M2).
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type WithoutChild<T> = T extends { child?: any } ? Omit<T, 'child'> : T;

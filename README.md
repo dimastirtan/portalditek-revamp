@@ -35,6 +35,12 @@ Buka http://localhost:5173.
 | `DB_PASSWORD` | *(kosong)* | password |
 | `DB_NAME` | `dittek` | nama database |
 | `FILES_DIR` | `./files` | folder berkas dokumen (hasil `npm run mirror-files`) |
+| `IMS_DB_HOST` | *(kosong)* | host MySQL IMS; kosong = bagian Program R&D disembunyikan |
+| `IMS_DB_PORT` | `3306` | port MySQL IMS |
+| `IMS_DB_USER` / `IMS_DB_PASSWORD` | *(kosong)* | user **read-only** IMS (lihat di bawah) |
+| `IMS_DB_NAME` | `ptdi_project` | database IMS |
+| `PUBLIC_IMS_URL` | `http://10.20.65.76:8080/ims` | web IMS untuk tautan "Buka di IMS" |
+| `PUBLIC_IMS_IMAGE_URL` | `/gambar/ims/assets/images` | folder gambar program; nama file diambil dari kolom `programs.image`. Arahkan ke folder upload IMS bila ingin ikut IMS langsung |
 | `PUBLIC_LEGACY_PORTAL_URL` | `http://10.1.95.116` | portal PHP lama (`download.php` cadangan, `certification/`) |
 | `PUBLIC_DOA_URL` | `http://10.1.95.116:8081` | Web DOA |
 | `PUBLIC_DOTPROJECT_URL` | `http://10.1.95.116:8083` | dotProject |
@@ -77,6 +83,15 @@ Di server yang sama, jalankan `npm run mirror-files` minimal sekali (± 1,8 GB) 
 - Berkas dokumen (artikel, download, agenda, JDQ, OC, Online Publication) diunduh lewat endpoint `/unduh/<kategori>/<file>` (`src/routes/unduh`), yang membaca `FILES_DIR/<kategori>/<file>`. Bila berkas belum disalin, endpoint mengambilnya dari `download.php` portal lama selama server itu masih hidup; setelah server lama mati, berkas yang belum disalin → 404.
 - Alamat server portal lama & sub-sistem (DOA, dotProject, Certification, DOA Library) terpusat di `src/lib/config/legacy.ts`. Server lama 10.1.95.76 akan di-disable; default sudah ke 10.1.95.116.
 - Bila DB tidak terjangkau, tiap `load` menangkap error dan mengembalikan data kosong (section tampil kosong, bukan error 500).
+- **Program R&D** (section beranda, `/program`, `/program/[slug]`) dibaca dari DB IMS `ptdi_project` (`src/lib/server/ims`), di-cache 15 menit; bila IMS gagal, data terakhir tetap dipakai. Hanya ringkasan sampai level tahap sertifikasi + jumlah dokumen — judul dokumen dan nama penanggung jawab tetap di IMS. Minta pemilik IMS membuat user read-only khusus tabel yang dipakai (tabel `admins` tidak perlu):
+
+  ```sql
+  CREATE USER 'portal_ro'@'<IP server portal>' IDENTIFIED BY '<password kuat>';
+  GRANT SELECT ON ptdi_project.programs TO 'portal_ro'@'<IP server portal>';
+  GRANT SELECT ON ptdi_project.projects TO 'portal_ro'@'<IP server portal>';
+  GRANT SELECT ON ptdi_project.project_stages TO 'portal_ro'@'<IP server portal>';
+  GRANT SELECT ON ptdi_project.project_documents TO 'portal_ro'@'<IP server portal>';
+  ```
 
 ## Struktur
 
@@ -88,7 +103,8 @@ src/
 │   ├── components/          # layout/, home/, shared/, ui/ (shadcn)
 │   ├── server/
 │   │   ├── db/              # index.ts (koneksi pool), schema.ts (tabel dittek)
-│   │   └── portal/          # queries.ts (baca DB), transform.ts (bersihin data)
+│   │   ├── portal/          # queries.ts (baca DB), transform.ts (bersihin data)
+│   │   └── ims/             # koneksi read-only + query DB IMS (Program R&D)
 │   ├── types/               # content.ts, nav.ts
 │   ├── data/nav.ts          # struktur menu + daftar sistem
 │   └── utils.ts             # cn(), formatDate(), imgUrl(), downloadUrl()
@@ -97,6 +113,7 @@ src/
     ├── +page.svelte         # landing (hero, sistem, berita, info, ultah, kontak)
     ├── [system]/            # halaman sistem (doa/dotproject/siedm/certificate/telepon)
     ├── unduh/               # endpoint unduh berkas dokumen (FILES_DIR → cadangan portal lama)
+    ├── program/             # Program R&D dari DB IMS (indeks + [slug] detail proyek)
     └── ...                  # berita, berita-utama, profil, oc, regulation, library, dll.
 static/                      # favicon, logo, gambar/ (foto org, artikel, dsb.)
 ```

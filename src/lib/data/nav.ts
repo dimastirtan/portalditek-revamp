@@ -1,5 +1,6 @@
 import type { NavItem, SystemLink } from '$lib/types/nav';
 import { LEGACY } from '$lib/config/legacy';
+import { IMS_URL } from '$lib/config/ims';
 
 /**
  * Navigasi utama Portal — mengikuti struktur informasi Portal DITTEK lama.
@@ -39,7 +40,10 @@ export const MAIN_NAV: NavItem[] = [
 			},
 			{
 				label: 'Project',
-				children: [{ label: 'N219', href: '/project' }]
+				children: [
+					{ label: 'Program R&D', href: '/program' },
+					{ label: 'N219', href: '/project' }
+				]
 			},
 			{
 				label: 'SDM',
@@ -129,11 +133,10 @@ export const SYSTEMS: SystemLink[] = [
 		logo: '/gambar/sistem/siedm.png'
 	},
 	{
-		id: 'certificate',
-		label: 'Certification',
-		href: `${LEGACY.portal}/certification/`,
-		icon: 'certificate.svg',
-		logo: '/gambar/sistem/certificate.png'
+		id: 'ims',
+		label: 'IMS',
+		href: IMS_URL,
+		icon: 'case.svg'
 	},
 	{
 		id: 'telepon',

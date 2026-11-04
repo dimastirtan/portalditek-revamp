@@ -185,3 +185,53 @@ export type OcSection = { title: string; docs: DocLink[] };
 export type TeleponItem = { id: string; title: string; no: string };
 export type TeleponGroup = { title: string; items: TeleponItem[] };
 export type SekilasItem = { id: string; caption: string; file: string; date: string };
+
+// ── Program R&D (dari database IMS) ──────────────────────────────────────────
+
+/** Ringkasan satu program pesawat (kartu di beranda & /program). */
+export type ImsProgram = {
+	id: number;
+	slug: string;
+	/** program_name di IMS (mis. 'NC212i', 'SIMULATOR'). */
+	name: string;
+	description: string;
+	/** URL gambar program (lihat imsImageUrl); '' bila tidak ada. */
+	image: string;
+	total: number;
+	/** Status diawali 'On Progress'. */
+	onProgress: number;
+	/** Status mengandung 'Complete'. */
+	completed: number;
+	/** problem = 'YES'. */
+	problem: number;
+	/** Rata-rata progres semua proyek, 0–100. */
+	avgProgress: number;
+};
+
+/** Satu tahap sertifikasi proyek (6 tahap: Application … Final Certification). */
+export type ImsStage = {
+	step: number;
+	name: string;
+	/** 0–100. */
+	progress: number;
+	/** Jumlah dokumen tahap ini (hanya angka — judul & PIC tetap di IMS). */
+	docsTotal: number;
+	docsApproved: number;
+};
+
+export type ImsProject = {
+	id: number;
+	code: string;
+	name: string;
+	customer: string;
+	category: string;
+	classChange: string;
+	/** Tahap proyek di IMS (mis. 'Delivery', 'BSI', 'FI') — beda dari tahap sertifikasi. */
+	stage: string;
+	progress: number;
+	status: string;
+	problem: boolean;
+	stages: ImsStage[];
+};
+
+export type ImsProgramDetail = ImsProgram & { projects: ImsProject[] };
