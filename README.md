@@ -128,6 +128,23 @@ static/                      # favicon, logo, gambar/ (foto org, artikel, dsb.)
 
 Warna, radius, dan skala tipografi dideklarasikan sebagai **CSS variables** di `src/app.css`, lalu di-map ke utility Tailwind lewat `@theme inline`. Rebrand: ubah `--brand` / `--brand-foreground` di `:root`. Dark mode: class `dark` pada `<html>` (toggle di topbar).
 
+## Dukungan browser
+
+| Pengguna | Browser | Status |
+|---|---|---|
+| Windows 10 / 11 | Edge, Chrome, Firefox terbaru | Normal |
+| Windows 7 / 8 / 8.1 | Chrome / Edge 109 (versi terakhir di OS itu) | Didukung lewat warna cadangan (lihat bawah) |
+| Windows 7 / 8 / 8.1 | Firefox 115 ESR | Didukung |
+| Semua | Internet Explorer | Tidak didukung |
+
+Chrome/Edge < 111 belum mengenal `oklch()`, `color-mix()`, dan gradien `in oklab` yang dipakai Tailwind v4. Plugin PostCSS `scripts/postcss-legacy-colors.js` (dipasang di `vite.config.ts`) membuat cadangannya otomatis saat build:
+
+- token OKLCH di `:root` / `.dark` → nilai `rgb()` di dalam `@supports not (color: oklch(0 0 0))`;
+- tiap token dapat kanal `--x-rgb`, dipakai untuk opacity (`bg-primary/10` → `rgb(var(--primary-rgb) / 10%)`); cadangan bawaan Tailwind berupa warna penuh;
+- gradien `to right in oklab` → `to right`.
+
+Tetap tulis token dalam OKLCH di `src/app.css` — tidak perlu menulis warna dua kali. Yang **tidak** dapat cadangan: warna OKLCH langsung di class (`bg-[oklch(...)]`) — pakai token. Hanya build production yang didukung di browser lama (`npm run dev` memakai CSS nesting).
+
 ## Konvensi
 
 - **Alias** `$lib` → `src/lib`.
