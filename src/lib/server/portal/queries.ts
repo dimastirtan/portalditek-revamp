@@ -5,7 +5,7 @@
  * Catatan url: `url` unduhan dokumen (PDF/DOC) mengarah ke endpoint /unduh portal
  * ini (lihat downloadUrl). Kolom N_FILE_* kosong → tanpa `url`.
  */
-import { desc, asc, eq, sql } from 'drizzle-orm';
+import { desc, asc, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import {
 	berita,
@@ -56,20 +56,20 @@ import {
 	sekilas
 } from '$lib/server/db/schema';
 import { STASIUN_KA, KOTA_PN, namaTempat } from '$lib/data/stasiun';
-import { fixText, stripHtml, isoDate, truncate, fileKind, cleanRichHtml } from './transform';
+import { fixText, stripHtml, isoDate, truncate, fileKind, cleanRichHtml, firstImage } from './transform';
 import { downloadUrl, imgUrl, type DownloadCategory } from '$lib/utils';
 import { LEGACY } from '$lib/config/legacy';
 import type {
 	Article,
 	AgendaEvent,
 	Download,
-	NewsItem,
+	Headline,
+	HeadlineCard,
 	Announcement,
 	BirthdayGroup,
 	Person,
 	PersonRow,
 	BeritaEntry,
-	MainArticleGroup,
 	OrgUnit,
 	RichPage,
 	JdqVolume,
@@ -100,28 +100,32 @@ const fileLink = (category: DownloadCategory, file: string | null) => {
 };
 
 /**
- * Teaser Berita Utama terbaru untuk section berita di homepage.
- * Sumbernya tmmainarticle (bukan tmberita). Gambar dipetakan ke /gambar/artikel/,
- * excerpt diambil dari sub-artikel pertama. Semua item mengarah ke /berita-utama.
+ * Semua headline Berita Utama, terbaru dulu. Satu baris tmmainarticledet = satu
+ * headline; tmmainarticle hanya jadi "berita induk" (judul & gambar cadangan).
+ * Dipakai slideshow beranda, indeks /berita-utama, dan halaman detailnya —
+ * di-cache sekali (± 27 baris), jadi detail tidak perlu query per id.
  */
-export async function getMainArticleTeasers(limit = 7): Promise<NewsItem[]> {
-	const [heads, dets] = await Promise.all([
-		db.select().from(mainArticle).orderBy(desc(mainArticle.date)).limit(limit),
-		db.select().from(mainArticleDet)
+export async function getHeadlines(): Promise<Headline[]> {
+	const [stories, rows] = await Promise.all([
+		db.select().from(mainArticle),
+		db.select().from(mainArticleDet).orderBy(desc(mainArticleDet.date), desc(mainArticleDet.id))
 	]);
-	return heads
-		.filter((h) => isoDate(h.date))
-		.map((h, i) => {
-			const first = dets.find((d) => d.parentId === h.id);
-			const img = (h.image ?? '').trim();
+	const storyOf = new Map(stories.map((s) => [s.id, s]));
+	return rows
+		.filter((r) => fixText(r.judul) && (r.teks ?? '').trim())
+		.map((r) => {
+			const story = r.parentId === null ? undefined : storyOf.get(r.parentId);
+			const storyImage = (story?.image ?? '').trim();
 			return {
-				id: `mu-${h.id}`,
-				title: fixText(h.judul),
-				excerpt: truncate(stripHtml(first?.teks), 200),
-				publishedAt: isoDate(h.date),
-				url: '/berita-utama',
-				...(img ? { image: imgUrl(img, 'artikel') } : {}),
-				...(i === 0 ? { featured: true } : {})
+				id: r.id,
+				title: fixText(r.judul),
+				date: isoDate(r.date) || isoDate(story?.date),
+				excerpt: truncate(stripHtml(r.teks), 220),
+				image: firstImage(r.teks) || (storyImage ? imgUrl(storyImage, 'artikel') : ''),
+				url: `/berita-utama/${r.id}`,
+				story: fixText(story?.judul),
+				storyId: story?.id ?? null,
+				html: cleanRichHtml(r.teks)
 			};
 		});
 }
@@ -185,7 +189,7 @@ export async function getAnnouncements(limit = 5): Promise<Announcement[]> {
  * Perhitungan hari memakai zona Asia/Jakarta agar tidak meleset saat tengah malam.
  */
 export async function getBirthdays(): Promise<BirthdayGroup[]> {
-	const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+	const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 	const jakarta = (offset: number) => {
 		const base = new Date(Date.now() + offset * 86_400_000);
 		const parts = new Intl.DateTimeFormat('en-CA', {
@@ -215,7 +219,7 @@ export async function getBirthdays(): Promise<BirthdayGroup[]> {
 			org: (r.org ?? '').trim()
 		}));
 		const [dd, mm, yyyy] = [iso.slice(8, 10), iso.slice(5, 7), iso.slice(0, 4)];
-		const prefix = offset === 0 ? 'Hari Ini, ' : '';
+		const prefix = offset === 0 ? 'Today, ' : '';
 		groups.push({
 			label: `${prefix}${dayNames[dow]}, ${dd}-${mm}-${yyyy}`,
 			date: iso,
@@ -241,38 +245,33 @@ export async function getBeritaIndex(): Promise<BeritaEntry[]> {
 		}));
 }
 
-/** Index Berita Utama: headline + sub-artikel. */
-export async function getMainArticleIndex(): Promise<MainArticleGroup[]> {
-	const [heads, dets] = await Promise.all([
-		db.select().from(mainArticle).orderBy(desc(mainArticle.date)),
-		db.select().from(mainArticleDet)
-	]);
-	return heads.map((h) => ({
-		id: `ma-${h.id}`,
-		title: fixText(h.judul),
-		date: isoDate(h.date),
-		image: (h.image ?? '').trim(),
-		items: dets
-			.filter((d) => d.parentId === h.id)
-			.map((d) => ({
-				id: `mad-${d.id}`,
-				title: fixText(d.judul),
-				date: isoDate(d.date),
-				html: cleanRichHtml(d.teks)
-			}))
-	}));
-}
+/** Headline tanpa HTML-nya — untuk daftar & slideshow (isi berita tidak ikut dikirim). */
+export const headlineCard = ({ id, title, date, excerpt, image, url, story, storyId }: Headline): HeadlineCard => ({
+	id,
+	title,
+	date,
+	excerpt,
+	image,
+	url,
+	story,
+	storyId
+});
 
-/** Struktur organisasi: unit + departemen, nama pejabat di-resolve dari tmemp. */
+/**
+ * Struktur organisasi: unit + departemen, nama pejabat di-resolve dari tmemp.
+ * C_TYPE_ORG 0 = pimpinan direktorat (puncak tree), 1 = pusat/divisi di bawahnya.
+ * Departemen yang unitnya sudah tidak ada (data lama 2010) otomatis tidak ikut.
+ */
 export async function getOrgStructure(): Promise<OrgUnit[]> {
 	const [units, dets, people] = await Promise.all([
-		db.select().from(org).orderBy(asc(org.id)),
+		db.select().from(org).orderBy(asc(org.type), asc(org.id)),
 		db.select().from(orgDet).orderBy(asc(orgDet.id)),
 		db.select({ nik: emp.nik, name: emp.name }).from(emp)
 	]);
 	const nameOf = new Map(people.map((p) => [(p.nik ?? '').trim(), fixText(p.name)]));
 	return units.map((u) => ({
 		id: `org-${u.id}`,
+		level: u.type === 0 ? 0 : 1,
 		title: fixText(u.title),
 		head: nameOf.get((u.nik ?? '').trim()) ?? '',
 		foto: (u.foto ?? '').trim(),
@@ -284,6 +283,8 @@ export async function getOrgStructure(): Promise<OrgUnit[]> {
 				head: nameOf.get(String(d.nik ?? '')) ?? '',
 				foto: (d.foto ?? '').trim()
 			}))
+			// Baris tanpa jabatan & tanpa pejabat = sisa data kosong.
+			.filter((d) => d.title || d.head)
 	}));
 }
 
@@ -417,9 +418,9 @@ export async function getOc(): Promise<OcSection[]> {
 export async function getJadwalKa(): Promise<CatalogView> {
 	const rows = await db.select().from(jadwalKa).orderBy(asc(jadwalKa.ka));
 	return {
-		title: 'Jadwal Kereta Api',
-		description: 'Jadwal keberangkatan kereta api. Ketik nama stasiun atau kereta untuk menyaring.',
-		columns: ['Dari', 'Tujuan', 'Nama Kereta', 'Berangkat', 'Tiba', 'Keterangan'],
+		title: 'Train Schedule',
+		description: 'Train departure schedule. Type a station or train name to filter.',
+		columns: ['From', 'To', 'Train', 'Departs', 'Arrives', 'Notes'],
 		rows: rows.map((r) => [
 			namaTempat(r.dari, STASIUN_KA),
 			namaTempat(r.tujuan, STASIUN_KA),
@@ -434,9 +435,9 @@ export async function getJadwalKa(): Promise<CatalogView> {
 export async function getJadwalPn(): Promise<CatalogView> {
 	const rows = await db.select().from(jadwalPn).orderBy(asc(jadwalPn.pn));
 	return {
-		title: 'Jadwal Penerbangan Dari Bandara Husein Sastranegara',
-		description: 'Jadwal penerbangan dari Bandara Husein Sastranegara, Bandung. Ketik maskapai atau kota untuk menyaring.',
-		columns: ['Nama Maskapai', 'Dari', 'Tujuan', 'Berangkat', 'Keterangan'],
+		title: 'Flight Schedule from Husein Sastranegara Airport',
+		description: 'Flights departing Husein Sastranegara Airport, Bandung. Type an airline or city to filter.',
+		columns: ['Airline', 'From', 'To', 'Departs', 'Notes'],
 		rows: rows.map((r) => [
 			fixText(r.pn),
 			namaTempat(r.dari, KOTA_PN),
@@ -522,11 +523,11 @@ export async function getLibraryIndex(): Promise<LibraryCatalog[]> {
 		db.select({ n: cnt }).from(koltextbook)
 	]);
 	return [
-		{ slug: 'document-avionic', title: 'Document Avionic', description: 'Katalog dokumen avionik.', count: avionic[0]?.n ?? 0 },
-		{ slug: 'jurnal-tel-dt', title: 'Katalog Jurnal TEL - DT', description: 'Katalog jurnal Direktorat Teknologi.', count: jurnal[0]?.n ?? 0 },
-		{ slug: 'doc-req', title: 'Report of Doc. Req. (Stand. Industry)', description: 'Dokumen requirement standar industri.', count: docreq[0]?.n ?? 0 },
-		{ slug: 'textbook', title: 'Koleksi Textbook - Library DT', description: 'Koleksi buku/textbook perpustakaan DT.', count: textbook[0]?.n ?? 0 },
-		{ slug: 'doa-library', title: 'DOA Library', description: 'Perpustakaan sistem DOA.', count: 0, href: LEGACY.doaLibrary }
+		{ slug: 'document-avionic', title: 'Document Avionic', description: 'Catalog of avionics documents.', count: avionic[0]?.n ?? 0 },
+		{ slug: 'jurnal-tel-dt', title: 'TEL - DT Journal Catalog', description: 'Journal catalog of the Directorate of Technology.', count: jurnal[0]?.n ?? 0 },
+		{ slug: 'doc-req', title: 'Report of Doc. Req. (Stand. Industry)', description: 'Industry-standard requirement documents.', count: docreq[0]?.n ?? 0 },
+		{ slug: 'textbook', title: 'DT Library Textbook Collection', description: 'Books and textbooks in the DT library.', count: textbook[0]?.n ?? 0 },
+		{ slug: 'doa-library', title: 'DOA Library', description: 'Library of the DOA system.', count: 0, href: LEGACY.doaLibrary }
 	];
 }
 
@@ -536,8 +537,8 @@ export async function getLibraryCatalog(slug: string): Promise<CatalogView | nul
 			const rows = await db.select().from(dokavionik).orderBy(asc(dokavionik.judul));
 			return {
 				title: 'Document Avionic',
-				description: 'Katalog dokumen avionik Direktorat Teknologi.',
-				columns: ['Judul', 'RAC No.', 'Lokasi', 'Th. Terbit', 'Program'],
+				description: 'Avionics document catalog of the Directorate of Technology.',
+				columns: ['Title', 'RAC No.', 'Location', 'Published', 'Program'],
 				rows: rows.map((r) => [
 					fixText(r.judul),
 					(r.racno ?? '').trim(),
@@ -550,9 +551,9 @@ export async function getLibraryCatalog(slug: string): Promise<CatalogView | nul
 		case 'jurnal-tel-dt': {
 			const rows = await db.select().from(jurnalTelDt).orderBy(asc(jurnalTelDt.judul));
 			return {
-				title: 'Katalog Jurnal TEL - DT',
-				description: 'Katalog jurnal Direktorat Teknologi.',
-				columns: ['Judul', 'Lokasi', 'Penerbit'],
+				title: 'TEL - DT Journal Catalog',
+				description: 'Journal catalog of the Directorate of Technology.',
+				columns: ['Title', 'Location', 'Publisher'],
 				rows: rows.map((r) => [fixText(r.judul), (r.lokasi ?? '').trim(), fixText(r.penerbit)])
 			};
 		}
@@ -560,8 +561,8 @@ export async function getLibraryCatalog(slug: string): Promise<CatalogView | nul
 			const rows = await db.select().from(docReqStdInd).orderBy(asc(docReqStdInd.id));
 			return {
 				title: 'Report of Doc. Req. (Stand. Industry)',
-				description: 'Dokumen requirement standar industri.',
-				columns: ['Tahun', 'Nota', 'No. Dokumen', 'Program', 'Hal.'],
+				description: 'Industry-standard requirement documents.',
+				columns: ['Year', 'Memo', 'Document No.', 'Program', 'Pages'],
 				rows: rows.map((r) => [
 					fixText(r.tahun),
 					fixText(r.nota),
@@ -574,9 +575,9 @@ export async function getLibraryCatalog(slug: string): Promise<CatalogView | nul
 		case 'textbook': {
 			const rows = await db.select().from(koltextbook).orderBy(asc(koltextbook.title));
 			return {
-				title: 'Koleksi Textbook - Library DT',
-				description: 'Koleksi buku/textbook perpustakaan Direktorat Teknologi.',
-				columns: ['Judul', 'Penulis', 'Kategori', 'Lokasi'],
+				title: 'DT Library Textbook Collection',
+				description: 'Books and textbooks in the Directorate of Technology library.',
+				columns: ['Title', 'Author', 'Category', 'Location'],
 				rows: rows.map((r) => [
 					fixText(r.title),
 					fixText(r.author),
@@ -603,8 +604,8 @@ export async function getLinks(): Promise<LinkGroup[]> {
 	const eksternal = rows.filter((r) => r.category === 1).map((r) => toItem(r, true));
 	const internal = rows.filter((r) => r.category !== 1).map((r) => toItem(r, false));
 	return [
-		{ title: 'Eksternal PT DI', items: eksternal },
-		{ title: 'Internal PT DI', items: internal }
+		{ title: 'External', items: eksternal },
+		{ title: 'PT DI Internal', items: internal }
 	];
 }
 
@@ -624,22 +625,22 @@ export async function getRegulations(): Promise<NamedCatalog[]> {
 	return [
 		{
 			slug: 'pemerintah-ri',
-			title: 'Pemerintah RI',
-			description: 'Regulasi sertifikasi Indonesia — Pemerintah RI.',
+			title: 'Government of Indonesia',
+			description: 'Indonesian certification regulations — Government of Indonesia.',
 			columns,
 			rows: pmrt.map(map)
 		},
 		{
 			slug: 'perhubungan-ri',
-			title: 'Kementerian Perhubungan RI',
-			description: 'Regulasi sertifikasi Indonesia — Kementerian Perhubungan RI.',
+			title: 'Ministry of Transportation',
+			description: 'Indonesian certification regulations — Ministry of Transportation.',
 			columns,
 			rows: hub.map(map)
 		},
 		{
 			slug: 'pertahanan-ri',
-			title: 'Kementerian Pertahanan RI',
-			description: 'Regulasi sertifikasi Indonesia — Kementerian Pertahanan RI.',
+			title: 'Ministry of Defense',
+			description: 'Indonesian certification regulations — Ministry of Defense.',
 			columns,
 			rows: han.map(map)
 		}
@@ -656,7 +657,7 @@ export async function getTelepon(): Promise<TeleponGroup[]> {
 			.filter((r) => r.category === cat)
 			.map((r) => ({ id: `telp-${r.id}`, title: fixText(r.title), no: (r.no ?? '').trim() }))
 	});
-	return [pick(0, 'PT DI'), pick(1, 'Bandung'), pick(2, 'Nasional')];
+	return [pick(0, 'PT DI'), pick(1, 'Bandung'), pick(2, 'National')];
 }
 
 export async function getSekilas(): Promise<SekilasItem[]> {

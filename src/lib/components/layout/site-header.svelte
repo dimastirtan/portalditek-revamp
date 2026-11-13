@@ -10,7 +10,7 @@
 
 	function reloadPage() {
 		if (browser) {
-			window.location.reload();
+			// Muat ulang penuh ke beranda (juga saat sudah di beranda).
 			window.location.href = '/';
 		}
 	}
@@ -19,13 +19,13 @@
 <header
 	class="bg-background/95 supports-[backdrop-filter]:bg-background/80 sticky top-0 z-40 border-b backdrop-blur"
 >
-	<!-- Baris 1: logo (kiri) + Our Library & tombol menu (kanan) -->
+	<!-- Baris 1: logo (kiri) + Library & tombol menu (kanan) -->
 	<div class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-		<a href="/" class="flex items-center gap-3" onclick={reloadPage} title="Kembali ke beranda">
+		<a href="/" class="flex items-center gap-3" onclick={reloadPage} title="Back to home">
 		{#if theme.current === 'dark'}
-				<img src="/logo-white.png" alt="Logo PT Dirgantara Indonesia" class="h-9 w-auto" />
+				<img src="/logo-white.png" alt="PT Dirgantara Indonesia logo" class="h-9 w-auto" />
 			{:else}
-				<img src="/logo.png" alt="Logo PT Dirgantara Indonesia" class="h-9 w-auto" />
+				<img src="/logo.png" alt="PT Dirgantara Indonesia logo" class="h-9 w-auto" />
 			{/if}
 			<span class="flex flex-col leading-tight">
 				<span class="font-display text-sm font-semibold tracking-tight sm:text-base">
@@ -36,16 +36,7 @@
 		</a>
 
 		<div class="flex items-center gap-2">
-			<a
-				href={SITE.library.href}
-				target={SITE.library.external ? '_blank' : undefined}
-				rel={SITE.library.external ? 'noopener' : undefined}
-				title="Our Library"
-				class="border-primary/30 text-primary hover:bg-primary/5 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors"
-			>
-				<Library class="size-4" />
-				<span class="hidden sm:inline">{SITE.library.label}</span>
-			</a>
+
 			<MobileNav />
 		</div>
 	</div>

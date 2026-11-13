@@ -14,9 +14,9 @@
 <section id="sistem" class="bg-secondary/30 border-b">
 	<div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 		<SectionHeading
-			eyebrow="Sistem"
-			title="Sistem internal direktorat"
-			description="Akses cepat ke aplikasi dan layanan yang digunakan sehari-hari di lingkungan Direktorat Teknologi dan Pengembangan."
+			eyebrow="Systems"
+			title="Directorate systems"
+			description="Quick access to the applications and services used every day across the Directorate of Technology and Development."
 		/>
 
 		<div class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:justify-items-center sm:gap-4 lg:grid-cols-3 xl:grid-cols-5">

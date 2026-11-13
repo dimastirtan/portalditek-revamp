@@ -40,7 +40,7 @@
 				<span
 					class="bg-destructive/10 text-destructive shrink-0 rounded-full px-2 py-0.5 text-xs font-medium"
 				>
-					{program.problem} bermasalah
+					{program.problem} with issues
 				</span>
 			{/if}
 		</div>
@@ -51,15 +51,15 @@
 		<div class="mt-auto pt-5">
 			{#if program.total}
 				<p class="text-sm">
-					<span class="font-semibold tabular-nums">{program.total}</span> proyek ·
-					<span class="tabular-nums">{program.onProgress}</span> berjalan
+					<span class="font-semibold tabular-nums">{program.total}</span> projects ·
+					<span class="tabular-nums">{program.onProgress}</span> in progress
 				</p>
 				<ProgressBar value={program.avgProgress} class="mt-2" />
 				<p class="text-muted-foreground mt-1 text-xs">
-					Rata-rata progres {formatPercent(program.avgProgress)}%
+					Average progress {formatPercent(program.avgProgress)}%
 				</p>
 			{:else}
-				<p class="text-muted-foreground text-sm">Belum ada proyek terdaftar</p>
+				<p class="text-muted-foreground text-sm">No projects registered yet</p>
 			{/if}
 		</div>
 	</div>

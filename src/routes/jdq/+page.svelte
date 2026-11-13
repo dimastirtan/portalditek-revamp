@@ -6,14 +6,14 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
-<svelte:head><title>Job Description Qualification · Direktorat Teknologi</title></svelte:head>
+<svelte:head><title>Job Description Qualification · Directorate of Technology</title></svelte:head>
 
 <section class="border-b">
 	<div class="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 		<SectionHeading
-			eyebrow="Profil · SDM"
+			eyebrow="Profile · Human Resources"
 			title="Job Description Qualification"
-			description="Dokumen JDQ per volume. Semua dokumen dalam format PDF."
+			description="JDQ documents by volume. All documents are PDF."
 		/>
 
 		<div class="mt-8 space-y-4">
@@ -48,7 +48,7 @@
 					{/if}
 				</div>
 			{:else}
-				<p class="text-muted-foreground text-sm">Data JDQ belum tersedia.</p>
+				<p class="text-muted-foreground text-sm">No JDQ data available yet.</p>
 			{/each}
 		</div>
 	</div>

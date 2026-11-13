@@ -30,13 +30,13 @@
 	<input
 		type="search"
 		bind:value={query}
-		placeholder="Cari…"
+		placeholder="Search…"
 		class="border-input bg-background focus:ring-ring w-full rounded-md border py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-2"
 	/>
 </div>
 
 <p class="text-muted-foreground mt-3 text-xs">
-	{filtered.length} entri{query ? ' (terfilter)' : ''} · halaman {current} dari {totalPages}
+	{filtered.length} entries{query ? ' (filtered)' : ''} · page {current} of {totalPages}
 </p>
 
 <div class="mt-2 overflow-x-auto rounded-lg border">
@@ -60,7 +60,7 @@
 			{:else}
 				<tr>
 					<td colspan={columns.length} class="text-muted-foreground px-3 py-8 text-center">
-						Tidak ada entri yang cocok.
+						No matching entries.
 					</td>
 				</tr>
 			{/each}
@@ -76,7 +76,7 @@
 			disabled={current === 1}
 			class="hover:bg-accent rounded-md border px-3 py-1.5 text-sm disabled:opacity-40"
 		>
-			‹ Sebelumnya
+			‹ Previous
 		</button>
 		<span class="text-muted-foreground px-3 text-sm tabular-nums">{current} / {totalPages}</span>
 		<button
@@ -85,7 +85,7 @@
 			disabled={current === totalPages}
 			class="hover:bg-accent rounded-md border px-3 py-1.5 text-sm disabled:opacity-40"
 		>
-			Berikutnya ›
+			Next ›
 		</button>
 	</div>
 {/if}

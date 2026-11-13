@@ -17,19 +17,18 @@ import { IMS_URL } from '$lib/config/ims';
 export const MAIN_NAV: NavItem[] = [
 	{ label: 'Home', href: '/' }, 
 	{
-		label: 'Pojok Media',
+		label: 'Media',
 		children: [
-			{ label: 'Berita Utama', href: '/berita-utama' },
-			{ label: 'Berita', href: '/berita' },
-			{ label: 'Artikel', href: '/#informasi' },
-			{ label: 'Download', href: '/#informasi'},
-			{ label: 'Sekilas Dittek', href: '/sekilas-dittek' }
+			{ label: 'Headlines', href: '/berita-utama' },
+			{ label: 'News', href: '/berita' },
+			{ label: 'Articles', href: '/#informasi' },
+			{ label: 'Downloads', href: '/#informasi' },
 		]
 	},
 	{
-		label: 'Profil',
+		label: 'Profile',
 		children: [
-			{ label: 'Organisasi', href: '/organisasi' },
+			{ label: 'Organization', href: '/organisasi' },
 			{
 				label: 'Capability',
 				children: [
@@ -41,30 +40,30 @@ export const MAIN_NAV: NavItem[] = [
 			{
 				label: 'Project',
 				children: [
-					{ label: 'Program R&D', href: '/program' },
+					{ label: 'R&D Programs', href: '/program' },
 					{ label: 'N219', href: '/project' }
 				]
 			},
 			{
-				label: 'SDM',
+				label: 'Human Resources',
 				children: [
-					{ label: 'Personil', href: '/personil' },
+					{ label: 'Personnel', href: '/personil' },
 					{ label: 'JDQ', href: '/jdq' }
 				]
 			},
 			{
-				label: 'Kerjasama Teknologi',
+				label: 'Technology Cooperation',
 				children: [
 					{ label: 'Experience', href: '/kerjasama' },
-					{ label: 'Kerjasama Teknologi', href: '/kerjasama' },
-					{ label: 'PT DI - Hankam', href: '/kerjasama' }
+					{ label: 'Technology Cooperation', href: '/kerjasama' },
+					{ label: 'PT DI – Defense', href: '/kerjasama' }
 				]
 			},
 			{
-				label: 'Fasilitas',
+				label: 'Facilities',
 				children: [
-					{ label: 'Ground Test', href: '/fasilitas#ground-test' },
-					{ label: 'Flight Test', href: '/fasilitas#flight-test' }
+					{ label: 'Ground Test', href: '/fasilitas/#ground-test' },
+					{ label: 'Flight Test', href: '/fasilitas/#flight-test' }
 				]
 			}
 		]
@@ -72,12 +71,12 @@ export const MAIN_NAV: NavItem[] = [
 	{
 		label: 'Command Media',
 		children: [
-			{ label: 'Sistem Command Media', href: '/command-media' },
-			{ label: 'Sekilas Info Command Media', href: '/command-media' }
+			{ label: 'Command Media System', href: '/command-media' },
+			{ label: 'Command Media Overview', href: '/command-media' }
 		]
 	},
 	{
-		label: 'OC',
+		label: 'Certificate',
 		children: [
 			{ label: 'Certificate', href: '/oc' },
 			{ label: 'OC', href: '/oc' }
@@ -86,24 +85,29 @@ export const MAIN_NAV: NavItem[] = [
 	{
 		label: 'Regulation',
 		children: [
-			{ label: 'Pemerintah RI', href: '/regulation' },
-			{ label: 'Kementrian Perhubungan RI', href: '/regulation' },
-			{ label: 'Kementrian Pertahanan RI', href: '/regulation' }
+			{ label: 'Government of Indonesia', href: '/regulation/#pemerintah-ri' },
+			{ label: 'Ministry of Transportation', href: '/regulation/#perhubungan-ri' },
+			{ label: 'Ministry of Defense', href: '/regulation/#pertahanan-ri' }
 		]
 	},
 	{
 		label: 'Information',
 		children: [
-			{ label: 'Kalender Kerja', href: '/kalender-kerja' },
-			{ label: 'Telepon Penting', href: '/telepon-penting' },
-			{ label: 'Jadwal Kereta Api Jur. Bandung', href: '/jadwal-kereta-api' },
-			{ label: 'Jadwal Penerbangan', href: '/jadwal-penerbangan' }
+			{ label: 'Work Calendar', href: '/kalender-kerja' },
+			{ label: 'Important Numbers', href: '/telepon-penting' },
+			{ label: 'Bandung Train Schedule', href: '/jadwal-kereta-api' },
+			{ label: 'Flight Schedule', href: '/jadwal-penerbangan' }
 		]
 	},
-	{ label: 'Contact Us', href: '/#kontak' },
 	{ label: 'Link', href: '/link' },
-	{ label: 'HKI', href: '/hki' },
-	{ label: 'Online Publication', href: '/online-publication' }
+	{ label: 'Contact Us', href: '#kontak' },
+	{
+		label: 'Library',
+		children: [
+			{ label: 'Catalogs', href: '/library/#catalogs' },
+			{ label: 'Online Publications', href: '/library/#publications' }
+		]
+	}
 ];
 
 /**
@@ -140,7 +144,7 @@ export const SYSTEMS: SystemLink[] = [
 	},
 	{
 		id: 'telepon',
-		label: 'Telepon Penting',
+		label: 'Important Numbers',
 		href: '/telepon-penting',
 		icon: 'number.svg',
 		logo: '/gambar/sistem/telepon.png'

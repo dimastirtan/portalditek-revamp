@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { CalendarDays, Bell } from '@lucide/svelte';
 	import ThemeToggle from '$lib/components/shared/theme-toggle.svelte';
-	export { onOpenCalendar, onOpenAnnouncement } from '$lib/components/layout/topbar.svelte';
 
 	type Props = {
 		/** Callback saat tombol Kalender diklik (modal diisi di M3). */
@@ -14,7 +13,9 @@
 
 	let { onOpenCalendar, onOpenAnnouncement, unreadCount = 0 }: Props = $props();
 
-	const today = new Intl.DateTimeFormat('id-ID', {
+	// Zona waktu eksplisit: tanggal di server (SSR) & browser sama, apa pun zona servernya.
+	const today = new Intl.DateTimeFormat('en-GB', {
+		timeZone: 'Asia/Jakarta',
 		weekday: 'long',
 		day: 'numeric',
 		month: 'long',
@@ -38,7 +39,7 @@
 				class="hover:bg-primary-foreground/10 inline-flex items-center gap-1.5 rounded px-2 py-1 font-medium transition-colors"
 			>
 				<CalendarDays class="size-3.5 sm:hidden" />
-				Kalender
+				Calendar
 			</button>
 
 			<span class="bg-primary-foreground/20 mx-1 h-4 w-px" aria-hidden="true"></span>

@@ -12,16 +12,16 @@
 	<section id="program" class="border-b">
 		<div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 			<SectionHeading
-				eyebrow="Program R&D"
-				title="Progres program pesawat"
-				description="Ringkasan proyek dan sertifikasi tiap program, bersumber dari Intelligent Management System (IMS)."
+				eyebrow="R&D Programs"
+				title="Aircraft program progress"
+				description="Project and certification summary for each program, sourced from the Intelligent Management System (IMS)."
 			>
 				{#snippet action()}
 					<a
 						href="/program"
 						class="text-primary inline-flex items-center gap-1 text-sm font-medium hover:underline"
 					>
-						Lihat semua
+						View all
 						<ArrowRight class="size-4" />
 					</a>
 				{/snippet}

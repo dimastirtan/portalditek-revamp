@@ -6,14 +6,14 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
-<svelte:head><title>Link / Taut · Direktorat Teknologi</title></svelte:head>
+<svelte:head><title>Links · Directorate of Technology</title></svelte:head>
 
 <section class="border-b">
 	<div class="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 		<SectionHeading
 			eyebrow="Link"
 			title="Link / Taut"
-			description="Tautan ke situs eksternal dan sistem internal PT Dirgantara Indonesia."
+			description="Links to external sites and internal systems of PT Dirgantara Indonesia."
 		/>
 
 		<div class="mt-8 space-y-8">
@@ -38,7 +38,7 @@
 								</a>
 							</li>
 						{:else}
-							<li class="text-muted-foreground text-sm">Belum ada tautan.</li>
+							<li class="text-muted-foreground text-sm">No links yet.</li>
 						{/each}
 					</ul>
 				</div>
@@ -46,8 +46,8 @@
 		</div>
 
 		<p class="text-muted-foreground mt-8 text-xs">
-			Tautan <b>Internal PT DI</b> mengarah ke host jaringan kantor (mis. <code>dittek</code>,
-			<code>10.1.x</code>) sehingga hanya dapat dibuka dari dalam jaringan PT DI.
+			<b>PT DI Internal</b> links point to office network hosts (e.g. <code>dittek</code>,
+			<code>10.1.x</code>), so they only open from inside the PT DI network.
 		</p>
 	</div>
 </section>

@@ -4,23 +4,23 @@
 </script>
 
 <svelte:head>
-	<title>Kalender Kerja · {SITE.shortName}</title>
-	<meta name="description" content="Kalender kerja dan hari libur Direktorat Teknologi." />
+	<title>Work Calendar · {SITE.shortName}</title>
+	<meta name="description" content="Work calendar and public holidays of the Directorate of Technology." />
 </svelte:head>
 
 <section class="border-b">
 	<div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 		<SectionHeading
 			eyebrow="Information"
-			title="Kalender kerja"
-			description="Hari libur nasional, cuti bersama, dan agenda kerja direktorat. Klik sebuah tanggal untuk melihat detailnya."
+			title="Work calendar"
+			description="National holidays, collective leave, and directorate events. Click a date to see its details."
 		/>
 
 		<div class="bg-card mt-8 overflow-hidden rounded-xl border">
 			<div class="relative aspect-[4/3] w-full sm:aspect-[16/9]">
 				<iframe
 					src={SITE.calendarIframeSrc}
-					title="Kalender Kerja Direktorat Teknologi"
+					title="Directorate of Technology work calendar"
 					class="absolute inset-0 h-full w-full"
 					style="border:0"
 					loading="lazy"

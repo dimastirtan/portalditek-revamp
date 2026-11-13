@@ -12,7 +12,8 @@ Portal internal Direktorat Teknologi dan Pengembangan (DTP), revamp dari portal 
 
 ## Prasyarat
 
-- Node.js **≥ 20**, npm **≥ 10**
+- Node.js **24 LTS** (atau 26 LTS; minimal 20.19 / 22.12 — Node 20 sudah EOL), npm **≥ 10**
+- Server: Windows 10/11 atau Windows Server 2016+ **64-bit** (atau Linux)
 - **MySQL** berisi database `dittek` (dump portal lama), reachable dari mesin yang menjalankan app
 
 ## Setup
@@ -35,11 +36,14 @@ Buka http://localhost:5173.
 | `DB_PASSWORD` | *(kosong)* | password |
 | `DB_NAME` | `dittek` | nama database |
 | `FILES_DIR` | `./files` | folder berkas dokumen (hasil `npm run mirror-files`) |
+| `CACHE_TTL_SECONDS` | `300` | lama data DB portal di-cache; perubahan admin tampil paling lambat setelah ini |
+| `ORIGIN` | *(kosong)* | alamat publik portal, mis. `http://portalditek.indonesian-aerospace.com` (lihat Deploy) |
+| `PORT` | `3000` | port server |
 | `IMS_DB_HOST` | *(kosong)* | host MySQL IMS; kosong = bagian Program R&D disembunyikan |
 | `IMS_DB_PORT` | `3306` | port MySQL IMS |
 | `IMS_DB_USER` / `IMS_DB_PASSWORD` | *(kosong)* | user **read-only** IMS (lihat di bawah) |
 | `IMS_DB_NAME` | `ptdi_project` | database IMS |
-| `PUBLIC_IMS_URL` | `http://10.20.65.76:8080/ims` | web IMS untuk tautan "Buka di IMS" |
+| `PUBLIC_IMS_URL` | `http://10.1.95.116:81` | web IMS untuk tautan "Buka di IMS" |
 | `PUBLIC_IMS_IMAGE_URL` | `/gambar/ims/assets/images` | folder gambar program; nama file diambil dari kolom `programs.image`. Arahkan ke folder upload IMS bila ingin ikut IMS langsung |
 | `PUBLIC_LEGACY_PORTAL_URL` | `http://10.1.95.116` | portal PHP lama (`download.php` cadangan, `certification/`) |
 | `PUBLIC_DOA_URL` | `http://10.1.95.116:8081` | Web DOA |
@@ -76,9 +80,24 @@ npm start              # = node --env-file=.env build
 
 Di server yang sama, jalankan `npm run mirror-files` minimal sekali (± 1,8 GB) supaya berkas dokumen tersimpan di `FILES_DIR`. Ulangi berkala selama admin masih meng-upload lewat dt-admin portal lama — berkas yang sudah ada dilewati.
 
+### Checklist sebelum go-live
+
+1. **`.env` production** di root project: `DB_*` ke MySQL `dittek`, dan `IMS_DB_*` ke MySQL IMS (`ptdi_project`, web IMS di `http://10.1.95.116:81`). `IMS_DB_HOST=127.0.0.1` hanya benar bila portal berjalan **di server yang sama** dengan DB IMS (10.1.95.116) — dari mesin lain pakai `10.1.95.116` dengan user yang boleh login dari jaringan. Disarankan **user read-only** (SQL GRANT di bagian Data & arsitektur), bukan `root`.
+2. **`ORIGIN`** = alamat yang diketik pengguna (mis. `http://portalditek.indonesian-aerospace.com`). Tanpa ini adapter-node menganggap alamatnya `https://<host>`.
+3. **Berkas dokumen**: `npm run mirror-files` di server ini; pastikan `FILES_DIR` (default `./files`) ikut dibackup.
+4. **Jalankan sebagai service** supaya hidup lagi setelah restart/logoff — di Windows mis. NSSM: program `node`, argumen `--env-file=.env build`, *startup directory* = folder project. Buka port (`PORT`) di Windows Firewall.
+5. **Cek dari jaringan server**: DB portal (`DB_HOST:3306`), DB IMS (`IMS_DB_HOST:3306`), dan portal lama (`PUBLIC_LEGACY_PORTAL_URL`) bisa dijangkau.
+
+### Performa & ketahanan
+
+- Data DB di-cache di memori (`src/lib/server/cache.ts`, TTL `CACHE_TTL_SECONDS`; IMS 15 menit). Request bersamaan berbagi satu query.
+- Bila DB tidak terjangkau: koneksi gagal dalam 3 detik, data terakhir tetap ditampilkan, dan percobaan ulang ditahan 1 menit — portal tidak ikut lambat.
+- Uji beban lokal (50 pengguna bersamaan): beranda ± 200 request/detik, 0 gagal; saat DB mati tetap ± 300 request/detik, 0 gagal.
+- Header keamanan dasar dipasang di `src/hooks.server.ts`.
+
 ## Data & arsitektur
 
-- Konten (berita, artikel, agenda, unduhan, organisasi, dst.) dibaca **live dari MySQL** tiap request lewat query di `src/lib/server/portal/queries.ts`. Homepage `prerender = false`.
+- Konten (berita, artikel, agenda, unduhan, organisasi, dst.) dibaca dari MySQL lewat query di `src/lib/server/portal/queries.ts`, di-cache per halaman di loader (`cached()` dari `src/lib/server/cache.ts`). Homepage `prerender = false`.
 - Data lama sering mengandung mojibake Windows-1252 + HTML mentah; dibersihkan di `src/lib/server/portal/transform.ts` (`fixText`, `stripHtml`, `cleanRichHtml`).
 - Berkas dokumen (artikel, download, agenda, JDQ, OC, Online Publication) diunduh lewat endpoint `/unduh/<kategori>/<file>` (`src/routes/unduh`), yang membaca `FILES_DIR/<kategori>/<file>`. Bila berkas belum disalin, endpoint mengambilnya dari `download.php` portal lama selama server itu masih hidup; setelah server lama mati, berkas yang belum disalin → 404.
 - Alamat server portal lama & sub-sistem (DOA, dotProject, Certification, DOA Library) terpusat di `src/lib/config/legacy.ts`. Server lama 10.1.95.76 akan di-disable; default sudah ke 10.1.95.116.

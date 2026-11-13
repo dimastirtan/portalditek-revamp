@@ -6,14 +6,14 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
-<svelte:head><title>Fasilitas · Direktorat Teknologi</title></svelte:head>
+<svelte:head><title>Facilities · Directorate of Technology</title></svelte:head>
 
 <section class="border-b">
 	<div class="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 		<SectionHeading
-			eyebrow="Profil"
-			title="Fasilitas"
-			description="Fasilitas pengujian Direktorat Teknologi dan Pengembangan."
+			eyebrow="Profile"
+			title="Facilities"
+			description="Testing facilities of the Directorate of Technology and Development."
 		/>
 
 		<div id="ground-test" class="mt-8 scroll-mt-28">
@@ -32,7 +32,7 @@
 						</div>
 					</details>
 				{:else}
-					<p class="text-muted-foreground text-sm">Data Ground Test belum tersedia.</p>
+					<p class="text-muted-foreground text-sm">No ground test data available yet.</p>
 				{/each}
 			</div>
 		</div>
@@ -46,7 +46,7 @@
 						<div class="mt-2"><RichContent html={item.html} /></div>
 					</div>
 				{:else}
-					<p class="text-muted-foreground text-sm">Data Flight Test belum tersedia.</p>
+					<p class="text-muted-foreground text-sm">No flight test data available yet.</p>
 				{/each}
 			</div>
 		</div>

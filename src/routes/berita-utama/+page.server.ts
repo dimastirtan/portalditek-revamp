@@ -1,10 +1,13 @@
 import type { PageServerLoad } from './$types';
-import { getMainArticleIndex } from '$lib/server/portal/queries';
+import { getHeadlines, headlineCard } from '$lib/server/portal/queries';
+import { cached } from '$lib/server/cache';
+
 export const load: PageServerLoad = async () => {
 	try {
-		return { groups: await getMainArticleIndex() };
+		const all = await cached('portal:headlines', getHeadlines);
+		return { headlines: all.map(headlineCard) };
 	} catch (err) {
-		console.error('[portal] gagal memuat berita utama:', err);
-		return { groups: [] };
+		console.error('[portal] gagal memuat headline:', err);
+		return { headlines: [] };
 	}
 };

@@ -9,9 +9,9 @@
 <section id="ulang-tahun" class="border-b">
 	<div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 		<SectionHeading
-			eyebrow="Personil"
-			title="Ulang tahun Direktorat Teknologi"
-			description="Ucapkan selamat kepada rekan yang berulang tahun hari ini dan hari-hari berikutnya."
+			eyebrow="Personnel"
+			title="Birthdays"
+			description="Wish your colleagues a happy birthday — today and the next two days."
 		/>
 
 		<div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -34,7 +34,7 @@
 								</span>
 							</li>
 						{:else}
-							<li class="text-muted-foreground text-sm italic">Tidak ada</li>
+							<li class="text-muted-foreground text-sm italic">None</li>
 						{/each}
 					</ul>
 				</div>

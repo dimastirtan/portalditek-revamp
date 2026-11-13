@@ -3,40 +3,17 @@
  * kolom IMS (projects.progress / status, project_stages.progress) — portal
  * tidak menghitung ulang.
  *
- * Hasil di-cache 15 menit di memori server supaya IMS tidak dibebani tiap
- * request. Bila IMS gagal, data terakhir tetap dipakai; percobaan ulang
- * ditahan 1 menit supaya halaman tidak ikut menunggu timeout tiap request.
+ * Hasil di-cache 15 menit lewat $lib/server/cache supaya IMS tidak dibebani
+ * tiap request; bila IMS gagal, data terakhir tetap dipakai.
  */
 import { asc, eq, inArray, sql } from 'drizzle-orm';
 import { imsDb } from '.';
 import { programs, projects, projectStages, projectDocuments } from './schema';
 import { imsImageUrl } from '$lib/config/ims';
+import { cached } from '$lib/server/cache';
 import type { ImsProgram, ImsProgramDetail } from '$lib/types/content';
 
 const TTL = 15 * 60_000;
-const RETRY_AFTER = 60_000;
-
-type Entry = { at: number; value?: unknown; failedAt?: number };
-const cache = new Map<string, Entry>();
-
-async function cached<T>(key: string, load: () => Promise<T>): Promise<T> {
-	const hit = cache.get(key);
-	const now = Date.now();
-	if (hit?.value !== undefined && now - hit.at < TTL) return hit.value as T;
-	if (hit?.failedAt && now - hit.failedAt < RETRY_AFTER) {
-		if (hit.value !== undefined) return hit.value as T;
-		throw new Error('IMS tidak terjangkau, dicoba ulang sebentar lagi');
-	}
-	try {
-		const value = await load();
-		cache.set(key, { at: now, value });
-		return value;
-	} catch (err) {
-		cache.set(key, { ...hit, at: hit?.at ?? 0, failedAt: now });
-		if (hit?.value !== undefined) return hit.value as T;
-		throw err;
-	}
-}
 
 /** false bila IMS_DB_HOST belum di-set — bagian IMS di portal disembunyikan. */
 export const imsConfigured = imsDb !== null;
@@ -62,7 +39,7 @@ const slugify = (s: string) =>
 export function getImsPrograms(): Promise<ImsProgram[]> {
 	const db = imsDb;
 	if (!db) return Promise.resolve([]);
-	return cached('programs', async () => {
+	return cached('ims:programs', async () => {
 		const rows = await db
 			.select({
 				id: programs.id,
@@ -91,7 +68,7 @@ export function getImsPrograms(): Promise<ImsProgram[]> {
 			problem: num(r.problem),
 			avgProgress: num(r.avgProgress)
 		}));
-	});
+	}, TTL);
 }
 
 /** Satu program + proyek + 6 tahap sertifikasinya. null bila slug tidak ada. */
@@ -100,7 +77,7 @@ export async function getImsProgram(slug: string): Promise<ImsProgramDetail | nu
 	if (!db) return null;
 	const program = (await getImsPrograms()).find((p) => p.slug === slug);
 	if (!program) return null;
-	return cached(`program:${program.id}`, async () => {
+	return cached(`ims:program:${program.id}`, async () => {
 		const rows = await db
 			.select()
 			.from(projects)
@@ -153,5 +130,5 @@ export async function getImsProgram(slug: string): Promise<ImsProgramDetail | nu
 					}))
 			}))
 		};
-	});
+	}, TTL);
 }

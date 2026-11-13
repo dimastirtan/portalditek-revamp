@@ -90,19 +90,35 @@ export type BeritaEntry = {
 	html: string;
 };
 
-/** Grup Berita Utama: satu headline + beberapa sub-artikel. */
-export type MainArticleGroup = {
-	id: string;
+/**
+ * Satu headline Berita Utama = satu baris tmmainarticledet (punya judul, tanggal
+ * & teks sendiri). Beberapa headline bisa berada di satu berita induk (tmmainarticle).
+ */
+export type Headline = {
+	id: number;
 	title: string;
+	/** ISO date string. */
 	date: string;
-	/** Nama berkas gambar headline (di static/gambar/artikel/). */
+	excerpt: string;
+	/** URL gambar: gambar pertama di teks, atau gambar berita induk; '' bila tidak ada. */
 	image: string;
-	items: BeritaEntry[];
+	/** Halaman detail: /berita-utama/<id>. */
+	url: string;
+	/** Judul berita induk. */
+	story: string;
+	storyId: number | null;
+	/** HTML sudah dibersihkan (aman untuk {@html}). */
+	html: string;
 };
+
+/** Headline tanpa isi HTML — untuk daftar & slideshow (HTML tidak ikut dikirim). */
+export type HeadlineCard = Omit<Headline, 'html'>;
 
 /** Unit organisasi + departemen di bawahnya. */
 export type OrgUnit = {
 	id: string;
+	/** 0 = pimpinan direktorat (puncak tree), 1 = pusat/divisi di bawahnya. */
+	level: 0 | 1;
 	title: string;
 	head: string;
 	/** Nama berkas foto pejabat (di static/gambar/org/). */

@@ -21,13 +21,13 @@
 
 <section id="berita" class="border-b">
 	<div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
-		<SectionHeading eyebrow="Berita" title="Berita utama">
+		<SectionHeading eyebrow="News" title="Headlines">
 			{#snippet action()}
 				<a
 					href="/berita-utama"
 					class="text-primary inline-flex items-center gap-1 text-sm font-medium hover:underline"
 				>
-					Lihat semua
+					View all
 					<ArrowRight class="size-4" />
 				</a>
 			{/snippet}
@@ -50,7 +50,7 @@
 						aria-hidden="true"
 					>
 						<span class="font-display text-sm font-medium tracking-wider uppercase"
-							>Berita Utama</span
+							>Headline</span
 						>
 					</div>
 				{/if}
@@ -74,13 +74,13 @@
 			<div class="flex min-w-0 flex-col">
 				<div class="mb-3 flex items-center justify-between max-w-full">
 					<h3 class="font-display text-sm font-semibold tracking-wider uppercase">
-						Sekilas berita
+						News in brief
 					</h3>
 					<div class="flex gap-1">
 						<button
 							type="button"
 							onclick={() => scrollByCard(-1)}
-							aria-label="Berita sebelumnya"
+							aria-label="Previous news"
 							class="hover:bg-accent inline-flex size-8 items-center justify-center rounded-md border transition-colors"
 						>
 							<ChevronLeft class="size-4" />
@@ -88,7 +88,7 @@
 						<button
 							type="button"
 							onclick={() => scrollByCard(1)}
-							aria-label="Berita berikutnya"
+							aria-label="Next news"
 							class="hover:bg-accent inline-flex size-8 items-center justify-center rounded-md border transition-colors"
 						>
 							<ChevronRight class="size-4" />

@@ -15,7 +15,7 @@
 		<h3 class="font-display text-lg font-semibold">Quick Mail</h3>
 	</div>
 	<p class="text-muted-foreground mt-1 text-sm">
-		Masuk cepat ke webmail internal Direktorat Teknologi dan Pengembangan.
+		Quick access to the internal webmail of the Directorate of Technology and Development.
 	</p>
 
 	<form
@@ -28,7 +28,7 @@
 
 		<Button type="submit" class="w-full">
 			<LogIn class="size-4" />
-			Klik untuk membuka email
+			Open email
 		</Button>
 	</form>
 </div>

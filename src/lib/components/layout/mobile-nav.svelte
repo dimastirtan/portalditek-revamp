@@ -65,7 +65,7 @@
 <Sheet.Root bind:open>
 	<Sheet.Trigger
 		class="hover:bg-accent hover:text-accent-foreground inline-flex size-9 items-center justify-center rounded-md transition-colors lg:hidden"
-		aria-label="Buka menu navigasi"
+		aria-label="Open navigation menu"
 	>
 		<Menu class="size-5" />
 	</Sheet.Trigger>
@@ -83,7 +83,7 @@
 
 			<div class="border-t p-2">
 				<p class="text-muted-foreground px-3 py-2 text-xs font-semibold tracking-wider uppercase">
-					Sistem
+					Systems
 				</p>
 				{#each SYSTEMS as sys (sys.id)}
 					<a

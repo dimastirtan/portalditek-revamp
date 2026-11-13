@@ -16,12 +16,12 @@
 	</div>
 	<p class="font-display mt-6 text-5xl font-semibold tracking-tight">{page.status}</p>
 	<p class="text-muted-foreground mt-3 text-sm leading-relaxed">
-		{page.error?.message ?? 'Halaman yang Anda cari tidak ditemukan.'}
+		{page.error?.message ?? 'The page you are looking for could not be found.'}
 	</p>
 	<div class="mt-8">
 		<Button href="/" variant="outline">
 			<ArrowLeft class="size-4" />
-			Kembali ke beranda
+			Back to home
 		</Button>
 	</div>
 </div>

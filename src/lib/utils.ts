@@ -10,11 +10,11 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
-/** Format ISO date ('2026-01-20') ke format Indonesia ('20 Januari 2026'). */
+/** Format ISO date ('2026-01-20') ke format Inggris ('20 January 2026'). */
 export function formatDate(iso: string, opts?: Intl.DateTimeFormatOptions): string {
 	const d = new Date(iso);
 	if (Number.isNaN(d.getTime())) return iso;
-	return new Intl.DateTimeFormat('id-ID', {
+	return new Intl.DateTimeFormat('en-GB', {
 		day: 'numeric',
 		month: 'long',
 		year: 'numeric',
@@ -22,9 +22,9 @@ export function formatDate(iso: string, opts?: Intl.DateTimeFormatOptions): stri
 	}).format(d);
 }
 
-/** Format persen gaya Indonesia tanpa tanda %: 23.32 → '23,32', 1.4583 → '1,46'. */
+/** Format persen tanpa tanda %: 23.32 → '23.32', 1.4583 → '1.46'. */
 export function formatPercent(value: number, digits = 2): string {
-	return new Intl.NumberFormat('id-ID', { maximumFractionDigits: digits }).format(value);
+	return new Intl.NumberFormat('en-US', { maximumFractionDigits: digits }).format(value);
 }
 
 // Helper types untuk komponen shadcn-svelte (dipakai mulai M2).

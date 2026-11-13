@@ -10,8 +10,8 @@
 
 <div class="flex h-full flex-col">
 	<div class="border-b p-4">
-		<h2 class="font-display font-semibold tracking-tight">Pengumuman</h2>
-		<p class="text-muted-foreground text-sm">Informasi dan pengumuman terbaru.</p>
+		<h2 class="font-display font-semibold tracking-tight">Announcements</h2>
+		<p class="text-muted-foreground text-sm">Latest information and announcements.</p>
 	</div>
 
 	<div class="flex-1 overflow-y-auto p-4">
@@ -20,7 +20,7 @@
 				class="text-muted-foreground flex flex-col items-center justify-center gap-2 py-12 text-center"
 			>
 				<BellOff class="size-8 opacity-40" />
-				<p class="text-sm">Saat ini tidak ada pengumuman baru.</p>
+				<p class="text-sm">There are no new announcements.</p>
 			</div>
 		{:else}
 			<ul class="space-y-4">

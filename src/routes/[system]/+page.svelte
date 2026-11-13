@@ -6,7 +6,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.system.label} – Direktorat Teknologi</title>
+	<title>{data.system.label} – Directorate of Technology</title>
 </svelte:head>
 
 <SystemPlaceholder system={data.system} />

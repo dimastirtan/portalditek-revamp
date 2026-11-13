@@ -8,9 +8,9 @@
 <section id="kontak">
 	<div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 		<SectionHeading
-			eyebrow="Kontak"
-			title="Hubungi kami"
-			description="Informasi kontak dan jam operasional Direktorat Teknologi dan Pengembangan."
+			eyebrow="Contact"
+			title="Get in touch"
+			description="Contact details and office hours of the Direktorat Teknologi dan Pengembangan."
 		/>
 
 		<div class="mt-8 grid gap-6 lg:grid-cols-2">
@@ -23,7 +23,7 @@
 						<MapPin class="size-5" />
 					</div>
 					<div>
-						<h3 class="text-sm font-semibold">Alamat</h3>
+						<h3 class="text-sm font-semibold">Address</h3>
 						<p class="text-muted-foreground mt-1 text-sm leading-relaxed">
 							{SITE.address.street}<br />
 							{SITE.address.city}
@@ -53,22 +53,10 @@
 					<div
 						class="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-md"
 					>
-						<Phone class="size-5" />
-					</div>
-					<div>
-						<h3 class="text-sm font-semibold">Telepon</h3>
-						<p class="text-muted-foreground mt-1 text-sm">{SITE.contact.phone}</p>
-					</div>
-				</div>
-
-				<div class="flex gap-4">
-					<div
-						class="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-md"
-					>
 						<Clock class="size-5" />
 					</div>
 					<div>
-						<h3 class="text-sm font-semibold">Jam operasional</h3>
+						<h3 class="text-sm font-semibold">Office hours</h3>
 						<ul class="text-muted-foreground mt-1 space-y-0.5 text-sm">
 							{#each SITE.hours as h (h.days)}
 								<li class="flex justify-between gap-4">

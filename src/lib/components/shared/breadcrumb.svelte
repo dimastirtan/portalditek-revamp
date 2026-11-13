@@ -10,7 +10,7 @@
 		<li>
 			<a href="/" class="hover:text-foreground inline-flex items-center gap-1 transition-colors">
 				<Home class="size-3.5" />
-				<span class="sr-only">Beranda</span>
+				<span class="sr-only">Home</span>
 			</a>
 		</li>
 		{#each items as item, i (item.label)}

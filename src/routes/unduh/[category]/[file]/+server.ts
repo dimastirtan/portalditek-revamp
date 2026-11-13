@@ -92,10 +92,10 @@ async function fromLegacy(category: DownloadCategory, file: string): Promise<Res
 export const GET: RequestHandler = async ({ params }) => {
 	const category = params.category as DownloadCategory;
 	const file = params.file;
-	if (!DOWNLOAD_CATEGORIES.includes(category)) error(404, 'Berkas tidak ditemukan');
+	if (!DOWNLOAD_CATEGORIES.includes(category)) error(404, 'File not found');
 	// Nama file dari DB tidak pernah mengandung pemisah path; tolak agar tidak bisa keluar folder.
 	if (!file || /[/\\\0]/.test(file) || file === '.' || file === '..') {
-		error(404, 'Berkas tidak ditemukan');
+		error(404, 'File not found');
 	}
 
 	const full = path.join(path.resolve(env.FILES_DIR || 'files'), category, file);
@@ -109,5 +109,5 @@ export const GET: RequestHandler = async ({ params }) => {
 	if (legacy) return legacy;
 
 	console.warn(`[unduh] berkas tidak ada: ${category}/${file}`);
-	error(404, 'Berkas tidak ditemukan. Hubungi admin portal.');
+	error(404, 'File not found. Please contact the portal admin.');
 };

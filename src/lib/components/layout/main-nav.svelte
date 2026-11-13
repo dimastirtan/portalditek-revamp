@@ -77,7 +77,7 @@
 	{/if}
 {/snippet}
 
-<nav bind:this={navEl} aria-label="Navigasi utama" class="hidden items-center gap-0.5 py-1 lg:flex">
+<nav bind:this={navEl} aria-label="Navigasi utama" class="relative flex items-center justify-center gap-1 my-2">
 	{#each MAIN_NAV as item, i (item.label)}
 		{#if hasChildren(item)}
 			<div class="relative">

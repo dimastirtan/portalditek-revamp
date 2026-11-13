@@ -12,6 +12,6 @@ export const load: PageServerLoad = async ({ params }) => {
 		console.error('[portal] program IMS:', err);
 		return { program: null };
 	}
-	if (!program && imsConfigured) error(404, 'Program tidak ditemukan');
+	if (!program && imsConfigured) error(404, 'Program not found');
 	return { program };
 };

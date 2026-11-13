@@ -159,14 +159,12 @@
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
 		text-rendering: optimizeLegibility;
-		scroll-behavior: smooth;
+		/* Sengaja TANPA scroll-behavior: smooth — merusak lompatan ke anchor saat
+		   pindah halaman lewat menu (scrollIntoView SvelteKit terpotong). */
 		/* Offset agar anchor tidak tertutup header sticky (topbar + header). */
 		scroll-padding-top: 6.5rem;
 	}
 	@media (prefers-reduced-motion: reduce) {
-		html {
-			scroll-behavior: auto;
-		}
 		*,
 		*::before,
 		*::after {

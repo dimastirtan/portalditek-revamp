@@ -20,7 +20,12 @@ const pool = mysql.createPool({
 	// utf8mb4 pada koneksi + fixText() di transform.ts menangani sisa mojibake.
 	charset: 'utf8mb4',
 	connectionLimit: 5,
-	waitForConnections: true
+	waitForConnections: true,
+	// Gagal cepat bila DB tidak terjangkau (default 10 detik); cache di
+	// $lib/server/cache yang menahan percobaan ulang & memakai data terakhir.
+	connectTimeout: 3000,
+	// Jaga koneksi idle tetap hidup melewati firewall antar-jaringan.
+	enableKeepAlive: true
 });
 
 export const db = drizzle(pool, { schema, mode: 'default' });

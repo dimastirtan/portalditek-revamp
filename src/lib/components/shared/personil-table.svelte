@@ -41,7 +41,7 @@
 		<input
 			type="search"
 			bind:value={query}
-			placeholder="Cari nama atau NIK…"
+			placeholder="Search name or employee ID…"
 			class="border-input bg-background focus:ring-ring w-full rounded-md border py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-2"
 		/>
 	</div>
@@ -49,7 +49,7 @@
 		bind:value={orgFilter}
 		class="border-input bg-background focus:ring-ring rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2"
 	>
-		<option value="">Semua Unit Org</option>
+		<option value="">All units</option>
 		{#each orgs as o (o)}
 			<option value={o}>{o}</option>
 		{/each}
@@ -57,7 +57,7 @@
 </div>
 
 <p class="text-muted-foreground mt-3 text-xs">
-	{filtered.length} personil{query || orgFilter ? ' (terfilter)' : ''} · halaman {pageClamped} dari {totalPages}
+	{filtered.length} people{query || orgFilter ? ' (filtered)' : ''} · page {pageClamped} of {totalPages}
 </p>
 
 <div class="mt-2 overflow-x-auto rounded-lg border">
@@ -65,11 +65,11 @@
 		<thead class="bg-muted/50 text-muted-foreground text-left text-xs uppercase tracking-wide">
 			<tr>
 				<th class="px-3 py-2 font-medium">NIK</th>
-				<th class="px-3 py-2 font-medium">Nama</th>
+				<th class="px-3 py-2 font-medium">Name</th>
 				<th class="px-3 py-2 font-medium">Org.</th>
-				<th class="hidden px-3 py-2 font-medium sm:table-cell">Telepon</th>
+				<th class="hidden px-3 py-2 font-medium sm:table-cell">Phone</th>
 				<th class="hidden px-3 py-2 font-medium md:table-cell">Email</th>
-				<th class="px-3 py-2 font-medium">Gol. Darah</th>
+				<th class="px-3 py-2 font-medium">Blood type</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -85,7 +85,7 @@
 			{:else}
 				<tr>
 					<td colspan="6" class="text-muted-foreground px-3 py-8 text-center">
-						Tidak ada personil yang cocok.
+						No matching personnel.
 					</td>
 				</tr>
 			{/each}
@@ -101,7 +101,7 @@
 			disabled={pageClamped === 1}
 			class="hover:bg-accent rounded-md border px-3 py-1.5 text-sm disabled:opacity-40"
 		>
-			‹ Sebelumnya
+			‹ Previous
 		</button>
 		<span class="text-muted-foreground px-3 text-sm tabular-nums">
 			{pageClamped} / {totalPages}
@@ -112,7 +112,7 @@
 			disabled={pageClamped === totalPages}
 			class="hover:bg-accent rounded-md border px-3 py-1.5 text-sm disabled:opacity-40"
 		>
-			Berikutnya ›
+			Next ›
 		</button>
 	</div>
 {/if}

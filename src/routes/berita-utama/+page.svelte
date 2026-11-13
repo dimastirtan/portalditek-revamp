@@ -1,58 +1,52 @@
 <script lang="ts">
 	import SectionHeading from '$lib/components/shared/section-heading.svelte';
-	import RichContent from '$lib/components/shared/rich-content.svelte';
-	import { formatDate, imgUrl } from '$lib/utils';
+	import { Newspaper } from '@lucide/svelte';
+	import { formatDate } from '$lib/utils';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 </script>
 
-<svelte:head><title>Berita Utama · Direktorat Teknologi</title></svelte:head>
+<svelte:head><title>Headlines · Directorate of Technology</title></svelte:head>
 
 <section class="border-b">
-	<div class="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+	<div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 		<SectionHeading
-			eyebrow="Pojok Media"
-			title="Indeks berita utama"
-			description="Sorotan utama Direktorat Teknologi beserta artikel-artikel terkaitnya."
+			eyebrow="Media"
+			title="Headlines"
+			description="Top stories from the Directorate of Technology, newest first."
 		/>
 
-		<div class="mt-8 space-y-6 grid gap-6 lg:grid-cols-2">
-			{#each data.groups as group (group.id)}
-				<article class="overflow-hidden rounded-xl border">
-					{#if group.image}
-						<img
-							src={imgUrl(group.image, 'artikel')}
-							alt={group.title}
-							loading="lazy"
-							class="bg-muted w-full object-cover"
-						/>
-					{/if}
-					<div class="p-5">
-					<p class="text-muted-foreground text-xs tabular-nums">{formatDate(group.date)}</p>
-					<h2 class="font-display mt-1 text-lg font-semibold">{group.title}</h2>
-
-					{#if group.items.length}
-						<div class="mt-3 divide-y border-t">
-							{#each group.items as item (item.id)}
-								<details class="group/item">
-									<summary
-										class="hover:text-primary flex cursor-pointer list-none items-center gap-2 py-2.5 text-sm"
-									>
-										<span class="text-primary">›</span>
-										<span class="group-open/item:font-medium">{item.title}</span>
-									</summary>
-									<div class="pb-4 pl-5">
-										<RichContent html={item.html} />
-									</div>
-								</details>
-							{/each}
-						</div>
-					{/if}
+		<div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+			{#each data.headlines as item (item.id)}
+				<a
+					href={item.url}
+					class="group bg-card hover:border-primary/40 flex flex-col overflow-hidden rounded-xl border transition-all hover:shadow-sm"
+				>
+					<div class="bg-muted flex aspect-video items-center justify-center overflow-hidden border-b">
+						{#if item.image}
+							<!-- Gambar lama kecil (± 500 px) → contain, bukan cover, supaya tidak terpotong/pecah. -->
+							<img src={item.image} alt="" loading="lazy" class="size-full object-contain" />
+						{:else}
+							<Newspaper class="text-muted-foreground/40 size-10" aria-hidden="true" />
+						{/if}
 					</div>
-				</article>
+					<div class="flex flex-1 flex-col p-5">
+						<p class="text-muted-foreground text-xs tabular-nums">{formatDate(item.date)}</p>
+						<h2
+							class="font-display group-hover:text-primary mt-1 text-lg leading-snug font-semibold transition-colors"
+						>
+							{item.title}
+						</h2>
+						{#if item.excerpt}
+							<p class="text-muted-foreground mt-2 line-clamp-3 text-sm leading-relaxed">
+								{item.excerpt}
+							</p>
+						{/if}
+					</div>
+				</a>
 			{:else}
-				<p class="text-muted-foreground text-center text-sm">Belum ada berita utama.</p>
+				<p class="text-muted-foreground text-sm">No headlines yet.</p>
 			{/each}
 		</div>
 	</div>

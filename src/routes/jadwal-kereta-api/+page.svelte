@@ -6,7 +6,7 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
-<svelte:head><title>Jadwal Kereta Api · Direktorat Teknologi</title></svelte:head>
+<svelte:head><title>Train Schedule · Directorate of Technology</title></svelte:head>
 
 <section class="border-b">
 	<div class="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">

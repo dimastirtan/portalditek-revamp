@@ -13,14 +13,14 @@
 	const paged = $derived(data.items.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE));
 </script>
 
-<svelte:head><title>Sekilas Dittek · Direktorat Teknologi</title></svelte:head>
+<svelte:head><title>Dittek at a Glance · Directorate of Technology</title></svelte:head>
 
 <section class="border-b">
 	<div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 		<SectionHeading
-			eyebrow="Pojok Media"
-			title="Sekilas Dittek"
-			description="Dokumentasi kegiatan dan momen Direktorat Teknologi dan Pengembangan."
+			eyebrow="Media"
+			title="Dittek at a glance"
+			description="Activities and moments of the Directorate of Technology and Development."
 		/>
 
 		<div class="mt-8 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
@@ -40,7 +40,7 @@
 					<figcaption class="p-3 text-xs leading-snug">{item.caption}</figcaption>
 				</figure>
 			{:else}
-				<p class="text-muted-foreground col-span-full text-sm">Belum ada dokumentasi.</p>
+				<p class="text-muted-foreground col-span-full text-sm">No photos yet.</p>
 			{/each}
 		</div>
 
@@ -52,7 +52,7 @@
 					disabled={current === 1}
 					class="hover:bg-accent rounded-md border px-3 py-1.5 text-sm disabled:opacity-40"
 				>
-					‹ Sebelumnya
+					‹ Previous
 				</button>
 				<span class="text-muted-foreground px-3 text-sm tabular-nums">{current} / {totalPages}</span>
 				<button
@@ -61,7 +61,7 @@
 					disabled={current === totalPages}
 					class="hover:bg-accent rounded-md border px-3 py-1.5 text-sm disabled:opacity-40"
 				>
-					Berikutnya ›
+					Next ›
 				</button>
 			</div>
 		{/if}

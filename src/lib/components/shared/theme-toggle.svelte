@@ -7,8 +7,8 @@
 	type="button"
 	onclick={() => theme.toggle()}
 	class="hover:bg-primary-foreground/10 inline-flex size-7 items-center justify-center rounded transition-colors"
-	aria-label={theme.current === 'dark' ? 'Ganti ke mode terang' : 'Ganti ke mode gelap'}
-	title={theme.current === 'dark' ? 'Mode terang' : 'Mode gelap'}
+	aria-label={theme.current === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+	title={theme.current === 'dark' ? 'Light mode' : 'Dark mode'}
 >
 	{#if theme.current === 'dark'}
 		<Sun class="size-3.5" />

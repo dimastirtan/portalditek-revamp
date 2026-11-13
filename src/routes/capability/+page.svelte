@@ -6,14 +6,14 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
-<svelte:head><title>Capability · Direktorat Teknologi</title></svelte:head>
+<svelte:head><title>Capability · Directorate of Technology</title></svelte:head>
 
 <section class="border-b">
 	<div class="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 		<SectionHeading
-			eyebrow="Profil"
+			eyebrow="Profile"
 			title="Capability"
-			description="Kompetensi Direktorat Teknologi dalam metode, sistem kerja, dan pengembangan produk."
+			description="Competencies of the Directorate of Technology in methods, work systems, and product development."
 		/>
 
 		<div class="mt-8 space-y-3">
@@ -32,7 +32,7 @@
 					</div>
 				</details>
 			{:else}
-				<p class="text-muted-foreground text-sm">Data capability belum tersedia.</p>
+				<p class="text-muted-foreground text-sm">No capability data available yet.</p>
 			{/each}
 		</div>
 	</div>

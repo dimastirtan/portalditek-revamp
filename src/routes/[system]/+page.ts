@@ -8,7 +8,7 @@ export const prerender = false;
 export const load: PageLoad = ({ params }) => {
 	const system = SYSTEMS.find((s) => s.id === params.system);
 	if (!system) {
-		error(404, 'Sistem tidak ditemukan');
+		error(404, 'System not found');
 	}
 	return { system };
 };

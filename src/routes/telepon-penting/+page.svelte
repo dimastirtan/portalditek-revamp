@@ -6,14 +6,14 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
-<svelte:head><title>Telepon Penting · Direktorat Teknologi</title></svelte:head>
+<svelte:head><title>Important Numbers · Directorate of Technology</title></svelte:head>
 
 <section class="border-b">
 	<div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 		<SectionHeading
 			eyebrow="Information"
-			title="Daftar telepon penting"
-			description="Nomor telepon penting internal PT DI, area Bandung, dan nasional."
+			title="Important phone numbers"
+			description="Important phone numbers within PT DI, around Bandung, and nationwide."
 		/>
 
 		<div class="mt-8 grid gap-6 md:grid-cols-3">
@@ -30,7 +30,7 @@
 								<span class="text-muted-foreground shrink-0 font-medium tabular-nums">{item.no}</span>
 							</li>
 						{:else}
-							<li class="text-muted-foreground px-4 py-6 text-center text-sm">Belum ada data.</li>
+							<li class="text-muted-foreground px-4 py-6 text-center text-sm">No data yet.</li>
 						{/each}
 					</ul>
 				</div>

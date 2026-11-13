@@ -6,14 +6,14 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
-<svelte:head><title>Hak Kekayaan Intelektual · Direktorat Teknologi</title></svelte:head>
+<svelte:head><title>Intellectual Property · Directorate of Technology</title></svelte:head>
 
 <section class="border-b">
 	<div class="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 		<SectionHeading
 			eyebrow="HKI"
-			title="Hak Kekayaan Intelektual"
-			description="Pengertian, organisasi, dan daftar kekayaan intelektual PT Dirgantara Indonesia."
+			title="Intellectual Property"
+			description="Definitions, organization, and the intellectual property register of PT Dirgantara Indonesia."
 		/>
 
 		<div class="mt-8 space-y-3">
@@ -32,7 +32,7 @@
 					</div>
 				</details>
 			{:else}
-				<p class="text-muted-foreground text-sm">Data HKI belum tersedia.</p>
+				<p class="text-muted-foreground text-sm">No intellectual property data available yet.</p>
 			{/each}
 		</div>
 	</div>

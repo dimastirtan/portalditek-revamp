@@ -26,7 +26,7 @@
 
 			<!-- Sistem -->
 			<div>
-				<h2 class="text-xs font-semibold tracking-wider uppercase">Sistem</h2>
+				<h2 class="text-xs font-semibold tracking-wider uppercase">Systems</h2>
 				<ul class="mt-3 space-y-2">
 					{#each SYSTEMS as sys (sys.id)}
 						<li>
@@ -45,7 +45,7 @@
 
 			<!-- Kontak singkat -->
 			<div>
-				<h2 class="text-xs font-semibold tracking-wider uppercase">Kontak</h2>
+				<h2 class="text-xs font-semibold tracking-wider uppercase">Contact</h2>
 				<address class="text-muted-foreground mt-3 space-y-2 text-sm leading-relaxed not-italic">
 					<p>{SITE.address.street}, {SITE.address.city} {SITE.address.postalCode}</p>
 					<p>
@@ -53,7 +53,6 @@
 							{SITE.contact.email}
 						</a>
 					</p>
-					<p>{SITE.contact.phone}</p>
 				</address>
 			</div>
 		</div>

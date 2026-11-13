@@ -13,18 +13,18 @@
 		data.programs.reduce((n, p) => n + p[key], 0);
 </script>
 
-<svelte:head><title>Program R&D · Direktorat Teknologi</title></svelte:head>
+<svelte:head><title>R&D Programs · Directorate of Technology</title></svelte:head>
 
 <section class="border-b">
 	<div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 		<SectionHeading
-			eyebrow="Profil · Project"
-			title="Program R&D"
-			description="Progres proyek dan sertifikasi tiap program pesawat, bersumber dari Intelligent Management System (IMS). Data diperbarui tiap 15 menit."
+			eyebrow="Profile · Project"
+			title="R&D Programs"
+			description="Project and certification progress for each aircraft program, sourced from the Intelligent Management System (IMS). Updated every 15 minutes."
 		>
 			{#snippet action()}
 				<Button href={IMS_URL} target="_blank" rel="noopener" variant="outline">
-					Buka IMS
+					Open IMS
 					<ExternalLink class="size-4" />
 				</Button>
 			{/snippet}
@@ -32,10 +32,10 @@
 
 		{#if data.programs.length}
 			<div class="mt-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
-				<StatTile label="Program" value={data.programs.length} />
-				<StatTile label="Proyek" value={sum('total')} />
-				<StatTile label="Berjalan" value={sum('onProgress')} />
-				<StatTile label="Bermasalah" value={sum('problem')} />
+				<StatTile label="Programs" value={data.programs.length} />
+				<StatTile label="Projects" value={sum('total')} />
+				<StatTile label="In progress" value={sum('onProgress')} />
+				<StatTile label="With issues" value={sum('problem')} />
 			</div>
 
 			<div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -45,9 +45,9 @@
 			</div>
 		{:else}
 			<div class="bg-card mt-8 rounded-xl border p-8 text-center">
-				<p class="font-medium">Data IMS belum bisa dimuat</p>
+				<p class="font-medium">IMS data could not be loaded</p>
 				<p class="text-muted-foreground mt-1 text-sm">
-					Coba lagi beberapa saat lagi, atau buka langsung di IMS.
+					Please try again shortly, or open IMS directly.
 				</p>
 			</div>
 		{/if}

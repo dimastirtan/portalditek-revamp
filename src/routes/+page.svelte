@@ -3,7 +3,6 @@
 		Hero,
 		FeatureGrid,
 		InfoPanel,
-		NewsSection,
 		ProgramSection,
 		BirthdaySection,
 		ContactSection
@@ -13,9 +12,9 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
-<svelte:head><title>Beranda · Direktorat Teknologi</title></svelte:head>
+<svelte:head><title>Home · Directorate of Technology</title></svelte:head>
 
-<Hero />
+<Hero slides={data.headlines} />
 	<div class="w-1/2 h-12 bg-primary/90 absolute hidden lg:block [clip-path:polygon(0_0px,100%_0,95%_50px,0_20px)]" aria-hidden="true"></div>
 	<div class="w-1/2 h-12 bg-primary/50 mt-1 ms-1 absolute hidden lg:block [clip-path:polygon(0_0px,100%_0,95%_50px,0_20px)]" aria-hidden="true"></div>
 <FeatureGrid />

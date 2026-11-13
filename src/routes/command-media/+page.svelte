@@ -6,14 +6,14 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
-<svelte:head><title>Command Media · Direktorat Teknologi</title></svelte:head>
+<svelte:head><title>Command Media · Directorate of Technology</title></svelte:head>
 
 <section class="border-b">
 	<div class="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 		<SectionHeading
 			eyebrow="Command Media"
 			title="Command Media"
-			description="Media untuk mendokumentasikan kebijakan, prosedur, dan instruksi kerja perusahaan."
+			description="The medium for documenting company policies, procedures, and work instructions."
 		/>
 
 		<div class="mt-8 space-y-3">
@@ -32,7 +32,7 @@
 					</div>
 				</details>
 			{:else}
-				<p class="text-muted-foreground text-sm">Data Command Media belum tersedia.</p>
+				<p class="text-muted-foreground text-sm">No Command Media data available yet.</p>
 			{/each}
 		</div>
 	</div>

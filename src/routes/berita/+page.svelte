@@ -7,14 +7,14 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
-<svelte:head><title>Berita · Direktorat Teknologi</title></svelte:head>
+<svelte:head><title>News · Directorate of Technology</title></svelte:head>
 
 <section class="border-b">
 	<div class="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 		<SectionHeading
-			eyebrow="Pojok Media"
-			title="Indeks berita"
-			description="Kumpulan berita seputar Direktorat Teknologi dan PT Dirgantara Indonesia. Klik judul untuk membaca selengkapnya."
+			eyebrow="Media"
+			title="News"
+			description="News about the Directorate of Technology and PT Dirgantara Indonesia. Click a title to read the full story."
 		/>
 
 		<div class="mt-8 divide-y rounded-xl border">
@@ -33,7 +33,7 @@
 					</div>
 				</details>
 			{:else}
-				<p class="text-muted-foreground px-4 py-8 text-center text-sm">Belum ada berita.</p>
+				<p class="text-muted-foreground px-4 py-8 text-center text-sm">No news yet.</p>
 			{/each}
 		</div>
 	</div>

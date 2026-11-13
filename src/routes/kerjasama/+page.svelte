@@ -6,14 +6,14 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
-<svelte:head><title>Kerja Sama Teknologi · Direktorat Teknologi</title></svelte:head>
+<svelte:head><title>Technology Cooperation · Directorate of Technology</title></svelte:head>
 
 <section class="border-b">
 	<div class="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 		<SectionHeading
-			eyebrow="Profil"
-			title="Kerja sama teknologi"
-			description="Pengalaman dan bentuk kerja sama teknologi Direktorat Teknologi dengan berbagai institusi."
+			eyebrow="Profile"
+			title="Technology cooperation"
+			description="Experience and forms of technology cooperation between the Directorate of Technology and other institutions."
 		/>
 
 		<div class="mt-8 space-y-3">
@@ -32,7 +32,7 @@
 					</div>
 				</details>
 			{:else}
-				<p class="text-muted-foreground text-sm">Data kerja sama teknologi belum tersedia.</p>
+				<p class="text-muted-foreground text-sm">No technology cooperation data available yet.</p>
 			{/each}
 		</div>
 	</div>

@@ -8,7 +8,7 @@
 </script>
 
 <div class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-	<Breadcrumb items={[{ label: 'Sistem' }, { label: system.label }]} />
+	<Breadcrumb items={[{ label: 'Systems' }, { label: system.label }]} />
 
 	<div class="mt-8 rounded-xl border p-8 sm:p-10">
 		<div class="bg-primary/10 text-primary flex size-12 items-center justify-center rounded-lg">
@@ -26,20 +26,20 @@
 
 		<div class="bg-secondary/50 mt-6 rounded-lg border p-4">
 			<p class="text-sm leading-relaxed">
-				Sistem ini diakses langsung melalui alamat internal (DNS) di jaringan PT Dirgantara
-				Indonesia. Hubungkan perangkat Anda ke jaringan internal, lalu buka sistem melalui tautan
-				resmi yang disediakan oleh unit terkait.
+				This system is accessed directly through its internal address on the PT Dirgantara
+				Indonesia network. Connect your device to the internal network, then open the system
+				through the official link provided by the responsible unit.
 			</p>
 		</div>
 
 		<div class="mt-8 flex flex-wrap gap-3">
 			<Button href="/" variant="outline">
 				<ArrowLeft class="size-4" />
-				Kembali ke beranda
+				Back to home
 			</Button>
 			{#if system.external && system.href.startsWith('http')}
 				<Button href={system.href} target="_blank" rel="noopener">
-					Buka sistem
+					Open system
 					<ExternalLink class="size-4" />
 				</Button>
 			{/if}

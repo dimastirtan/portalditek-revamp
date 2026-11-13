@@ -7,7 +7,7 @@
  */
 import { env } from '$env/dynamic/public';
 
-export const IMS_URL = (env.PUBLIC_IMS_URL?.trim() || 'http://10.20.65.76:8080/ims').replace(
+export const IMS_URL = (env.PUBLIC_IMS_URL?.trim() || 'http://10.1.95.116:81').replace(
 	/\/+$/,
 	''
 );
@@ -15,7 +15,7 @@ export const IMS_URL = (env.PUBLIC_IMS_URL?.trim() || 'http://10.20.65.76:8080/i
 /**
  * Folder gambar program (kolom programs.image). Default: salinan di
  * static/gambar/ims/assets/images. Bila folder upload IMS berubah, arahkan
- * PUBLIC_IMS_IMAGE_URL ke folder itu (mis. http://10.20.65.76:8080/ims/assets/images
+ * PUBLIC_IMS_IMAGE_URL ke folder itu (mis. http://10.1.95.116:81/assets/images
  * — gambar IMS bisa diambil tanpa login).
  */
 export const IMS_IMAGE_URL = (

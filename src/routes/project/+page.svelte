@@ -6,14 +6,14 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
-<svelte:head><title>Project N219 · Direktorat Teknologi</title></svelte:head>
+<svelte:head><title>Project N219 · Directorate of Technology</title></svelte:head>
 
 <section class="border-b">
 	<div class="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 		<SectionHeading
-			eyebrow="Profil · Project"
+			eyebrow="Profile · Project"
 			title="Project N219"
-			description="N219 — pesawat nasional hasil pengembangan PT Dirgantara Indonesia."
+			description="N219 — the national aircraft developed by PT Dirgantara Indonesia."
 		/>
 
 		<div class="mt-8 space-y-10">
@@ -23,7 +23,7 @@
 					<div class="mt-4"><RichContent html={sec.html} /></div>
 				</div>
 			{:else}
-				<p class="text-muted-foreground text-sm">Data project belum tersedia.</p>
+				<p class="text-muted-foreground text-sm">No project data available yet.</p>
 			{/each}
 		</div>
 	</div>

@@ -19,9 +19,9 @@
 <section id="informasi" class="bg-secondary/30 border-b">
 	<div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 		<SectionHeading
-			eyebrow="Informasi"
-			title="Pusat informasi"
-			description="Artikel terbaru, agenda kegiatan, dan berkas yang dapat diunduh."
+			eyebrow="Information"
+			title="Information center"
+			description="Latest articles, upcoming events, and downloadable files."
 		/>
 
 		<div class="mt-8 grid gap-6 lg:grid-cols-3">
@@ -30,7 +30,7 @@
 				<Card.Header>
 					<Card.Title class="flex items-center gap-2 text-base">
 						<FileText class="text-primary size-4" />
-						Artikel
+						Articles
 					</Card.Title>
 				</Card.Header>
 				<Card.Content>
@@ -56,7 +56,7 @@
 				<Card.Header>
 					<Card.Title class="flex items-center gap-2 text-base">
 						<CalendarClock class="text-primary size-4" />
-						Agenda
+						Events
 					</Card.Title>
 				</Card.Header>
 				<Card.Content>
@@ -90,7 +90,7 @@
 										</p>
 										{#if item.url}
 											<span class="text-primary mt-1 inline-flex items-center gap-1 text-xs">
-												<Download class="size-3 shrink-0" /> Unduh materi
+												<Download class="size-3 shrink-0" /> Download materials
 											</span>
 										{:else if item.location}
 											<p class="text-muted-foreground mt-1 flex items-center gap-1 text-xs">
@@ -111,7 +111,7 @@
 				<Card.Header>
 					<Card.Title class="flex items-center gap-2 text-base">
 						<Download class="text-primary size-4" />
-						Unduhan
+						Downloads
 					</Card.Title>
 				</Card.Header>
 				<Card.Content>

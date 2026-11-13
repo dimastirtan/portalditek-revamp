@@ -1,42 +1,40 @@
 import type { PageServerLoad } from './$types';
 import {
-	getMainArticleTeasers,
+	getHeadlines,
+	headlineCard,
 	getArticles,
 	getEvents,
 	getDownloads,
 	getBirthdays
 } from '$lib/server/portal/queries';
 import { getImsPrograms } from '$lib/server/ims/queries';
+import { cached } from '$lib/server/cache';
 
-// Homepage dibaca live dari DB tiap request → jangan di-prerender.
+// Homepage dibaca dari DB (lewat cache) → jangan di-prerender.
 export const prerender = false;
 
-export const load: PageServerLoad = async () => {
-	// DB IMS terpisah dari DB portal: gagal di salah satu tidak mengosongkan yang lain.
-	const programs = getImsPrograms().catch((err) => {
-		console.error('[portal] gagal memuat program IMS:', err);
-		return [];
+/**
+ * Satu bagian gagal (DB tidak terjangkau, query error) hanya mengosongkan
+ * bagian itu — bukan seluruh homepage. Cek log server untuk detailnya.
+ */
+const safe = <T>(name: string, data: Promise<T>, fallback: T) =>
+	data.catch((err) => {
+		console.error(`[portal] gagal memuat ${name}:`, err);
+		return fallback;
 	});
-	try {
-		const [news, articles, events, downloads, birthdays] = await Promise.all([
-			getMainArticleTeasers(),
-			getArticles(),
-			getEvents(),
-			getDownloads(),
-			getBirthdays()
-		]);
-		return { news, articles, events, downloads, birthdays, programs: await programs };
-	} catch (err) {
-		// DB tidak terjangkau → halaman tetap tampil dengan section kosong,
-		// bukan error 500. Cek log server untuk detail koneksi.
-		console.error('[portal] gagal memuat data homepage:', err);
-		return {
-			news: [],
-			articles: [],
-			events: [],
-			downloads: [],
-			birthdays: [],
-			programs: await programs
-		};
-	}
+
+export const load: PageServerLoad = async () => {
+	const [headlines, articles, events, downloads, birthdays, programs] = await Promise.all([
+		safe(
+			'headline',
+			cached('portal:headlines', getHeadlines).then((all) => all.slice(0, 5).map(headlineCard)),
+			[]
+		),
+		safe('artikel', cached('portal:articles', getArticles), []),
+		safe('agenda', cached('portal:events', getEvents), []),
+		safe('unduhan', cached('portal:downloads', getDownloads), []),
+		safe('ulang tahun', cached('portal:birthdays', getBirthdays), []),
+		safe('program IMS', getImsPrograms(), [])
+	]);
+	return { headlines, articles, events, downloads, birthdays, programs };
 };

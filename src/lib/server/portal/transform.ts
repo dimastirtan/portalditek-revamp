@@ -49,9 +49,16 @@ export function fixText(input: unknown): string {
 	return s;
 }
 
-/** Buang tag HTML, decode entity, rapikan whitespace, lalu perbaiki mojibake. */
+/**
+ * Buang tag HTML, decode entity, rapikan whitespace, lalu perbaiki mojibake.
+ * Isi <style>/<script>/<xml> dan komentar (sisa salin-tempel dari Word) ikut
+ * dibuang — kalau tidak, kode CSS-nya muncul sebagai teks.
+ */
 export function stripHtml(input: string | null | undefined): string {
-	let s = (input ?? '').replace(/<[^>]+>/g, ' ');
+	let s = (input ?? '')
+		.replace(/<!--[\s\S]*?-->/g, ' ')
+		.replace(/<(style|script|xml)\b[\s\S]*?<\/\1>/gi, ' ')
+		.replace(/<[^>]+>/g, ' ');
 	for (const [re, to] of ENTITIES) s = s.replace(re, to);
 	s = fixText(s);
 	return s.replace(/\s+/g, ' ').trim();
@@ -97,8 +104,15 @@ export function fileKind(file: string | null | undefined): string | undefined {
 function mapImgSrc(src: string): string | null {
 	const s = (src ?? '').trim();
 	if (!s) return null;
-	const base = s.split('?')[0].split('/').pop() ?? '';
+	let base = s.split('?')[0].split('/').pop() ?? '';
 	if (!base) return null;
+	// Nama di HTML lama sering sudah ter-encode ("haji%20ditek.jpg"); decode dulu
+	// supaya tidak jadi "%2520" (gambar tidak ketemu).
+	try {
+		base = decodeURIComponent(base);
+	} catch {
+		// nama berisi % yang bukan escape — pakai apa adanya
+	}
 	const enc = encodeURIComponent(base);
 
 	if (/imagelibrary\/uploads\//i.test(s)) return `/gambar/uploads/${enc}`;
@@ -119,17 +133,43 @@ function mapImgSrc(src: string): string | null {
 	return null;
 }
 
+/** URL lokal gambar pertama di HTML lama (lihat mapImgSrc); '' bila tidak ada. */
+export function firstImage(html: string | null | undefined): string {
+	for (const m of (html ?? '').matchAll(/<img\b[^>]*\ssrc\s*=\s*("([^"]*)"|'([^']*)'|([^\s>]+))/gi)) {
+		const mapped = mapImgSrc(m[2] ?? m[3] ?? m[4] ?? '');
+		if (mapped) return mapped;
+	}
+	return '';
+}
+
+/** true bila nilai atribut URL memakai skema berbahaya — juga yang disamarkan entity/spasi. */
+function isDangerousUrl(value: string): boolean {
+	const url = value
+		.replace(/^["']|["']$/g, '')
+		.replace(/&#(x?)([0-9a-f]+);?/gi, (_, hex: string, n: string) =>
+			String.fromCharCode(parseInt(n, hex ? 16 : 10))
+		)
+		.replace(/&colon;/gi, ':')
+		.replace(/&(tab|newline);/gi, '')
+		// Browser mengabaikan spasi & karakter kontrol di dalam skema URL ("java\tscript:").
+		// eslint-disable-next-line no-control-regex
+		.replace(/[\s\u0000-\u001f]/g, '')
+		.toLowerCase();
+	return /^(javascript|vbscript|data):/.test(url);
+}
+
 /**
  * Bersihkan HTML lama agar aman dirender via {@html}.
- * Membuang <script>/<style>/<iframe>, atribut event handler, link javascript:,
- * dan <img> yang menunjuk ke server lama (IP/portaldittek) karena sudah mati.
+ * Membuang <script>/<style>/<iframe>/<base>, atribut event handler, URL
+ * javascript:/vbscript:/data:, dan <img> yang menunjuk ke server lama
+ * (IP/portaldittek) karena sudah mati.
  * Untuk konten internal tepercaya; bila kelak menerima input tak tepercaya,
  * ganti dengan DOMPurify.
  */
 export function cleanRichHtml(input: string | null | undefined): string {
 	let s = input ?? '';
-	s = s.replace(/<(script|style|iframe|object|embed|link|meta)\b[\s\S]*?<\/\1>/gi, '');
-	s = s.replace(/<(script|style|iframe|object|embed|link|meta)\b[^>]*\/?>/gi, '');
+	s = s.replace(/<(script|style|iframe|object|embed|link|meta|base)\b[\s\S]*?<\/\1>/gi, '');
+	s = s.replace(/<(script|style|iframe|object|embed|link|meta|base)\b[^>]*\/?>/gi, '');
 	s = s.replace(/\son\w+\s*=\s*"[^"]*"/gi, '');
 	s = s.replace(/\son\w+\s*=\s*'[^']*'/gi, '');
 	s = s.replace(/\son\w+\s*=\s*[^\s>]+/gi, '');
@@ -143,7 +183,10 @@ export function cleanRichHtml(input: string | null | undefined): string {
 		if (!mapped) return '';
 		return tag.replace(/\ssrc\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/i, ` src="${mapped}"`);
 	});
-	s = s.replace(/href\s*=\s*(["'])\s*javascript:[^"']*\1/gi, 'href="#"');
+	s = s.replace(
+		/\s(href|src|action|formaction|xlink:href)\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi,
+		(attr, name: string, value: string) => (isDangerousUrl(value) ? ` ${name}="#"` : attr)
+	);
 	// Buang warna & style inline lama (hardcoded 2009) agar teks mengikuti warna
 	// tema — kalau tidak, di dark mode teks jadi tak terbaca.
 	s = s.replace(/\s(?:color|bgcolor|background|text|link|vlink|alink)\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '');

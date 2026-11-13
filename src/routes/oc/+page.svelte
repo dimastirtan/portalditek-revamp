@@ -6,14 +6,14 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
-<svelte:head><title>Operating Certificate · Direktorat Teknologi</title></svelte:head>
+<svelte:head><title>Operating Certificate · Directorate of Technology</title></svelte:head>
 
 <section class="border-b">
 	<div class="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 		<SectionHeading
 			eyebrow="OC"
 			title="Operating Certificate"
-			description="Dokumen sertifikat dan Operating Certificate PT Dirgantara Indonesia."
+			description="Certificates and the Operating Certificate of PT Dirgantara Indonesia."
 		/>
 
 		<div class="mt-8 space-y-3">
@@ -41,18 +41,18 @@
 											href={doc.url}
 											class="text-primary mt-2 inline-flex items-center gap-1.5 text-sm hover:underline"
 										>
-											<Download class="size-3.5" /> Unduh PDF
+											<Download class="size-3.5" /> Download PDF
 										</a>
 									{/if}
 								</div>
 							</div>
 						{:else}
-							<p class="text-muted-foreground px-5 py-6 text-center text-sm">Belum ada dokumen.</p>
+							<p class="text-muted-foreground px-5 py-6 text-center text-sm">No documents yet.</p>
 						{/each}
 					</div>
 				</details>
 			{:else}
-				<p class="text-muted-foreground text-sm">Dokumen OC belum tersedia.</p>
+				<p class="text-muted-foreground text-sm">No OC documents available yet.</p>
 			{/each}
 		</div>
 	</div>

@@ -13,38 +13,37 @@
 export const SITE = {
 	name: 'Direktorat Teknologi dan Pengembangan',
 	shortName: 'Direktorat Teknologi dan Pengembangan',
-	tagline: 'Portal internal Direktorat Teknologi dan Pengembangan PT Dirgantara Indonesia',
+	tagline: 'Internal portal of Direktorat Teknologi dan Pengembangan, PT Dirgantara Indonesia',
 	company: 'PT Dirgantara Indonesia (Persero)',
-	companyUrl: 'https://www.indonesian-aerospace.com/',
+	companyUrl: 'http://www.indonesian-aerospace.com/',
 
-	// Tombol "Our Library" di kanan header (seperti Portal lama).
+	// Tombol "Library" di kanan header (katalog + Online Publication).
 	// TODO: ganti href ke URL sistem perpustakaan/e-library kalau sudah ada;
 	// set external: true kalau membuka domain lain.
 	library: {
-		label: 'Our Library',
+		label: 'Library',
 		href: '/library',
-		external: false
+		external: false,
 	},
 	description:
-		'Platform terintegrasi untuk mengakses informasi, dokumen, dan sistem-sistem internal Direktorat Teknologi dan Pengembangan.',
+		'An integrated platform for the information, documents, and internal systems of the Directorate of Technology and Development.',
 
 	address: {
 		street: 'Jalan Pajajaran No. 154',
 		city: 'Bandung',
 		postalCode: '40174',
-		region: 'Jawa Barat',
+		region: 'West Java',
 		country: 'Indonesia'
 	},
 
 	contact: {
-		email: 'kevin@indonesian-aerospace.com', // TODO: konfirmasi email direktorat
-		phone: '+62 22 6031-679' // TODO: konfirmasi nomor operator resmi
+		email: 'das@indonesian-aerospace.com', // TODO: konfirmasi email direktorat
 	},
 
 	hours: [
-		{ days: 'Senin – Kamis', time: '09.00 – 11.30, 13.00 – 16.00' },
-		{ days: 'Jumat', time: '09.00 – 11.00, 14.00 – 17.00' },
-		{ days: 'Sabtu – Minggu', time: 'Tutup' }
+		{ days: 'Monday – Thursday', time: '08:00 – 11:30, 12:20 – 16:30' },
+		{ days: 'Friday', time: '08:00 – 11:00, 13:10 – 16:30' },
+		{ days: 'Saturday – Sunday', time: 'Closed' }
 	],
 
 	social: {
