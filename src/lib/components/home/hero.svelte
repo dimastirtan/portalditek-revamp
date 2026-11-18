@@ -13,10 +13,29 @@
 	const count = $derived(slides.length);
 
 	let active = $state(0);
+	/** Slide yang sedang keluar (-1 = belum pernah pindah → tanpa animasi). */
+	let prev = $state(-1);
+	/** Arah gerak: 1 = maju (masuk dari kanan), -1 = mundur (masuk dari kiri). */
+	let dir = $state<1 | -1>(1);
 	let paused = $state(false);
 	let reducedMotion = $state(false);
 
-	const go = (i: number) => (active = (i + count) % count);
+	function go(i: number, d: 1 | -1 = i > active ? 1 : -1) {
+		const next = (i + count) % count;
+		if (next === active) return;
+		prev = active;
+		dir = d;
+		active = next;
+	}
+
+	/** Nilai data-motion → animasi slide (lihat blok style di bawah). */
+	function motionOf(i: number): string | undefined {
+		if (reducedMotion || prev < 0) return undefined;
+		const side = dir > 0 ? 'next' : 'prev';
+		if (i === active) return `in-${side}`;
+		if (i === prev) return `out-${side}`;
+		return undefined;
+	}
 
 	onMount(() => {
 		reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -28,13 +47,13 @@
 	$effect(() => {
 		if (count < 2 || paused || reducedMotion) return;
 		const next = active + 1;
-		const timer = setTimeout(() => go(next), INTERVAL);
+		const timer = setTimeout(() => go(next, 1), INTERVAL);
 		return () => clearTimeout(timer);
 	});
 
 	function onKeydown(e: KeyboardEvent) {
-		if (e.key === 'ArrowLeft') go(active - 1);
-		else if (e.key === 'ArrowRight') go(active + 1);
+		if (e.key === 'ArrowLeft') go(active - 1, -1);
+		else if (e.key === 'ArrowRight') go(active + 1, 1);
 	}
 </script>
 
@@ -73,14 +92,18 @@
 		</div>
 
 		<div class="relative mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-			<!-- Semua slide di sel grid yang sama → tinggi stabil, slide berganti dengan fade. -->
-			<div class="grid">
+			<!-- Semua slide di sel grid yang sama → tinggi stabil. Slide aktif masuk dari
+			     samping, slide sebelumnya keluar ke sisi lain (lihat data-motion).
+			     overflow-hidden memotong slide di luar kolom; padding memberi ruang untuk
+			     bayangan & cincin fokus. -->
+			<div class="-m-3 grid overflow-hidden p-3">
 				{#each slides as slide, i (slide.id)}
 					<article
-						class="col-start-1 row-start-1 grid items-center gap-8 transition-opacity duration-500 lg:grid-cols-[minmax(0,1fr)_minmax(0,30rem)] lg:gap-12 {i ===
+						class="slide col-start-1 row-start-1 grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,30rem)] lg:gap-12 {i ===
 						active
-							? 'opacity-100'
-							: 'pointer-events-none opacity-0'}"
+							? ''
+							: 'pointer-events-none invisible opacity-0'}"
+						data-motion={motionOf(i)}
 						aria-roledescription="slide"
 						aria-label="{i + 1} of {count}"
 						aria-hidden={i !== active}
@@ -133,7 +156,7 @@
 				<div class="mt-8 flex items-center gap-3">
 					<button
 						type="button"
-						onclick={() => go(active - 1)}
+						onclick={() => go(active - 1, -1)}
 						aria-label="Previous headline"
 						class="bg-background/70 hover:bg-accent inline-flex size-9 items-center justify-center rounded-full border transition-colors"
 					>
@@ -154,7 +177,7 @@
 					</div>
 					<button
 						type="button"
-						onclick={() => go(active + 1)}
+						onclick={() => go(active + 1, 1)}
 						aria-label="Next headline"
 						class="bg-background/70 hover:bg-accent inline-flex size-9 items-center justify-center rounded-full border transition-colors"
 					>
@@ -207,3 +230,63 @@
 		</div>
 	</section>
 {/if}
+
+<style>
+	/* Geser slide. Jarak 100% + 1.5rem supaya slide benar-benar keluar dari area
+	   yang terlihat (padding pembungkus 0.75rem). */
+	@keyframes slide-in-next {
+		from {
+			transform: translateX(calc(100% + 1.5rem));
+		}
+	}
+	@keyframes slide-in-prev {
+		from {
+			transform: translateX(calc(-100% - 1.5rem));
+		}
+	}
+	@keyframes slide-out-next {
+		to {
+			transform: translateX(calc(-100% - 1.5rem));
+		}
+	}
+	@keyframes slide-out-prev {
+		to {
+			transform: translateX(calc(100% + 1.5rem));
+		}
+	}
+
+	/* Slide tersembunyi = invisible + opacity-0. Opacity perlu karena visibility
+	   diwariskan: elemen dengan transition-all (mis. Button) ikut mentransisikan
+	   visibility, sehingga tombol "Read more" slide yang baru disembunyikan masih
+	   tampil ±150 ms di atas slide aktif. Opacity induk tidak bisa dilawan anaknya. */
+	.slide[data-motion] {
+		visibility: visible;
+		opacity: 1;
+		/* ease-in-out: gerak geser terlihat jelas dari awal sampai akhir. */
+		animation-duration: 800ms;
+		animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+		animation-fill-mode: both;
+	}
+	.slide[data-motion='in-next'] {
+		animation-name: slide-in-next;
+	}
+	.slide[data-motion='in-prev'] {
+		animation-name: slide-in-prev;
+	}
+	.slide[data-motion='out-next'] {
+		animation-name: slide-out-next;
+	}
+	.slide[data-motion='out-prev'] {
+		animation-name: slide-out-prev;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.slide[data-motion] {
+			animation: none;
+		}
+		.slide[data-motion^='out'] {
+			visibility: hidden;
+			opacity: 0;
+		}
+	}
+</style>
