@@ -11,7 +11,13 @@
  *     berupa warna penuh; ditimpa rgb(var(--x-rgb) / 10%) tepat sebelum blok
  *     @supports color-mix-nya, jadi browser baru tetap memakai color-mix.
  *  4. Gradien "to right in oklab" → @supports not → "to right".
+ *
+ * Langkah 0: output Tailwind di mode dev (`npm run dev`) memakai CSS nesting,
+ * yang belum dikenal Chrome 109 (hover, dark mode & layout responsif hilang).
+ * Bila ada nesting, CSS diratakan dulu dengan Lightning CSS (sudah terpasang
+ * lewat Vite/Tailwind). Output build sudah rata, jadi langkah ini dilewati.
  */
+import { transform, Features } from 'lightningcss';
 
 const THEME_SELECTORS = new Set([':root', ':host', '.dark']);
 const COLOR_MIX_VAR = /color-mix\(in [\w-]+,\s*var\((--[\w-]+)\)\s+([\d.]+%)\s*,\s*transparent\)/;
@@ -76,11 +82,42 @@ const toRgb = ([r, g, b, a]) =>
 /** "var(--brand)" → "--brand", selain itu null. @param {string} value */
 const aliasOf = (value) => /^var\((--[\w-]+)\)$/.exec(value.trim())?.[1] ?? null;
 
+/**
+ * true bila ada CSS nesting (rule atau @media/@supports di dalam rule).
+ * @param {import('postcss').Root} root
+ */
+const hasNesting = (root) => {
+	let found = false;
+	root.walk((node) => {
+		if ((node.type === 'rule' || node.type === 'atrule') && node.parent?.type === 'rule') {
+			found = true;
+			return false;
+		}
+	});
+	return found;
+};
+
 /** @returns {import('postcss').Plugin} */
 export default function legacyColors() {
 	return {
 		postcssPlugin: 'legacy-colors',
-		OnceExit(root, { AtRule, Rule, Declaration }) {
+		OnceExit(root, { AtRule, Rule, Declaration, postcss }) {
+			// ── 0. Ratakan CSS nesting (output dev Tailwind) ──────────────────────
+			if (hasNesting(root)) {
+				try {
+					const flat = transform({
+						filename: root.source?.input.file ?? 'style.css',
+						code: Buffer.from(root.toString()),
+						include: Features.Nesting,
+						errorRecovery: true
+					}).code.toString();
+					root.removeAll();
+					root.append(postcss.parse(flat).nodes);
+				} catch (err) {
+					console.warn('[legacy-colors] gagal meratakan CSS nesting:', err);
+				}
+			}
+
 			// ── 1–2. Token warna di :root / :host / .dark ─────────────────────────
 			/** @type {import('postcss').Rule[]} */
 			const themeRules = [];

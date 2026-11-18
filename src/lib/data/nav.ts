@@ -120,7 +120,7 @@ export const SYSTEMS: SystemLink[] = [
 		label: 'DOA',
 		href: LEGACY.doa,
 		icon: 'document.svg',
-		logo: '/gambar/sistem/doa.png'
+		logo: '/gambar/umum/logo43.png'
 	},
 	{
 		id: 'dotproject',
@@ -140,11 +140,12 @@ export const SYSTEMS: SystemLink[] = [
 		id: 'ims',
 		label: 'IMS',
 		href: IMS_URL,
-		icon: 'case.svg'
+		icon: 'case.svg',
+		logo: '/gambar/sistem/ims.svg'
 	},
 	{
 		id: 'telepon',
-		label: 'Important Numbers',
+		label: 'Phone Numbers',
 		href: '/telepon-penting',
 		icon: 'number.svg',
 		logo: '/gambar/sistem/telepon.png'

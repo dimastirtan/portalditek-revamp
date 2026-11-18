@@ -5,7 +5,26 @@
 	import { MapPin, Mail, Phone, Clock } from '@lucide/svelte';
 </script>
 
-<section id="kontak">
+<!--
+	Background foto gedung PTDI: lapisan absolut di belakang konten (-z-10 di
+	dalam `isolate`), jadi tidak ikut mendorong layout. Overlay dibuat lebih pekat
+	di mobile karena teks memenuhi lebar layar; di desktop memudar ke kanan supaya
+	gedungnya terlihat di belakang kartu Quick Mail.
+-->
+<section id="kontak" class="relative isolate overflow-hidden border-t">
+	<div class="absolute inset-0 -z-10" aria-hidden="true">
+		<img
+			src="/ptdi.webp"
+			alt=""
+			loading="lazy"
+			decoding="async"
+			class="h-full w-full object-cover object-[70%_35%]"
+		/>
+		<div
+			class="from-background/95 via-background/90 to-background/80 lg:from-background lg:via-background/85 lg:to-background/30 absolute inset-0 bg-gradient-to-b lg:bg-gradient-to-r"
+		></div>
+	</div>
+
 	<div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 		<SectionHeading
 			eyebrow="Contact"

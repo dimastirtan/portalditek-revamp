@@ -175,7 +175,7 @@
 	<section id="beranda" class="relative overflow-hidden border-b">
 		<div class="absolute inset-0">
 			<img
-				src="/ptdi.png"
+				src="/ptdi.webp"
 				alt=""
 				aria-hidden="true"
 				class="h-full w-full object-cover"

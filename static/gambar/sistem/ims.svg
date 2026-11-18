@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+	<title>IMS — Intelligent Management System</title>
+	<!-- 6 batang = 6 tahap sertifikasi di IMS; pesawat lepas landas = program pesawat. -->
+	<rect x="10" y="10" width="480" height="480" rx="34" fill="#0b6584" />
+	<g fill="#fff">
+		<rect x="88" y="342" width="34" height="50" rx="6" opacity=".55" />
+		<rect x="136" y="312" width="34" height="80" rx="6" opacity=".62" />
+		<rect x="184" y="282" width="34" height="110" rx="6" opacity=".7" />
+		<rect x="232" y="252" width="34" height="140" rx="6" opacity=".78" />
+		<rect x="280" y="222" width="34" height="170" rx="6" opacity=".88" />
+		<rect x="328" y="192" width="34" height="200" rx="6" />
+	</g>
+	<line x1="80" y1="408" x2="372" y2="408" stroke="#fff" stroke-width="7" stroke-linecap="round" />
+	<path
+		d="M120 300 Q230 150 340 150"
+		fill="none"
+		stroke="#fff"
+		stroke-width="5"
+		stroke-dasharray="10 12"
+		opacity=".75"
+	/>
+	<path
+		fill="#fff"
+		transform="translate(395 128) rotate(45)"
+		d="M0 -62 C5 -62 9 -55 9 -45 L9 -14 L62 12 L62 22 L9 8 L9 36 L25 48 L25 56 L0 50 L-25 56 L-25 48 L-9 36 L-9 8 L-62 22 L-62 12 L-9 -14 L-9 -45 C-9 -55 -5 -62 0 -62 Z"
+	/>
+</svg>

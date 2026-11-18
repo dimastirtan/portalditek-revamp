@@ -8,7 +8,6 @@
 
 
 </script>
-
 <div class="bg-card rounded-xl border p-6 max-w-sm mx-auto max-h-50 my-auto mt-8 mb-8">
 	<div class="flex items-center gap-3">
 		<Mail class="text-primary size-5" />
