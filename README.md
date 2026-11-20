@@ -78,6 +78,14 @@ npm start              # = node --env-file=.env build
 
 `node build` **tidak** membaca `.env` sendiri — pakai `npm start` (butuh `.env` di root project) atau set variabelnya langsung di environment server. Port default `3000`, bisa di-override lewat env `PORT`.
 
+Di server dijalankan dengan **pm2** lewat `ecosystem.config.cjs` (membaca `.env` sama seperti `npm start`):
+
+```bash
+pm2 start ecosystem.config.cjs   # pertama kali, lalu: pm2 save
+pm2 restart portal-ditek         # setelah git pull + npm ci + npm run build, atau setelah ubah .env
+pm2 logs portal-ditek
+```
+
 Di server yang sama, jalankan `npm run mirror-files` minimal sekali (± 1,8 GB) supaya berkas dokumen tersimpan di `FILES_DIR`. Ulangi berkala selama admin masih meng-upload lewat dt-admin portal lama — berkas yang sudah ada dilewati.
 
 ### Checklist sebelum go-live
@@ -85,7 +93,8 @@ Di server yang sama, jalankan `npm run mirror-files` minimal sekali (± 1,8 GB) 
 1. **`.env` production** di root project: `DB_*` ke MySQL `dittek`, dan `IMS_DB_*` ke MySQL IMS (`ptdi_project`, web IMS di `http://10.1.95.116:81`). `IMS_DB_HOST=127.0.0.1` hanya benar bila portal berjalan **di server yang sama** dengan DB IMS (10.1.95.116) — dari mesin lain pakai `10.1.95.116` dengan user yang boleh login dari jaringan. Disarankan **user read-only** (SQL GRANT di bagian Data & arsitektur), bukan `root`.
 2. **`ORIGIN`** = alamat yang diketik pengguna (mis. `http://portalditek.indonesian-aerospace.com`). Tanpa ini adapter-node menganggap alamatnya `https://<host>`.
 3. **Berkas dokumen**: `npm run mirror-files` di server ini; pastikan `FILES_DIR` (default `./files`) ikut dibackup.
-4. **Jalankan sebagai service** supaya hidup lagi setelah restart/logoff — di Windows mis. NSSM: program `node`, argumen `--env-file=.env build`, *startup directory* = folder project. Buka port (`PORT`) di Windows Firewall.
+4. **Jalankan sebagai service** supaya hidup lagi setelah restart/logoff — `pm2 start ecosystem.config.cjs` lalu `pm2 save` (di Windows, `pm2 startup` tidak tersedia: pakai `pm2-installer`/`pm2-windows-startup`, atau NSSM dengan program `node`, argumen `--env-file=.env build`, *startup directory* = folder project). Buka port (`PORT`) di Windows Firewall.
+   Bila portal ini menggantikan portal lama di port 80: pindahkan container portal lama ke port lain (jangan dihapus dulu — dt-admin masih dipakai untuk input konten) dan isi `PUBLIC_LEGACY_PORTAL_URL` dengan alamat barunya. Folder `files/` (± 1,8 GB) tidak ikut git — salin manual atau jalankan `npm run mirror-files` di server.
 5. **Cek dari jaringan server**: DB portal (`DB_HOST:3306`), DB IMS (`IMS_DB_HOST:3306`), dan portal lama (`PUBLIC_LEGACY_PORTAL_URL`) bisa dijangkau.
 
 ### Performa & ketahanan
