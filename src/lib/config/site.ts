@@ -7,8 +7,7 @@
  *     yang sepertinya alamat personal). Ganti nilai `contact.email` di sini.
  *  2. Nomor telepon Portal lama menuliskan +91 (India) — jelas typo dari template
  *     BootstrapMade. Ganti dengan nomor operator resmi PT DI di `contact.phone`.
- *  3. Isi calendarIframeSrc dengan Calendar ID direktorat (Portal lama pakai
- *     placeholder `yourcalendarid`). Sementara diisi kalender hari libur Indonesia.
+ * (Kalender kerja kini berupa gambar unggahan — lihat $lib/server/uploads.)
  */
 export const SITE = {
 	name: 'Direktorat Teknologi dan Pengembangan',
@@ -52,12 +51,7 @@ export const SITE = {
 		instagram: 'https://instagram.com/officialptdi',
 		youtube: 'https://www.youtube.com/@officialptdi2301',
 		linkedin: 'https://linkedin.com/in/officialptdi'
-	},
-
-	// Google Calendar iframe src.
-	// Ganti calendar ID dengan kalender resmi direktorat kalau sudah ada.
-	calendarIframeSrc:
-		'https://calendar.google.com/calendar/embed?src=id.indonesian%23holiday%40group.v.calendar.google.com&ctz=Asia%2FJakarta'
+	}
 } as const;
 
 export type SiteConfig = typeof SITE;

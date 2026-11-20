@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types';
 import {
 	getHeadlines,
-	headlineCard,
+	heroSlide,
 	getArticles,
 	getEvents,
 	getDownloads,
@@ -27,7 +27,10 @@ export const load: PageServerLoad = async () => {
 	const [headlines, articles, events, downloads, birthdays, programs] = await Promise.all([
 		safe(
 			'headline',
-			cached('portal:headlines', getHeadlines).then((all) => all.slice(0, 5).map(headlineCard)),
+			// Cache terpisah: heroSlide membaca ukuran berkas gambar — cukup sekali per TTL.
+			cached('portal:hero', async () =>
+				(await cached('portal:headlines', getHeadlines)).slice(0, 5).map(heroSlide)
+			),
 			[]
 		),
 		safe('artikel', cached('portal:articles', getArticles), []),

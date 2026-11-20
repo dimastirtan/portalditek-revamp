@@ -10,6 +10,8 @@ node_modules
 
 # Berkas dokumen hasil `npm run mirror-files` (± 1,8 GB) — jangan di-commit
 /files
+# Unggahan admin (gambar kalender kerja, dst.) — isi server, bukan kode
+/uploads
 
 # OS
 .DS_Store

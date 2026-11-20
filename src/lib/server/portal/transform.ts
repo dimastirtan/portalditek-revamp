@@ -65,6 +65,47 @@ export function stripHtml(input: string | null | undefined): string {
 	return s.replace(/\s+/g, ' ').trim();
 }
 
+/**
+ * true bila isi tidak mengandung tag HTML sama sekali — diketik/ditempel langsung
+ * ke database sebagai teks polos (data lama selalu HTML dari editor dt-admin).
+ */
+const isPlainText = (s: string) => !/<\/?[a-z][^>]*>/i.test(s);
+
+/**
+ * Teks polos → HTML: tiap baris jadi satu paragraf. Tanpa ini baris baru hilang
+ * (di HTML dianggap spasi) dan seluruh isi berita menyatu jadi satu blok.
+ * Karakter < > & di-escape; entity yang sudah ada (&amp;, &#39;) dibiarkan.
+ */
+function plainTextToHtml(s: string): string {
+	return s
+		.replace(/\r\n?/g, '\n')
+		.split('\n')
+		.map((line) => line.trim())
+		.filter(Boolean)
+		.map(
+			(line) =>
+				`<p>${line
+					.replace(/&(?![a-z]+;|#\d+;|#x[\da-f]+;)/gi, '&amp;')
+					.replace(/</g, '&lt;')
+					.replace(/>/g, '&gt;')}</p>`
+		)
+		.join('\n');
+}
+
+/**
+ * Buang baris pertama teks polos bila sama dengan judul — isi yang ditempel dari
+ * berita online sering ikut membawa judulnya, sehingga judul tampil dua kali.
+ */
+export function dropLeadingTitle(text: string | null | undefined, title: string): string {
+	const s = text ?? '';
+	if (!title || !isPlainText(s)) return s;
+	const norm = (t: string) => fixText(t).replace(/\s+/g, ' ').trim().toLowerCase();
+	const lines = s.replace(/\r\n?/g, '\n').split('\n');
+	const first = lines.findIndex((line) => line.trim());
+	if (first >= 0 && norm(lines[first]) === norm(title)) lines.splice(first, 1);
+	return lines.join('\n');
+}
+
 /** Ambil bagian 'YYYY-MM-DD' dari string date/datetime; '' bila tidak valid. */
 export function isoDate(input: string | null | undefined): string {
 	const m = /^(\d{4}-\d{2}-\d{2})/.exec(input ?? '');
@@ -175,6 +216,7 @@ function isDangerousUrl(value: string): boolean {
  */
 export function cleanRichHtml(input: string | null | undefined): string {
 	let s = input ?? '';
+	if (isPlainText(s)) return fixText(plainTextToHtml(s)).trim();
 	s = s.replace(/<(script|style|iframe|object|embed|link|meta|base)\b[\s\S]*?<\/\1>/gi, '');
 	s = s.replace(/<(script|style|iframe|object|embed|link|meta|base)\b[^>]*\/?>/gi, '');
 	s = s.replace(/\son\w+\s*=\s*"[^"]*"/gi, '');

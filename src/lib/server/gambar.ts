@@ -15,7 +15,7 @@ const INDEX_TTL = 60_000;
 /** Folder turunan (thumbnail) — bukan sumber untuk pencarian berdasarkan nama. */
 const DERIVED = /^org-thumb\//;
 
-type GambarIndex = { at: number; files: Set<string>; byName: Map<string, string> };
+type GambarIndex = { at: number; dir: string; files: Set<string>; byName: Map<string, string> };
 let gambarIndex: GambarIndex | null = null;
 
 /** "uploads/pilot_11.gif" → "/gambar/uploads/pilot_11.gif" (tiap segmen di-encode). */
@@ -34,8 +34,18 @@ function getGambarIndex(): GambarIndex | null {
 		const key = d.name.toLowerCase();
 		if (!DERIVED.test(rel) && !byName.has(key)) byName.set(key, toUrl(rel));
 	}
-	gambarIndex = { at: Date.now(), files, byName };
+	gambarIndex = { at: Date.now(), dir, files, byName };
 	return gambarIndex;
+}
+
+/** "/gambar/a%20b.jpg" → "a b.jpg" (relatif ke folder gambar); null bila bukan URL /gambar/. */
+function relOf(url: string): string | null {
+	if (!url.startsWith('/gambar/')) return null;
+	try {
+		return decodeURIComponent(url.slice('/gambar/'.length));
+	} catch {
+		return url.slice('/gambar/'.length);
+	}
 }
 
 /**
@@ -54,13 +64,59 @@ export function hasGambar(rel: string): boolean | null {
  */
 export function ensureLocal(url: string): string | null {
 	const index = getGambarIndex();
-	if (!index) return url;
-	let rel: string;
-	try {
-		rel = decodeURIComponent(url.slice('/gambar/'.length));
-	} catch {
-		rel = url.slice('/gambar/'.length);
-	}
+	const rel = relOf(url);
+	if (!index || rel === null) return url;
 	if (index.files.has(rel)) return url;
 	return index.byName.get((rel.split('/').pop() ?? '').toLowerCase()) ?? null;
+}
+
+/**
+ * Lebar (px) gambar lokal /gambar/... dibaca dari header berkasnya (JPEG/PNG/GIF/WebP),
+ * tanpa men-decode gambar. null bila bukan gambar lokal atau formatnya tidak dikenali.
+ */
+export function imageWidth(url: string): number | null {
+	const index = getGambarIndex();
+	const rel = relOf(url);
+	if (!index || rel === null || !index.files.has(rel)) return null;
+	try {
+		return readWidth(path.join(index.dir, ...rel.split('/')));
+	} catch {
+		return null;
+	}
+}
+
+function readWidth(file: string): number | null {
+	const fd = fs.openSync(file, 'r');
+	try {
+		const head = Buffer.alloc(30);
+		if (fs.readSync(fd, head, 0, 30, 0) < 30) return null;
+		if (head.readUInt32BE(0) === 0x89504e47) return head.readUInt32BE(16); // PNG
+		if (head.toString('ascii', 0, 3) === 'GIF') return head.readUInt16LE(6);
+		if (head.toString('ascii', 0, 4) === 'RIFF' && head.toString('ascii', 8, 12) === 'WEBP') {
+			const kind = head.toString('ascii', 12, 16);
+			if (kind === 'VP8 ') return head.readUInt16LE(26) & 0x3fff;
+			if (kind === 'VP8L') return 1 + (((head[22] & 0x3f) << 8) | head[21]);
+			if (kind === 'VP8X') return 1 + head.readUIntLE(24, 3);
+			return null;
+		}
+		if (head[0] !== 0xff || head[1] !== 0xd8) return null;
+		// JPEG: telusuri segmen sampai frame header (SOFn) yang memuat ukuran.
+		const seg = Buffer.alloc(9);
+		let pos = 2;
+		for (let guard = 0; guard < 1000; guard++) {
+			if (fs.readSync(fd, seg, 0, 9, pos) < 9 || seg[0] !== 0xff) return null;
+			const marker = seg[1];
+			if (marker === 0xff) {
+				pos++; // byte pengisi
+				continue;
+			}
+			if (marker >= 0xc0 && marker <= 0xcf && marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc) {
+				return seg.readUInt16BE(7);
+			}
+			pos += marker === 0x01 || (marker >= 0xd0 && marker <= 0xd8) ? 2 : 2 + seg.readUInt16BE(2);
+		}
+		return null;
+	} finally {
+		fs.closeSync(fd);
+	}
 }

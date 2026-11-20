@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { SITE } from '$lib/config/site';
 	import SectionHeading from '$lib/components/shared/section-heading.svelte';
+	import { CalendarDays, Expand } from '@lucide/svelte';
+	import { formatDate } from '$lib/utils';
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
 </script>
 
 <svelte:head>
@@ -13,25 +18,42 @@
 		<SectionHeading
 			eyebrow="Information"
 			title="Work calendar"
-			description="National holidays, collective leave, and directorate events. Click a date to see its details."
+			description="Working days, national holidays, and collective leave of the Directorate of Technology and Development."
 		/>
 
-		<div class="bg-card mt-8 overflow-hidden rounded-xl border">
-			<div class="relative aspect-[4/3] w-full sm:aspect-[16/9]">
-				<iframe
-					src={SITE.calendarIframeSrc}
-					title="Directorate of Technology work calendar"
-					class="absolute inset-0 h-full w-full"
-					style="border:0"
-					loading="lazy"
-				></iframe>
+		{#if data.calendar}
+			<!-- Gambar kalender dari unggahan admin (UPLOAD_DIR/kalender, berkas terbaru). -->
+			<figure class="mt-8">
+				<a
+					href={data.calendar.src}
+					target="_blank"
+					rel="noopener"
+					class="group bg-card relative block overflow-hidden rounded-xl border"
+					title="Open full size"
+				>
+					<img
+						src={data.calendar.src}
+						alt="Work calendar of the Directorate of Technology and Development"
+						class="mx-auto h-auto w-full max-w-5xl"
+					/>
+					<span
+						class="bg-background/85 absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium opacity-0 shadow-sm transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
+					>
+						<Expand class="size-3.5" />
+						Full size
+					</span>
+				</a>
+				<figcaption class="text-muted-foreground mt-3 text-sm">
+					Updated {formatDate(data.calendar.updated)} · Click the calendar to open it at full size.
+				</figcaption>
+			</figure>
+		{:else}
+			<div
+				class="text-muted-foreground mt-8 flex flex-col items-center gap-3 rounded-xl border border-dashed px-6 py-16 text-center"
+			>
+				<CalendarDays class="size-10 opacity-50" />
+				<p class="text-sm">The work calendar has not been uploaded yet.</p>
 			</div>
-		</div>
-
-		<!-- <p class="text-muted-foreground mt-4 text-sm">
-			Kalender ini menampilkan hari libur nasional Indonesia. Bila kalender resmi direktorat sudah
-			tersedia, ganti <code>calendarIframeSrc</code> di
-			<code>src/lib/config/site.ts</code> dengan Calendar ID direktorat.
-		</p> -->
+		{/if}
 	</div>
 </section>

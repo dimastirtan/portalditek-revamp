@@ -56,9 +56,18 @@ import {
 	sekilas
 } from '$lib/server/db/schema';
 import { STASIUN_KA, KOTA_PN, namaTempat } from '$lib/data/stasiun';
-import { fixText, stripHtml, isoDate, truncate, fileKind, cleanRichHtml, firstImage } from './transform';
+import {
+	fixText,
+	stripHtml,
+	isoDate,
+	truncate,
+	fileKind,
+	cleanRichHtml,
+	firstImage,
+	dropLeadingTitle
+} from './transform';
 import { downloadUrl, imgUrl, type DownloadCategory } from '$lib/utils';
-import { hasGambar } from '$lib/server/gambar';
+import { hasGambar, imageWidth } from '$lib/server/gambar';
 import { LEGACY } from '$lib/config/legacy';
 import type {
 	Article,
@@ -66,6 +75,7 @@ import type {
 	Download,
 	Headline,
 	HeadlineCard,
+	HeroSlide,
 	Announcement,
 	BirthdayGroup,
 	Person,
@@ -117,16 +127,19 @@ export async function getHeadlines(): Promise<Headline[]> {
 		.map((r) => {
 			const story = r.parentId === null ? undefined : storyOf.get(r.parentId);
 			const storyImage = (story?.image ?? '').trim();
+			const title = fixText(r.judul);
+			// Isi teks polos sering diawali judulnya sendiri — jangan tampil dua kali.
+			const teks = dropLeadingTitle(r.teks, title);
 			return {
 				id: r.id,
-				title: fixText(r.judul),
+				title,
 				date: isoDate(r.date) || isoDate(story?.date),
-				excerpt: truncate(stripHtml(r.teks), 220),
-				image: firstImage(r.teks) || (storyImage ? imgUrl(storyImage, 'artikel') : ''),
+				excerpt: truncate(stripHtml(teks), 220),
+				image: firstImage(teks) || (storyImage ? imgUrl(storyImage, 'artikel') : ''),
 				url: `/berita-utama/${r.id}`,
 				story: fixText(story?.judul),
 				storyId: story?.id ?? null,
-				html: cleanRichHtml(r.teks)
+				html: cleanRichHtml(teks)
 			};
 		});
 }
@@ -257,6 +270,20 @@ export const headlineCard = ({ id, title, date, excerpt, image, url, story, stor
 	story,
 	storyId
 });
+
+/**
+ * Lebar minimum gambar headline untuk dijadikan latar hero selebar layar. Gambar
+ * lama rata-rata ±500 px (bahkan logo) — dibentangkan penuh jadi buram, jadi
+ * yang lebih kecil memakai foto bawaan. Unggahan baru sebaiknya ≥ 1920 px.
+ */
+const HERO_MIN_WIDTH = 1000;
+
+/** Headline untuk hero beranda (lihat HeroSlide). */
+export function heroSlide(h: Headline): HeroSlide {
+	const card = headlineCard(h);
+	const width = card.image ? imageWidth(card.image) : null;
+	return { ...card, backdrop: width !== null && width >= HERO_MIN_WIDTH ? card.image : '' };
+}
 
 /**
  * Struktur organisasi: unit + departemen, nama pejabat di-resolve dari tmemp.
