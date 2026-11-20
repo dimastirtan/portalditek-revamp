@@ -10,6 +10,9 @@
 <style>
 	.portal-rich {
 		color: var(--foreground);
+		/* Tabel lama berlebar piksel tetap (mis. infografis 1004 px) tidak mengikuti
+		   max-width; geser di dalam kotak ini, bukan membuat seluruh halaman melebar. */
+		overflow-x: auto;
 	}
 	/* Amankan sisa warna/latar lama supaya konten selalu terbaca di light & dark. */
 	.portal-rich :global(font),

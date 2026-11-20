@@ -29,14 +29,7 @@ export const MAIN_NAV: NavItem[] = [
 		label: 'Profile',
 		children: [
 			{ label: 'Organization', href: '/organisasi' },
-			{
-				label: 'Capability',
-				children: [
-					{ label: 'Brainware', href: '/capability' },
-					{ label: 'CAD/CAM', href: '/capability' },
-					{ label: 'Software Development', href: '/capability' }
-				]
-			},
+			{ label: 'Capability', href: '/capability' },
 			{
 				label: 'Project',
 				children: [
@@ -51,63 +44,25 @@ export const MAIN_NAV: NavItem[] = [
 					{ label: 'JDQ', href: '/jdq' }
 				]
 			},
-			{
-				label: 'Technology Cooperation',
-				children: [
-					{ label: 'Experience', href: '/kerjasama' },
-					{ label: 'Technology Cooperation', href: '/kerjasama' },
-					{ label: 'PT DI – Defense', href: '/kerjasama' }
-				]
-			},
-			{
-				label: 'Facilities',
-				children: [
-					{ label: 'Ground Test', href: '/fasilitas/#ground-test' },
-					{ label: 'Flight Test', href: '/fasilitas/#flight-test' }
-				]
-			}
+			{ label: 'Technology Cooperation', href: '/kerjasama' },
+			{ label: 'Facilities', href: '/fasilitas' }
 		]
 	},
-	{
-		label: 'Command Media',
-		children: [
-			{ label: 'Command Media System', href: '/command-media' },
-			{ label: 'Command Media Overview', href: '/command-media' }
-		]
-	},
-	{
-		label: 'Certificate',
-		children: [
-			{ label: 'Certificate', href: '/oc' },
-			{ label: 'OC', href: '/oc' }
-		]
-	},
-	{
-		label: 'Regulation',
-		children: [
-			{ label: 'Government of Indonesia', href: '/regulation/#pemerintah-ri' },
-			{ label: 'Ministry of Transportation', href: '/regulation/#perhubungan-ri' },
-			{ label: 'Ministry of Defense', href: '/regulation/#pertahanan-ri' }
-		]
-	},
+	{ label: 'Command Media', href: '/command-media' },
+	{ label: 'Certificate', href: '/oc' },
+	{ label: 'Regulation', href: '/regulation' },
 	{
 		label: 'Information',
 		children: [
 			{ label: 'Work Calendar', href: '/kalender-kerja' },
-			{ label: 'Important Numbers', href: '/telepon-penting' },
+			{ label: 'Phone Numbers', href: '/telepon-penting' },
 			{ label: 'Bandung Train Schedule', href: '/jadwal-kereta-api' },
 			{ label: 'Flight Schedule', href: '/jadwal-penerbangan' }
 		]
 	},
 	{ label: 'Link', href: '/link' },
-	{ label: 'Contact Us', href: '#kontak' },
-	{
-		label: 'Library',
-		children: [
-			{ label: 'Catalogs', href: '/library/#catalogs' },
-			{ label: 'Online Publications', href: '/library/#publications' }
-		]
-	}
+	{ label: 'Contact Us', href: '/#kontak' },
+	{ label: 'Library', href: '/library' }
 ];
 
 /**

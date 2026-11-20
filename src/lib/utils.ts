@@ -91,7 +91,15 @@ export function legacyDownloadUrl(category: DownloadCategory, file: string): str
  *   umum     ← images                (gambar umum)
  *   uploads  ← dt-admin/.../uploads  (gambar di dalam konten artikel)
  */
-export type GambarFolder = 'sekilas' | 'org' | 'artikel' | 'umum' | 'uploads' | 'gallery' | 'sistem';
+export type GambarFolder =
+	| 'sekilas'
+	| 'org'
+	| 'org-thumb' // thumbnail foto pejabat (scripts/org-thumbs.py)
+	| 'artikel'
+	| 'umum'
+	| 'uploads'
+	| 'gallery'
+	| 'sistem';
 
 export function imgUrl(file: string, folder: GambarFolder = 'umum'): string {
 	return `/gambar/${folder}/${encodeURIComponent((file ?? '').trim())}`;

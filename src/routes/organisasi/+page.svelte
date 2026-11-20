@@ -1,13 +1,9 @@
 <script lang="ts">
 	import SectionHeading from '$lib/components/shared/section-heading.svelte';
 	import { User } from '@lucide/svelte';
-	import { imgUrl } from '$lib/utils';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
-
-	// 'blank.jpg' di database = placeholder (tidak ada foto).
-	const hasFoto = (f: string) => !!f && f.toLowerCase() !== 'blank.jpg';
 
 	// Puncak tree = unit pimpinan (C_TYPE_ORG 0); di bawahnya pusat/divisi.
 	// Tanpa unit pimpinan (data tidak lengkap) → divisi tampil tanpa garis ke atas.
@@ -18,15 +14,17 @@
 
 <svelte:head><title>Organization · Directorate of Technology</title></svelte:head>
 
+<!-- foto = URL thumbnail kecil dari server (lihat orgPhoto); '' → ikon saja. -->
 {#snippet avatar(foto: string, name: string, size: string)}
 	<div
 		class="bg-muted text-muted-foreground/50 relative grid {size} shrink-0 place-items-center overflow-hidden rounded-full"
 	>
-		{#if hasFoto(foto)}
+		{#if foto}
 			<img
-				src={imgUrl(foto, 'org')}
+				src={foto}
 				alt={name}
 				loading="lazy"
+				decoding="async"
 				class="absolute inset-0 h-full w-full object-cover"
 			/>
 		{/if}

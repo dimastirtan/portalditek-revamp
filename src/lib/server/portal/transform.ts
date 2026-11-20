@@ -7,6 +7,7 @@
  * Catatan: bila suatu saat dump di-import ulang dengan konversi latin1→utf8mb4
  * yang benar, fixText() bisa dilepas.
  */
+import { ensureLocal } from '$lib/server/gambar';
 
 const MOJIBAKE: [RegExp, string][] = [
 	[/â€œ/g, '“'],
@@ -97,11 +98,17 @@ export function fileKind(file: string | null | undefined): string | undefined {
 }
 
 /**
- * Petakan src gambar lama → berkas lokal di static/gambar/<folder>/.
- * Mengembalikan null bila sumbernya tidak dikenali (tag <img> lalu dibuang).
- * Folder tujuan mengikuti hasil salin copy-gambar.bat.
+ * Petakan src gambar lama → berkas lokal di static/gambar/<folder>/ yang benar-benar ada
+ * (lihat ensureLocal: berkas di folder lain ikut dicari). Mengembalikan null bila
+ * sumbernya tidak dikenali atau berkasnya tidak ada → tag <img> dibuang, tidak
+ * muncul ikon gambar rusak. Folder tujuan mengikuti hasil salin copy-gambar.bat.
  */
 function mapImgSrc(src: string): string | null {
+	const url = mapLegacySrc(src);
+	return url?.startsWith('/gambar/') ? ensureLocal(url) : url;
+}
+
+function mapLegacySrc(src: string): string | null {
 	const s = (src ?? '').trim();
 	if (!s) return null;
 	let base = s.split('?')[0].split('/').pop() ?? '';

@@ -58,6 +58,7 @@ import {
 import { STASIUN_KA, KOTA_PN, namaTempat } from '$lib/data/stasiun';
 import { fixText, stripHtml, isoDate, truncate, fileKind, cleanRichHtml, firstImage } from './transform';
 import { downloadUrl, imgUrl, type DownloadCategory } from '$lib/utils';
+import { hasGambar } from '$lib/server/gambar';
 import { LEGACY } from '$lib/config/legacy';
 import type {
 	Article,
@@ -262,6 +263,21 @@ export const headlineCard = ({ id, title, date, excerpt, image, url, story, stor
  * C_TYPE_ORG 0 = pimpinan direktorat (puncak tree), 1 = pusat/divisi di bawahnya.
  * Departemen yang unitnya sudah tidak ada (data lama 2010) otomatis tidak ikut.
  */
+/**
+ * URL foto pejabat untuk bagan organisasi. Foto asli ±2500×3400 px (2 MB) padahal
+ * tampil sebagai lingkaran 32–56 px — puluhan foto sekaligus membuat browser hang.
+ * Jadi pakai thumbnail di static/gambar/org-thumb (dibuat scripts/org-thumbs.py)
+ * bila ada, selain itu foto asli. '' bila kosong, placeholder, atau berkasnya tidak ada.
+ */
+function orgPhoto(file: string | null | undefined): string {
+	const f = (file ?? '').trim();
+	if (!f || f.toLowerCase() === 'blank.jpg') return '';
+	const thumb = hasGambar(`org-thumb/${f}`);
+	if (thumb) return imgUrl(f, 'org-thumb');
+	if (thumb === null) return imgUrl(f, 'org'); // tidak bisa dicek → perilaku lama
+	return hasGambar(`org/${f}`) ? imgUrl(f, 'org') : '';
+}
+
 export async function getOrgStructure(): Promise<OrgUnit[]> {
 	const [units, dets, people] = await Promise.all([
 		db.select().from(org).orderBy(asc(org.type), asc(org.id)),
@@ -274,14 +290,14 @@ export async function getOrgStructure(): Promise<OrgUnit[]> {
 		level: u.type === 0 ? 0 : 1,
 		title: fixText(u.title),
 		head: nameOf.get((u.nik ?? '').trim()) ?? '',
-		foto: (u.foto ?? '').trim(),
+		foto: orgPhoto(u.foto),
 		departments: dets
 			.filter((d) => d.orgId === u.id)
 			.map((d) => ({
 				id: `orgdet-${d.id}`,
 				title: fixText(d.title),
 				head: nameOf.get(String(d.nik ?? '')) ?? '',
-				foto: (d.foto ?? '').trim()
+				foto: orgPhoto(d.foto)
 			}))
 			// Baris tanpa jabatan & tanpa pejabat = sisa data kosong.
 			.filter((d) => d.title || d.head)

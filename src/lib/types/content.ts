@@ -121,7 +121,7 @@ export type OrgUnit = {
 	level: 0 | 1;
 	title: string;
 	head: string;
-	/** Nama berkas foto pejabat (di static/gambar/org/). */
+	/** URL foto pejabat (thumbnail bila ada); '' bila tidak ada foto. */
 	foto: string;
 	departments: { id: string; title: string; head: string; foto: string }[];
 };
