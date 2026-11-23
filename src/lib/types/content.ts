@@ -114,6 +114,16 @@ export type Headline = {
 /** Headline tanpa isi HTML — untuk daftar & slideshow (HTML tidak ikut dikirim). */
 export type HeadlineCard = Omit<Headline, 'html'>;
 
+/** Poster buletin (gambar unggahan di UPLOAD_DIR/buletin — lihat $lib/server/uploads). */
+export type Bulletin = {
+	/** URL gambar poster (/media/buletin/...). */
+	src: string;
+	/** Dari nama berkas tanpa ekstensi. */
+	title: string;
+	/** ISO datetime unggahan/perubahan terakhir. */
+	updated: string;
+};
+
 /** Unit organisasi + departemen di bawahnya. */
 export type OrgUnit = {
 	id: string;

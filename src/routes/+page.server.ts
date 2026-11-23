@@ -1,14 +1,8 @@
 import type { PageServerLoad } from './$types';
-import {
-	getHeadlines,
-	headlineCard,
-	getArticles,
-	getEvents,
-	getDownloads,
-	getBirthdays
-} from '$lib/server/portal/queries';
+import { getHeadlines, headlineCard, getBirthdays } from '$lib/server/portal/queries';
 import { getImsPrograms } from '$lib/server/ims/queries';
 import { cached } from '$lib/server/cache';
+import { bulletins } from '$lib/server/uploads';
 
 // Homepage dibaca dari DB (lewat cache) → jangan di-prerender.
 export const prerender = false;
@@ -24,17 +18,17 @@ const safe = <T>(name: string, data: Promise<T>, fallback: T) =>
 	});
 
 export const load: PageServerLoad = async () => {
-	const [headlines, articles, events, downloads, birthdays, programs] = await Promise.all([
+	// Artikel, agenda & download tidak lagi tampil di beranda (Information center kini
+	// hanya buletin) — tidak dimuat supaya beranda lebih ringan.
+	const [headlines, birthdays, programs] = await Promise.all([
 		safe(
 			'headline',
 			cached('portal:headlines', getHeadlines).then((all) => all.slice(0, 5).map(headlineCard)),
 			[]
 		),
-		safe('artikel', cached('portal:articles', getArticles), []),
-		safe('agenda', cached('portal:events', getEvents), []),
-		safe('unduhan', cached('portal:downloads', getDownloads), []),
 		safe('ulang tahun', cached('portal:birthdays', getBirthdays), []),
 		safe('program IMS', getImsPrograms(), [])
 	]);
-	return { headlines, articles, events, downloads, birthdays, programs };
+	// Poster buletin dari folder unggahan (bukan DB) — baca langsung, tanpa cache.
+	return { headlines, birthdays, programs, bulletins: bulletins() };
 };

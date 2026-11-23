@@ -20,9 +20,8 @@ export const MAIN_NAV: NavItem[] = [
 		label: 'Media',
 		children: [
 			{ label: 'Headlines', href: '/berita-utama' },
-			{ label: 'News', href: '/berita' },
-			{ label: 'Articles', href: '/#informasi' },
-			{ label: 'Downloads', href: '/#informasi' },
+			{ label: 'News', href: '/berita' }
+			// Articles & Downloads dihapus (2026-11-23): Information center kini hanya buletin.
 		]
 	},
 	{
