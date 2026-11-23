@@ -4,12 +4,16 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { ArrowRight, ChevronLeft, ChevronRight } from '@lucide/svelte';
 	import { formatDate } from '$lib/utils';
-	import type { HeroSlide } from '$lib/types/content';
+	import type { HeadlineCard } from '$lib/types/content';
 
 	/** Headline terbaru. Kosong (DB tidak terjangkau) → hero statis. */
-	let { slides = [] }: { slides?: HeroSlide[] } = $props();
+	let { slides = [] }: { slides?: HeadlineCard[] } = $props();
 
-	/** Latar slide yang gambarnya kecil / tidak ada (lihat heroSlide di queries.ts). */
+	/**
+	 * Latar hanya untuk headline yang sama sekali tidak punya gambar. Gambar headline
+	 * selalu dipakai — dipotong (object-cover) mengikuti ukuran carousel, sekecil apa
+	 * pun; versi utuhnya tampil di halaman detail.
+	 */
 	const DEFAULT_BACKDROP = '/ptdi.webp';
 	const INTERVAL = 6000;
 	const count = $derived(slides.length);
@@ -68,134 +72,136 @@
 </script>
 
 {#if count}
-	<!-- Listener di section sengaja: pola carousel (WAI-ARIA) — jeda saat kursor/fokus
-	     di dalam, panah kiri/kanan saat fokus di tombol atau tautan slide. -->
-	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-	<section
-		id="beranda"
-		class="mx-auto max-w-7xl"
-		aria-roledescription="carousel"
-		aria-label="Headline news"
-		onmouseenter={() => (paused = true)}
-		onmouseleave={() => (paused = false)}
-		onfocusin={() => (paused = true)}
-		onfocusout={() => (paused = false)}
-		onkeydown={onKeydown}
-	>
+	<section id="beranda" class="border-b">
 		<!-- Kotak selebar container. Tiap slide: foto penuh + teks di atasnya. Slide
 		     aktif masuk dari samping, slide sebelumnya keluar ke sisi lain (data-motion). -->
+		<!-- Listener di region sengaja: pola carousel (WAI-ARIA) — jeda saat kursor/fokus
+		     di dalam, panah kiri/kanan saat fokus di tombol atau tautan slide. -->
+		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 		<div
-			class="hero relative isolate overflow-hidden bg-black text-white shadow-sm"
+			class="mx-auto max-w-7xl"
+			role="region"
+			aria-roledescription="carousel"
+			aria-label="Headline news"
+			onmouseenter={() => (paused = true)}
+			onmouseleave={() => (paused = false)}
+			onfocusin={() => (paused = true)}
+			onfocusout={() => (paused = false)}
+			onkeydown={onKeydown}
 		>
-			{#each slides as slide, i (slide.id)}
-				<article
-					class="slide absolute inset-0 isolate {i === active
-						? ''
-						: 'pointer-events-none invisible opacity-0'}"
-					data-motion={motionOf(i)}
-					aria-roledescription="slide"
-					aria-label="{i + 1} of {count}"
-					aria-hidden={i !== active}
-					inert={i !== active}
-				>
-					<div class="absolute inset-0 -z-10" aria-hidden="true">
-						<img
-							src={slide.backdrop || DEFAULT_BACKDROP}
-							alt=""
-							loading={near(i) ? 'eager' : 'lazy'}
-							fetchpriority={i === 0 ? 'high' : undefined}
-							decoding="async"
-							class="size-full object-cover"
-						/>
-						<!-- Gelap di bawah & kiri: teks putih selalu terbaca, terang maupun gelap. -->
-						<div
-							class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/10"
-						></div>
-						<div
-							class="absolute inset-0 bg-gradient-to-r from-black/55 via-black/15 to-transparent"
-						></div>
-					</div>
-
-					<div class="flex h-full flex-col justify-end px-5 pb-20 sm:px-10 sm:pb-24 lg:px-12">
-						<div class="max-w-4xl">
-							<span
-								class="bg-primary text-primary-foreground inline-block rounded px-3 py-1 text-xs font-semibold tracking-wider uppercase"
-							>
-								Headline
-							</span>
-							<h2
-								class="font-display mt-4 line-clamp-3 text-2xl leading-tight font-bold tracking-tight uppercase drop-shadow-sm sm:text-4xl lg:text-5xl"
-							>
-								<!-- after:inset-0 → seluruh slide bisa diklik, satu tautan per slide. -->
-								<a
-									href={slide.url}
-									class="decoration-2 underline-offset-4 outline-none after:absolute after:inset-0 hover:underline focus-visible:underline"
-								>
-									{slide.title}
-								</a>
-							</h2>
-							<p class="mt-4 text-sm font-medium tracking-wider text-white/80 uppercase">
-								{formatDate(slide.date)}
-							</p>
-							{#if slide.excerpt}
-								<p
-									class="mt-3 hidden max-w-2xl text-base leading-relaxed text-white/80 md:line-clamp-2"
-								>
-									{slide.excerpt}
-								</p>
-							{/if}
-						</div>
-					</div>
-				</article>
-			{/each}
-
-			<!-- Kontrol di atas semua slide. -->
-			<div class="pointer-events-none absolute inset-x-0 bottom-0 z-10">
-				<div
-					class="pointer-events-auto flex items-center gap-3 px-5 pb-5 sm:px-10 sm:pb-7 lg:px-12"
-				>
-					{#if count > 1}
-						<div class="flex items-center gap-1.5">
-							{#each slides as slide, i (slide.id)}
-								<button
-									type="button"
-									onclick={() => go(i)}
-									aria-label="Show headline {i + 1}"
-									aria-current={i === active}
-									class="h-1.5 rounded-full transition-all {i === active
-										? 'w-8 bg-white'
-										: 'w-3 bg-white/40 hover:bg-white/70'}"
-								></button>
-							{/each}
-						</div>
-					{/if}
-					<a
-						href="/berita-utama"
-						class="ml-auto inline-flex items-center gap-1 text-sm font-medium whitespace-nowrap text-white/85 hover:text-white hover:underline"
-						aria-label="All headlines"
+			<div
+				class="hero relative isolate overflow-hidden bg-black text-white shadow-sm shadow-xl"
+			>
+				{#each slides as slide, i (slide.id)}
+					<article
+						class="slide absolute inset-0 isolate {i === active
+							? ''
+							: 'pointer-events-none invisible opacity-0'}"
+						data-motion={motionOf(i)}
+						aria-roledescription="slide"
+						aria-label="{i + 1} of {count}"
+						aria-hidden={i !== active}
+						inert={i !== active}
 					>
-						<!-- Layar sempit: cukup "All" supaya kontrol tetap satu baris. -->
-						All<span class="hidden sm:inline">&nbsp;headlines</span>
-						<ArrowRight class="size-4" />
-					</a>
-					{#if count > 1}
-						<button
-							type="button"
-							onclick={() => go(active - 1, -1)}
-							aria-label="Previous headline"
-							class="inline-flex size-9 shrink-0 items-center justify-center rounded-md border border-white/20 bg-black/40 backdrop-blur-sm transition-colors hover:bg-black/65 sm:size-10"
+						<div class="absolute inset-0 -z-10" aria-hidden="true">
+							<img
+								src={slide.image || DEFAULT_BACKDROP}
+								alt=""
+								loading={near(i) ? 'eager' : 'lazy'}
+								fetchpriority={i === 0 ? 'high' : undefined}
+								decoding="async"
+								class="size-full object-cover"
+							/>
+							<!-- Gelap di bawah & kiri: teks putih selalu terbaca, terang maupun gelap. -->
+							<div
+								class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/10"
+							></div>
+							<div
+								class="absolute inset-0 bg-gradient-to-r from-black/55 via-black/15 to-transparent"
+							></div>
+						</div>
+
+						<div class="flex h-full flex-col justify-end px-5 pb-20 sm:px-10 sm:pb-24 lg:px-12">
+							<div class="max-w-4xl">
+								<span
+									class="bg-primary text-primary-foreground inline-block rounded px-3 py-1 text-xs font-semibold tracking-wider uppercase"
+								>
+									Headline
+								</span>
+								<h2
+									class="font-display mt-4 line-clamp-3 text-2xl leading-tight font-bold tracking-tight uppercase drop-shadow-sm sm:text-4xl lg:text-5xl"
+								>
+									<!-- after:inset-0 → seluruh slide bisa diklik, satu tautan per slide. -->
+									<a
+										href={slide.url}
+										class="decoration-2 underline-offset-4 outline-none after:absolute after:inset-0 hover:underline focus-visible:underline"
+									>
+										{slide.title}
+									</a>
+								</h2>
+								<p class="mt-4 text-sm font-medium tracking-wider text-white/80 uppercase">
+									{formatDate(slide.date)}
+								</p>
+								{#if slide.excerpt}
+									<p
+										class="mt-3 hidden max-w-2xl text-base leading-relaxed text-white/80 md:line-clamp-2"
+									>
+										{slide.excerpt}
+									</p>
+								{/if}
+							</div>
+						</div>
+					</article>
+				{/each}
+
+				<!-- Kontrol di atas semua slide. -->
+				<div class="pointer-events-none absolute inset-x-0 bottom-0 z-10">
+					<div
+						class="pointer-events-auto flex items-center gap-3 px-5 pb-5 sm:px-10 sm:pb-7 lg:px-12"
+					>
+						{#if count > 1}
+							<div class="flex items-center gap-1.5">
+								{#each slides as slide, i (slide.id)}
+									<button
+										type="button"
+										onclick={() => go(i)}
+										aria-label="Show headline {i + 1}"
+										aria-current={i === active}
+										class="h-1.5 rounded-full transition-all {i === active
+											? 'w-8 bg-white'
+											: 'w-3 bg-white/40 hover:bg-white/70'}"
+									></button>
+								{/each}
+							</div>
+						{/if}
+						<a
+							href="/berita-utama"
+							class="ml-auto inline-flex items-center gap-1 text-sm font-medium whitespace-nowrap text-white/85 hover:text-white hover:underline"
+							aria-label="All headlines"
 						>
-							<ChevronLeft class="size-5" />
-						</button>
-						<button
-							type="button"
-							onclick={() => go(active + 1, 1)}
-							aria-label="Next headline"
-							class="inline-flex size-9 shrink-0 items-center justify-center rounded-md border border-white/20 bg-black/40 backdrop-blur-sm transition-colors hover:bg-black/65 sm:size-10"
-						>
-							<ChevronRight class="size-5" />
-						</button>
-					{/if}
+							<!-- Layar sempit: cukup "All" supaya kontrol tetap satu baris. -->
+							All<span class="hidden sm:inline">&nbsp;headlines</span>
+							<ArrowRight class="size-4" />
+						</a>
+						{#if count > 1}
+							<button
+								type="button"
+								onclick={() => go(active - 1, -1)}
+								aria-label="Previous headline"
+								class="inline-flex size-9 shrink-0 items-center justify-center rounded-md border border-white/20 bg-black/40 backdrop-blur-sm transition-colors hover:bg-black/65 sm:size-10"
+							>
+								<ChevronLeft class="size-5" />
+							</button>
+							<button
+								type="button"
+								onclick={() => go(active + 1, 1)}
+								aria-label="Next headline"
+								class="inline-flex size-9 shrink-0 items-center justify-center rounded-md border border-white/20 bg-black/40 backdrop-blur-sm transition-colors hover:bg-black/65 sm:size-10"
+							>
+								<ChevronRight class="size-5" />
+							</button>
+						{/if}
+					</div>
 				</div>
 			</div>
 		</div>

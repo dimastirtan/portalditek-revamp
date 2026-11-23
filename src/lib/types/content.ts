@@ -114,12 +114,6 @@ export type Headline = {
 /** Headline tanpa isi HTML — untuk daftar & slideshow (HTML tidak ikut dikirim). */
 export type HeadlineCard = Omit<Headline, 'html'>;
 
-/** Slide hero beranda: kartu headline + gambar latar selebar layar. */
-export type HeroSlide = HeadlineCard & {
-	/** Latar penuh — hanya bila gambarnya cukup lebar (lihat heroSlide); '' = foto bawaan. */
-	backdrop: string;
-};
-
 /** Unit organisasi + departemen di bawahnya. */
 export type OrgUnit = {
 	id: string;

@@ -67,7 +67,7 @@ import {
 	dropLeadingTitle
 } from './transform';
 import { downloadUrl, imgUrl, type DownloadCategory } from '$lib/utils';
-import { hasGambar, imageWidth } from '$lib/server/gambar';
+import { hasGambar } from '$lib/server/gambar';
 import { LEGACY } from '$lib/config/legacy';
 import type {
 	Article,
@@ -75,7 +75,6 @@ import type {
 	Download,
 	Headline,
 	HeadlineCard,
-	HeroSlide,
 	Announcement,
 	BirthdayGroup,
 	Person,
@@ -270,20 +269,6 @@ export const headlineCard = ({ id, title, date, excerpt, image, url, story, stor
 	story,
 	storyId
 });
-
-/**
- * Lebar minimum gambar headline untuk dijadikan latar hero selebar layar. Gambar
- * lama rata-rata ±500 px (bahkan logo) — dibentangkan penuh jadi buram, jadi
- * yang lebih kecil memakai foto bawaan. Unggahan baru sebaiknya ≥ 1920 px.
- */
-const HERO_MIN_WIDTH = 1000;
-
-/** Headline untuk hero beranda (lihat HeroSlide). */
-export function heroSlide(h: Headline): HeroSlide {
-	const card = headlineCard(h);
-	const width = card.image ? imageWidth(card.image) : null;
-	return { ...card, backdrop: width !== null && width >= HERO_MIN_WIDTH ? card.image : '' };
-}
 
 /**
  * Struktur organisasi: unit + departemen, nama pejabat di-resolve dari tmemp.
