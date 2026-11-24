@@ -8,6 +8,7 @@
  * yang benar, fixText() bisa dilepas.
  */
 import { ensureLocal } from '$lib/server/gambar';
+import { isExistingMedia } from '$lib/server/uploads';
 
 const MOJIBAKE: [RegExp, string][] = [
 	[/â€œ/g, '“'],
@@ -145,7 +146,10 @@ export function fileKind(file: string | null | undefined): string | undefined {
  * muncul ikon gambar rusak. Folder tujuan mengikuti hasil salin copy-gambar.bat.
  */
 function mapImgSrc(src: string): string | null {
-	const url = mapLegacySrc(src);
+	const s = (src ?? '').trim();
+	// Gambar unggahan dashboard yang disisipkan ke isi (UPLOAD_DIR, lihat uploads.ts).
+	if (s.startsWith('/media/')) return isExistingMedia(s) ? s : null;
+	const url = mapLegacySrc(s);
 	return url?.startsWith('/gambar/') ? ensureLocal(url) : url;
 }
 

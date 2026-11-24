@@ -68,6 +68,7 @@ import {
 } from './transform';
 import { downloadUrl, imgUrl, type DownloadCategory } from '$lib/utils';
 import { hasGambar } from '$lib/server/gambar';
+import { headlineImages, mediaUrl } from '$lib/server/uploads';
 import { LEGACY } from '$lib/config/legacy';
 import type {
 	Article,
@@ -121,6 +122,8 @@ export async function getHeadlines(): Promise<Headline[]> {
 		db.select().from(mainArticleDet).orderBy(desc(mainArticleDet.date), desc(mainArticleDet.id))
 	]);
 	const storyOf = new Map(stories.map((s) => [s.id, s]));
+	// Gambar unggahan dashboard (UPLOAD_DIR/headline/<id>.<ext>) didahulukan.
+	const uploaded = headlineImages();
 	return rows
 		.filter((r) => fixText(r.judul) && (r.teks ?? '').trim())
 		.map((r) => {
@@ -134,7 +137,10 @@ export async function getHeadlines(): Promise<Headline[]> {
 				title,
 				date: isoDate(r.date) || isoDate(story?.date),
 				excerpt: truncate(stripHtml(teks), 220),
-				image: firstImage(teks) || (storyImage ? imgUrl(storyImage, 'artikel') : ''),
+				image:
+					uploaded.get(r.id) ||
+					firstImage(teks) ||
+					(storyImage ? imgUrl(storyImage, 'artikel') : ''),
 				url: `/berita-utama/${r.id}`,
 				story: fixText(story?.judul),
 				storyId: story?.id ?? null,
@@ -278,12 +284,15 @@ export const headlineCard = ({ id, title, date, excerpt, image, url, story, stor
 /**
  * URL foto pejabat untuk bagan organisasi. Foto asli ±2500×3400 px (2 MB) padahal
  * tampil sebagai lingkaran 32–56 px — puluhan foto sekaligus membuat browser hang.
- * Jadi pakai thumbnail di static/gambar/org-thumb (dibuat scripts/org-thumbs.py)
- * bila ada, selain itu foto asli. '' bila kosong, placeholder, atau berkasnya tidak ada.
+ * Urutan: unggahan dashboard (UPLOAD_DIR/org-thumb lalu UPLOAD_DIR/org), lalu foto lama
+ * di static/gambar/org-thumb (dibuat scripts/org-thumbs.py) dan static/gambar/org.
+ * '' bila kosong, placeholder, atau berkasnya tidak ada.
  */
 function orgPhoto(file: string | null | undefined): string {
 	const f = (file ?? '').trim();
 	if (!f || f.toLowerCase() === 'blank.jpg') return '';
+	const uploaded = mediaUrl('org-thumb', f) ?? mediaUrl('org', f);
+	if (uploaded) return uploaded;
 	const thumb = hasGambar(`org-thumb/${f}`);
 	if (thumb) return imgUrl(f, 'org-thumb');
 	if (thumb === null) return imgUrl(f, 'org'); // tidak bisa dicek → perilaku lama

@@ -36,8 +36,9 @@ Buka http://localhost:5173.
 | `DB_PASSWORD` | *(kosong)* | password |
 | `DB_NAME` | `dittek` | nama database |
 | `FILES_DIR` | `./files` | folder berkas dokumen (hasil `npm run mirror-files`) |
-| `UPLOAD_DIR` | `./uploads` | unggahan admin yang tampil tanpa build ulang — `kalender/` gambar kalender kerja (yang tampil = berkas terbaru); `buletin/` poster buletin (3 terbaru di Information center, judul = nama berkas, disajikan lewat `/media/buletin/<file>`) |
+| `UPLOAD_DIR` | `./uploads` | unggahan admin yang tampil tanpa build ulang — `kalender/` gambar kalender kerja (yang tampil = berkas terbaru); `buletin/` poster buletin (3 terbaru di Information center, judul = nama berkas); `headline/` gambar headline `<id>.webp`; `org/` + `org-thumb/` foto pejabat. Selain kalender disajikan lewat `/media/<folder>/<file>` (lihat `src/lib/server/uploads.ts`) |
 | `CACHE_TTL_SECONDS` | `300` | lama data DB portal di-cache; perubahan admin tampil paling lambat setelah ini |
+| `CACHE_CLEAR_TOKEN` | *(kosong = mati)* | token untuk `POST /api/cache` (header `Authorization: Bearer <token>`) — dashboard admin mengosongkan cache setelah menyimpan |
 | `ORIGIN` | *(kosong)* | alamat publik portal, mis. `http://portalditek.indonesian-aerospace.com` (lihat Deploy) |
 | `PORT` | `3000` | port server |
 | `IMS_DB_HOST` | *(kosong)* | host MySQL IMS; kosong = bagian Program R&D disembunyikan |
