@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+	<title>DOA — Design Organization Approval</title>
+	<!-- Dokumen desain pesawat + stempel centang = persetujuan organisasi desain. -->
+	<rect x="10" y="10" width="480" height="480" rx="34" fill="#2f318b" />
+
+	<!-- Dokumen dengan sudut terlipat -->
+	<path
+		fill="#fff"
+		d="M150 82 H296 L372 158 V392 Q372 414 350 414 H150 Q128 414 128 392 V104 Q128 82 150 82 Z"
+	/>
+	<path fill="#c9cbea" d="M296 82 V140 Q296 158 314 158 H372 Z" />
+
+	<!-- Pesawat kecil di kepala dokumen -->
+	<path
+		fill="#2f318b"
+		transform="translate(190 140) rotate(90) scale(0.42)"
+		d="M0 -62 C5 -62 9 -55 9 -45 L9 -14 L62 12 L62 22 L9 8 L9 36 L25 48 L25 56 L0 50 L-25 56 L-25 48 L-9 36 L-9 8 L-62 22 L-62 12 L-9 -14 L-9 -45 C-9 -55 -5 -62 0 -62 Z"
+	/>
+	<rect x="226" y="128" width="58" height="10" rx="5" fill="#2f318b" opacity=".85" />
+	<rect x="226" y="146" width="40" height="10" rx="5" fill="#2f318b" opacity=".45" />
+
+	<!-- Baris teks -->
+	<g fill="#2f318b" opacity=".3">
+		<rect x="164" y="200" width="172" height="14" rx="7" />
+		<rect x="164" y="234" width="150" height="14" rx="7" />
+		<rect x="164" y="268" width="164" height="14" rx="7" />
+		<rect x="164" y="302" width="96" height="14" rx="7" />
+	</g>
+
+	<!-- Stempel persetujuan -->
+	<path fill="#fff" d="M318 418 L304 468 L330 454 L348 476 L356 424 Z" />
+	<path fill="#fff" d="M398 418 L412 468 L386 454 L368 476 L360 424 Z" />
+	<circle cx="358" cy="372" r="76" fill="#fff" />
+	<circle cx="358" cy="372" r="60" fill="none" stroke="#2f318b" stroke-width="10" />
+	<path
+		d="M328 374 L350 396 L392 350"
+		fill="none"
+		stroke="#2f318b"
+		stroke-width="18"
+		stroke-linecap="round"
+		stroke-linejoin="round"
+	/>
+</svg>

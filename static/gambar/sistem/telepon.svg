@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+	<title>Phone Numbers — Important Numbers</title>
+	<!-- Halaman buku telepon + gagang telepon = daftar nomor penting. -->
+	<rect x="10" y="10" width="480" height="480" rx="34" fill="#0f7b5f" />
+
+	<!-- Halaman daftar nomor -->
+	<rect x="104" y="86" width="236" height="300" rx="24" fill="#fff" />
+	<rect x="92" y="122" width="24" height="14" rx="7" fill="#c7e8dc" />
+	<rect x="92" y="182" width="24" height="14" rx="7" fill="#c7e8dc" />
+	<rect x="92" y="242" width="24" height="14" rx="7" fill="#c7e8dc" />
+	<rect x="92" y="302" width="24" height="14" rx="7" fill="#c7e8dc" />
+	<g fill="#0f7b5f">
+		<circle cx="150" cy="130" r="14" />
+		<circle cx="150" cy="190" r="14" />
+		<circle cx="150" cy="250" r="14" />
+		<circle cx="150" cy="310" r="14" opacity=".45" />
+	</g>
+	<g fill="#0f7b5f" opacity=".3">
+		<rect x="178" y="122" width="132" height="16" rx="8" />
+		<rect x="178" y="182" width="110" height="16" rx="8" />
+		<rect x="178" y="242" width="124" height="16" rx="8" />
+		<rect x="178" y="302" width="84" height="16" rx="8" />
+	</g>
+
+	<!-- Lencana gagang telepon -->
+	<circle cx="350" cy="350" r="92" fill="#fff" />
+	<circle cx="350" cy="350" r="76" fill="#0f7b5f" />
+	<path
+		fill="#fff"
+		transform="translate(350 350) scale(1.25) translate(-50 -50)"
+		d="M31 18 C26 18 20 23 20 30 C20 58 42 80 70 80 C77 80 82 74 82 69 L82 61 C82 58 80 56 77 55 L66 52 C63 51 60 52 58 55 L55 59 C47 55 45 53 41 45 L45 42 C48 40 49 37 48 34 L45 23 C44 20 42 18 39 18 Z"
+	/>
+</svg>
