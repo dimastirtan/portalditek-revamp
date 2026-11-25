@@ -52,6 +52,23 @@ export type Announcement = {
 	active: boolean;
 };
 
+/** Perubahan dokumen di web DOA yang terdeteksi portal (lihat $lib/server/doa/watch). */
+export type DoaUpdate = {
+	/** standard.no */
+	id: number;
+	/** new = dokumen baru, revised = revisi naik, updated = berkas/judul diganti. */
+	kind: 'new' | 'revised' | 'updated';
+	/** ISO datetime saat perubahan terdeteksi. */
+	at: string;
+	/** Jenis dokumen yang mudah dibaca (Procedure, Work Instruction, ...). */
+	type: string;
+	number: string;
+	revision: string;
+	/** Revisi sebelumnya bila kind = revised; '' bila tidak ada. */
+	fromRevision: string;
+	title: string;
+};
+
 export type Person = {
 	nik: string;
 	name: string;

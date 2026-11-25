@@ -12,6 +12,8 @@ node_modules
 /files
 # Unggahan admin (gambar kalender kerja, dst.) — isi server, bukan kode
 /uploads
+# Data runtime portal (mis. data/doa-watch.json — catatan perubahan dokumen DOA)
+/data
 
 # OS
 .DS_Store

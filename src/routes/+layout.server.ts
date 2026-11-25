@@ -1,12 +1,11 @@
 import type { LayoutServerLoad } from './$types';
-import { getAnnouncements } from '$lib/server/portal/queries';
-import { cached } from '$lib/server/cache';
+import { getDoaUpdates } from '$lib/server/doa/watch';
 
-export const load: LayoutServerLoad = async () => {
-	try {
-		return { announcements: await cached('portal:announcements', getAnnouncements) };
-	} catch (err) {
-		console.error('[portal] gagal memuat pengumuman:', err);
-		return { announcements: [] };
-	}
-};
+/**
+ * Data untuk semua halaman: perubahan dokumen DOA 7 hari terakhir (panel Notifications,
+ * dibaca dari memori — tanpa query per request).
+ *
+ * Pengumuman (getAnnouncements + announcement-panel.svelte) tidak lagi dimuat sejak
+ * tombol loncengnya dihapus dari topbar; pasang lagi di sini & di +layout.svelte bila perlu.
+ */
+export const load: LayoutServerLoad = () => ({ doaUpdates: getDoaUpdates() });

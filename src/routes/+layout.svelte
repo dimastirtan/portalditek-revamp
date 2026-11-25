@@ -3,32 +3,30 @@
 	import { SITE } from '$lib/config/site';
 	import { Topbar, SiteHeader, SiteFooter } from '$lib/components/layout';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
-	import CalendarPanel from '$lib/components/shared/calendar-panel.svelte';
-	import AnnouncementPanel from '$lib/components/shared/announcement-panel.svelte';
-	import type { Announcement } from '$lib/types/content';
+	import NotificationsPanel from '$lib/components/shared/notifications-panel.svelte';
 	import type { LayoutData } from './$types';
 	import type { Snippet } from 'svelte';
 	import { onMount } from 'svelte';
 
 	let { children, data }: { children: Snippet; data: LayoutData } = $props();
 
-	const announcements = $derived((data.announcements ?? []) as Announcement[]);
-	const activeAnnouncements = $derived(announcements.filter((a) => a.active));
+	// Panel Notifications: perubahan dokumen DOA 7 hari terakhir (terbaru dulu).
+	const doaUpdates = $derived(data.doaUpdates ?? []);
+	let notificationsOpen = $state(false);
 
-	let calendarOpen = $state(false);
-	let announcementOpen = $state(false);
-
-	// Hitung pengumuman yang belum dibaca. ID yang sudah dibaca disimpan di
-	// localStorage supaya bell berhenti bergetar setelah karyawan membacanya.
-	const STORAGE_KEY = 'dtp:read-announcements';
-	let readIds = $state<string[]>([]);
+	// Perubahan terbaru yang sudah dilihat pengunjung ini (per browser — portal tanpa login).
+	// null = belum dibaca dari localStorage (SSR) → badge belum ditampilkan.
+	const SEEN_KEY = 'dtp:doa-seen';
+	let seenAt = $state<string | null>(null);
+	const notificationCount = $derived(
+		seenAt === null ? 0 : doaUpdates.filter((u) => u.at > seenAt!).length
+	);
 
 	onMount(() => {
 		try {
-			const raw = localStorage.getItem(STORAGE_KEY);
-			if (raw) readIds = JSON.parse(raw);
+			seenAt = localStorage.getItem(SEEN_KEY) ?? '';
 		} catch {
-			readIds = [];
+			seenAt = '';
 		}
 
 		// Remap anchor lama Portal (BootstrapMade) ke section baru, supaya
@@ -46,20 +44,20 @@
 		}
 	});
 
-	const unreadCount = $derived(activeAnnouncements.filter((a) => !readIds.includes(a.id)).length);
-
-	function markAllRead() {
-		readIds = activeAnnouncements.map((a) => a.id);
-		try {
-			localStorage.setItem(STORAGE_KEY, JSON.stringify(readIds));
-		} catch {
-			// abaikan bila localStorage tidak tersedia
+	/** Buka panel; tandai yang sekarang tampil sebagai sudah dilihat (penanda di panel tetap). */
+	let seenBeforeOpen = $state('');
+	function openNotifications() {
+		seenBeforeOpen = seenAt ?? '';
+		notificationsOpen = true;
+		const newest = doaUpdates[0]?.at;
+		if (newest && newest > (seenAt ?? '')) {
+			seenAt = newest;
+			try {
+				localStorage.setItem(SEEN_KEY, newest);
+			} catch {
+				// abaikan bila localStorage tidak tersedia
+			}
 		}
-	}
-
-	function openAnnouncement() {
-		announcementOpen = true;
-		markAllRead();
 	}
 </script>
 
@@ -69,11 +67,7 @@
 </svelte:head>
 
 <div class="flex min-h-svh flex-col">
-	<Topbar
-		{unreadCount}
-		onOpenCalendar={() => (calendarOpen = true)}
-		onOpenAnnouncement={openAnnouncement}
-	/>
+	<Topbar {notificationCount} onOpenNotifications={openNotifications} />
 	<SiteHeader />
 
 	<main id="konten" class="flex-1">
@@ -83,14 +77,8 @@
 	<SiteFooter />
 </div>
 
-<Sheet.Root bind:open={calendarOpen}>
-	<Sheet.Content side="right" class="w-full gap-0 p-0 sm:max-w-lg">
-		<CalendarPanel />
-	</Sheet.Content>
-</Sheet.Root>
-
-<Sheet.Root bind:open={announcementOpen}>
+<Sheet.Root bind:open={notificationsOpen}>
 	<Sheet.Content side="right" class="w-full gap-0 p-0 sm:max-w-md">
-		<AnnouncementPanel items={announcements} />
+		<NotificationsPanel items={doaUpdates} seenAt={seenBeforeOpen} />
 	</Sheet.Content>
 </Sheet.Root>

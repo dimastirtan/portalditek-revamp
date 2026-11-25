@@ -3,15 +3,13 @@
 	import ThemeToggle from '$lib/components/shared/theme-toggle.svelte';
 
 	type Props = {
-		/** Callback saat tombol Kalender diklik (modal diisi di M3). */
-		onOpenCalendar?: () => void;
-		/** Callback saat tombol Pengumuman diklik (modal diisi di M3). */
-		onOpenAnnouncement?: () => void;
-		/** Jumlah pengumuman belum dibaca — menampilkan indikator di bell. */
-		unreadCount?: number;
+		/** Callback saat tombol Notifications diklik (panel pembaruan dokumen DOA). */
+		onOpenNotifications?: () => void;
+		/** Jumlah pembaruan DOA yang belum dilihat — badge di tombol. */
+		notificationCount?: number;
 	};
 
-	let { onOpenCalendar, onOpenAnnouncement, unreadCount = 0 }: Props = $props();
+	let { onOpenNotifications, notificationCount = 0 }: Props = $props();
 
 	// Zona waktu eksplisit: tanggal di server (SSR) & browser sama, apa pun zona servernya.
 	const today = new Intl.DateTimeFormat('en-GB', {
@@ -35,11 +33,20 @@
 		<div class="flex items-center gap-1">
 			<button
 				type="button"
-				onclick={onOpenCalendar}
-				class="hover:bg-primary-foreground/10 inline-flex items-center gap-1.5 rounded px-2 py-1 font-medium transition-colors"
+				onclick={onOpenNotifications}
+				aria-label={notificationCount ? `Notifications, ${notificationCount} new` : 'Notifications'}
+				class="hover:bg-primary-foreground/10 relative inline-flex items-center gap-1.5 rounded px-2 py-1 font-medium transition-colors"
 			>
-				<CalendarDays class="size-3.5 sm:hidden" />
-				Calendar
+				<Bell class="size-3.5" />
+				<span class="hidden sm:inline">Notifications</span>
+				{#if notificationCount}
+					<span
+						class="bg-destructive inline-flex min-w-4 items-center justify-center rounded-full px-1 text-[10px] leading-4 font-semibold text-white"
+						aria-hidden="true"
+					>
+						{notificationCount > 9 ? '9+' : notificationCount}
+					</span>
+				{/if}
 			</button>
 
 			<span class="bg-primary-foreground/20 mx-1 h-4 w-px" aria-hidden="true"></span>

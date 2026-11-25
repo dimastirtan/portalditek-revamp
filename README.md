@@ -47,6 +47,9 @@ Buka http://localhost:5173.
 | `IMS_DB_NAME` | `ptdi_project` | database IMS |
 | `PUBLIC_IMS_URL` | `http://10.1.95.116:81` | web IMS untuk tautan "Buka di IMS" |
 | `PUBLIC_IMS_IMAGE_URL` | `/gambar/ims/assets/images` | folder gambar program; nama file diambil dari kolom `programs.image`. Arahkan ke folder upload IMS bila ingin ikut IMS langsung |
+| `DOA_DB_HOST` / `PORT` / `USER` / `PASSWORD` | *(ikut `IMS_DB_*`)* | MySQL DOA Revamp untuk panel **Notifications** (`src/lib/server/doa/watch.ts`): tabel `standard` dipindai tiap 5 menit, dokumen yang ditambah/diubah admin DOA tampil 7 hari. Cukup user read-only `SELECT` pada `standard.standard` |
+| `DOA_DB_NAME` | `standard` | database DOA |
+| `DATA_DIR` | `./data` | data runtime portal — `doa-watch.json` (catatan pemindaian DOA; pemindaian pertama hanya mencatat kondisi awal) |
 | `PUBLIC_LEGACY_PORTAL_URL` | `http://10.1.95.116` | portal PHP lama (`download.php` cadangan, `certification/`) |
 | `PUBLIC_DOA_URL` | `http://10.1.95.116:8081` | Web DOA |
 | `PUBLIC_DOTPROJECT_URL` | `http://10.1.95.116:8083` | dotProject |

@@ -15,7 +15,7 @@
 	<div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 		<SectionHeading
 			eyebrow="Systems"
-			title="Directorate systems"
+			title="Directorate Systems"
 			description="Quick access to the applications and services used every day across the Directorate of Technology and Development."
 		/>
 

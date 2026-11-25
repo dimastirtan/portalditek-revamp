@@ -10,9 +10,9 @@
  * (Kalender kerja kini berupa gambar unggahan — lihat $lib/server/uploads.)
  */
 export const SITE = {
-	name: 'Direktorat Teknologi dan Pengembangan',
-	shortName: 'Direktorat Teknologi dan Pengembangan',
-	tagline: 'Internal portal of Direktorat Teknologi dan Pengembangan, PT Dirgantara Indonesia',
+	name: 'Direktorat Teknologi dan Menejemen Resiko',
+	shortName: 'Direktorat Teknologi dan Menejemen Resiko',
+	tagline: 'Internal portal of Direktorat Teknologi dan Menejemen Resiko, PT Dirgantara Indonesia',
 	company: 'PT Dirgantara Indonesia (Persero)',
 	companyUrl: 'http://www.indonesian-aerospace.com/',
 

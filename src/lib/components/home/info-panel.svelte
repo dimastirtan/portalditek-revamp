@@ -16,8 +16,8 @@
 	<div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
 		<SectionHeading
 			eyebrow="Information"
-			title="Information center"
-			description="Latest bulletins from the Directorate of Technology and Development."
+			title="SMS Bulletin"
+			description="Latest bulletins from the Directorate of Technology and Risk Management."
 		/>
 
 		<div class="mt-10">

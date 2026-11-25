@@ -1,4 +1,14 @@
-import type { Handle } from '@sveltejs/kit';
+import type { Handle, ServerInit } from '@sveltejs/kit';
+import { building } from '$app/environment';
+import { startDoaWatch } from '$lib/server/doa/watch';
+
+/**
+ * Saat server menyala: mulai pemantauan perubahan dokumen DOA di latar (panel
+ * Notifications). Dilewati saat build supaya proses build tidak menunggu timer.
+ */
+export const init: ServerInit = () => {
+	if (!building) startDoaWatch();
+};
 
 /**
  * Header keamanan dasar untuk semua respons halaman & endpoint: portal tidak
